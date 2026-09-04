@@ -14,6 +14,11 @@ tested against the same fixtures.
 Neither has runtime dependencies. This page describes what itch does and how
 the libraries find things; the per-language READMEs cover their APIs.
 
+The two packages share a name, a definition set and a version: they are
+released in lockstep, so `find-itch-games 0.1.1` means the same behaviour in
+either language. A release that only changes one of them simply is not
+republished for the other, so version numbers may skip.
+
 Data structures and lookup rules follow the upstream sources: the
 [itch client](https://github.com/itchio/itch), [butler](https://github.com/itchio/butler)
 and its [`dash`](https://github.com/itchio/dash), [`hush`](https://github.com/itchio/hush) and

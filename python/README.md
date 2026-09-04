@@ -195,4 +195,7 @@ pipx run twine check dist/*
 ```
 
 The version is single-sourced from `__version__` in
-[`src/find_itch_games/__init__.py`](src/find_itch_games/__init__.py).
+[`src/find_itch_games/__init__.py`](src/find_itch_games/__init__.py), and is
+kept in lockstep with the JavaScript package by `npm run version:sync` in
+[`node/`](../node). Because Python was added after the first JavaScript
+release, PyPI has no `0.1.0`.

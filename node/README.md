@@ -287,7 +287,10 @@ Each registry needs its own credential:
   commit that token — it belongs in your user config, not the repository.
 
 Bumping a release means `npm version <level>` followed by `npm run version:sync`,
-since the two manifests carry the version separately.
+which copies the new version into `jsr.json` and into the Python package's
+`__version__`. `npm run version:check` fails if any of the three disagree, and
+runs before every publish. The two languages are versioned in lockstep — see
+the [root README](../README.md).
 
 Note that [`jsr.json`](jsr.json) accepts only `name`, `version`, `license`,
 `exports` and `publish`. A package's description, its runtime compatibility and
