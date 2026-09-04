@@ -6,7 +6,7 @@
 function findReceipts(libraryPath): Promise<IFoundReceipt[]>;
 ```
 
-Defined in: src/receipt.ts:218
+Defined in: receipt.ts:218
 
 Scans the immediate subdirectories of an install location for receipts.
 

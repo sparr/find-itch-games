@@ -2,7 +2,7 @@
 
 # Interface: IItchWindowsInfo
 
-Defined in: src/types.ts:161
+Defined in: types.ts:161
 
 Details of a native Windows executable or installer candidate.
 
@@ -14,7 +14,7 @@ Details of a native Windows executable or installer candidate.
 optional installerType?: IItchWindowsInstallerType;
 ```
 
-Defined in: src/types.ts:162
+Defined in: types.ts:162
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:162
 optional uninstaller?: boolean;
 ```
 
-Defined in: src/types.ts:164
+Defined in: types.ts:164
 
 True if this looks like an uninstaller rather than an installer.
 
@@ -36,7 +36,7 @@ True if this looks like an uninstaller rather than an installer.
 optional gui?: boolean;
 ```
 
-Defined in: src/types.ts:166
+Defined in: types.ts:166
 
 Marked as a GUI subsystem binary. A hint, not a guarantee.
 
@@ -48,4 +48,4 @@ Marked as a GUI subsystem binary. A hint, not a guarantee.
 optional dotNet?: boolean;
 ```
 
-Defined in: src/types.ts:167
+Defined in: types.ts:167

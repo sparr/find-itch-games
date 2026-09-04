@@ -6,6 +6,6 @@
 type IItchWindowsInstallerType = OpenEnum<"msi" | "inno" | "nsis" | "archive">;
 ```
 
-Defined in: src/types.ts:158
+Defined in: types.ts:158
 
 Which kind of Windows installer an executable is, when it is one.

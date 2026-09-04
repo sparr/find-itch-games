@@ -2,7 +2,7 @@
 
 # Interface: IItchReceipt
 
-Defined in: src/receipt.ts:26
+Defined in: receipt.ts:26
 
 itch writes one of these into every folder it installs a game into.
 
@@ -16,7 +16,7 @@ Mirrors `bfs.Receipt` in `github.com/itchio/hush`.
 game: IItchGame;
 ```
 
-Defined in: src/receipt.ts:28
+Defined in: receipt.ts:28
 
 The itch.io game installed at this location.
 
@@ -28,7 +28,7 @@ The itch.io game installed at this location.
 optional upload?: IItchUpload;
 ```
 
-Defined in: src/receipt.ts:30
+Defined in: receipt.ts:30
 
 The itch.io upload installed at this location.
 
@@ -40,7 +40,7 @@ The itch.io upload installed at this location.
 optional build?: IItchBuild;
 ```
 
-Defined in: src/receipt.ts:32
+Defined in: receipt.ts:32
 
 The itch.io build installed here. Absent for non-wharf uploads.
 
@@ -52,7 +52,7 @@ The itch.io build installed here. Absent for non-wharf uploads.
 optional files?: string[];
 ```
 
-Defined in: src/receipt.ts:34
+Defined in: receipt.ts:34
 
 Installed files, as slash-separated paths relative to the folder.
 
@@ -64,7 +64,7 @@ Installed files, as slash-separated paths relative to the folder.
 optional installerName?: string;
 ```
 
-Defined in: src/receipt.ts:36
+Defined in: receipt.ts:36
 
 The installer used, e.g. `archive`, `msi`, `inno`.
 
@@ -76,7 +76,7 @@ The installer used, e.g. `archive`, `msi`, `inno`.
 optional legacy?: IItchLegacyReceiptInfo;
 ```
 
-Defined in: src/receipt.ts:41
+Defined in: receipt.ts:41
 
 Set when the receipt came from the pre-v23 `.itch/receipt.json` format,
 which recorded ids but no game metadata.

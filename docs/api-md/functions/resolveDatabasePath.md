@@ -6,7 +6,7 @@
 function resolveDatabasePath(itchPath): Promise<string>;
 ```
 
-Defined in: src/itch.ts:91
+Defined in: itch.ts:91
 
 Locates the butler database, allowing for the `butler-<host>.db` name that
 builds configured against a non-standard itch.io host use.

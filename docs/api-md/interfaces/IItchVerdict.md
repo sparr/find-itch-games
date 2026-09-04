@@ -2,7 +2,7 @@
 
 # Interface: IItchVerdict
 
-Defined in: src/types.ts:221
+Defined in: types.ts:221
 
 Butler's scan of an install folder, stored on the cave.
 
@@ -14,7 +14,7 @@ Butler's scan of an install folder, stored on the cave.
 optional basePath?: string;
 ```
 
-Defined in: src/types.ts:223
+Defined in: types.ts:223
 
 Absolute path of the folder that was configured.
 
@@ -26,7 +26,7 @@ Absolute path of the folder that was configured.
 optional totalSize?: number;
 ```
 
-Defined in: src/types.ts:225
+Defined in: types.ts:225
 
 Size in bytes of the folder and everything under it.
 
@@ -38,4 +38,4 @@ Size in bytes of the folder and everything under it.
 optional candidates?: IItchLaunchCandidate[] | null;
 ```
 
-Defined in: src/types.ts:226
+Defined in: types.ts:226

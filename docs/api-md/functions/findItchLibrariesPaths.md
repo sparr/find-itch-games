@@ -6,7 +6,7 @@
 function findItchLibrariesPaths(options?): Promise<string[]>;
 ```
 
-Defined in: src/index.ts:346
+Defined in: index.ts:346
 
 Just the install location paths, cheapest call in the library.
 

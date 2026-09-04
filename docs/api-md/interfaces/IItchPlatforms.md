@@ -2,7 +2,7 @@
 
 # Interface: IItchPlatforms
 
-Defined in: src/types.ts:19
+Defined in: types.ts:19
 
 Which OS/architectures a game or upload is compatible with.
 
@@ -14,7 +14,7 @@ Which OS/architectures a game or upload is compatible with.
 optional windows?: IItchArchitectures;
 ```
 
-Defined in: src/types.ts:20
+Defined in: types.ts:20
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/types.ts:20
 optional linux?: IItchArchitectures;
 ```
 
-Defined in: src/types.ts:21
+Defined in: types.ts:21
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: src/types.ts:21
 optional osx?: IItchArchitectures;
 ```
 
-Defined in: src/types.ts:22
+Defined in: types.ts:22

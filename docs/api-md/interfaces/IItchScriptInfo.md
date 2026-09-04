@@ -2,7 +2,7 @@
 
 # Interface: IItchScriptInfo
 
-Defined in: src/types.ts:183
+Defined in: types.ts:183
 
 Details of a shell script candidate.
 
@@ -14,6 +14,6 @@ Details of a shell script candidate.
 optional interpreter?: string;
 ```
 
-Defined in: src/types.ts:185
+Defined in: types.ts:185
 
 The interpreter from the shebang, e.g. `/bin/bash`.

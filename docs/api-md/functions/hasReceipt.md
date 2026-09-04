@@ -6,7 +6,7 @@
 function hasReceipt(installPath): Promise<boolean>;
 ```
 
-Defined in: src/receipt.ts:194
+Defined in: receipt.ts:194
 
 Whether an install folder carries an itch receipt.
 

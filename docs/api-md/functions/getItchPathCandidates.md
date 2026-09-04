@@ -6,7 +6,7 @@
 function getItchPathCandidates(): string[];
 ```
 
-Defined in: src/itch.ts:36
+Defined in: itch.ts:36
 
 Directories the itch app may keep its user data in, most specific first.
 

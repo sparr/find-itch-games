@@ -6,7 +6,7 @@
 function readReceipt(installPath): Promise<IItchReceipt | null>;
 ```
 
-Defined in: src/receipt.ts:122
+Defined in: receipt.ts:122
 
 Reads the receipt itch left inside an install folder.
 

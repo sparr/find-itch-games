@@ -2,7 +2,7 @@
 
 # Interface: IItchOptions
 
-Defined in: src/index.ts:88
+Defined in: index.ts:88
 
 Options shared by every lookup in this library.
 
@@ -21,7 +21,7 @@ the defaults suit a normal installation, so most callers pass nothing.
 optional itchPath?: string;
 ```
 
-Defined in: src/index.ts:90
+Defined in: index.ts:90
 
 Override the itch user-data directory instead of searching for it.
 
@@ -33,7 +33,7 @@ Override the itch user-data directory instead of searching for it.
 optional strategy?: "db" | "merge" | "receipts";
 ```
 
-Defined in: src/index.ts:92
+Defined in: index.ts:92
 
 #### Default Value
 
@@ -49,7 +49,7 @@ Defined in: src/index.ts:92
 optional checkExists?: boolean;
 ```
 
-Defined in: src/index.ts:99
+Defined in: index.ts:99
 
 Drop games whose install folder is gone. itch leaves caves behind when a
 folder is deleted outside the app, so this defaults to on.
@@ -68,7 +68,7 @@ true
 optional extraLibraries?: readonly string[];
 ```
 
-Defined in: src/index.ts:101
+Defined in: index.ts:101
 
 Extra install locations to scan, e.g. a drive itch was moved off.
 
@@ -80,7 +80,7 @@ Extra install locations to scan, e.g. a drive itch was moved off.
 optional ignoreDatabase?: boolean;
 ```
 
-Defined in: src/index.ts:109
+Defined in: index.ts:109
 
 Don't touch butler.db at all, not even for install locations. Only
 `preferences.json`, the built-in `appdata` location and `extraLibraries`

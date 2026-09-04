@@ -2,7 +2,7 @@
 
 # Interface: IItchLibraries
 
-Defined in: src/index.ts:128
+Defined in: index.ts:128
 
 The full picture: where itch is, where it installs, and what is installed.
 
@@ -14,7 +14,7 @@ The full picture: where itch is, where it installs, and what is installed.
 itchPath: string;
 ```
 
-Defined in: src/index.ts:129
+Defined in: index.ts:129
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/index.ts:129
 databasePath: string;
 ```
 
-Defined in: src/index.ts:130
+Defined in: index.ts:130
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: src/index.ts:130
 databaseAvailable: boolean;
 ```
 
-Defined in: src/index.ts:131
+Defined in: index.ts:131
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: src/index.ts:131
 strategy: "db" | "merge" | "receipts";
 ```
 
-Defined in: src/index.ts:132
+Defined in: index.ts:132
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: src/index.ts:132
 libraries: IItchLibrary[];
 ```
 
-Defined in: src/index.ts:133
+Defined in: index.ts:133

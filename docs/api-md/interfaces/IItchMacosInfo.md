@@ -2,6 +2,6 @@
 
 # Interface: IItchMacosInfo
 
-Defined in: src/types.ts:171
+Defined in: types.ts:171
 
 Details of a native macOS candidate. Currently empty.

@@ -2,7 +2,7 @@
 
 # Interface: IItchAppManifest
 
-Defined in: src/manifest.ts:36
+Defined in: manifest.ts:36
 
 Everything itch knows about one installed game, flattened.
 
@@ -18,7 +18,7 @@ into the install folder.
 gameId: number;
 ```
 
-Defined in: src/manifest.ts:38
+Defined in: manifest.ts:38
 
 itch.io game id -- the closest thing to a Steam appid.
 
@@ -30,7 +30,7 @@ itch.io game id -- the closest thing to a Steam appid.
 optional caveId?: string;
 ```
 
-Defined in: src/manifest.ts:40
+Defined in: manifest.ts:40
 
 itch's own id for this installation. Absent for receipt-only finds.
 
@@ -42,7 +42,7 @@ itch's own id for this installation. Absent for receipt-only finds.
 optional title?: string;
 ```
 
-Defined in: src/manifest.ts:41
+Defined in: manifest.ts:41
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: src/manifest.ts:41
 optional url?: string;
 ```
 
-Defined in: src/manifest.ts:43
+Defined in: manifest.ts:43
 
 e.g. `https://hempuli.itch.io/a-solitaire-mystery`.
 
@@ -64,7 +64,7 @@ e.g. `https://hempuli.itch.io/a-solitaire-mystery`.
 optional slug?: string;
 ```
 
-Defined in: src/manifest.ts:45
+Defined in: manifest.ts:45
 
 `a-solitaire-mystery` in the url above.
 
@@ -76,7 +76,7 @@ Defined in: src/manifest.ts:45
 optional author?: string;
 ```
 
-Defined in: src/manifest.ts:47
+Defined in: manifest.ts:47
 
 `hempuli` in the url above.
 
@@ -88,7 +88,7 @@ Defined in: src/manifest.ts:47
 optional classification?: string;
 ```
 
-Defined in: src/manifest.ts:49
+Defined in: manifest.ts:49
 
 `game`, `tool`, `assets`, `game_mod`, ...
 
@@ -100,7 +100,7 @@ Defined in: src/manifest.ts:49
 path: string;
 ```
 
-Defined in: src/manifest.ts:51
+Defined in: manifest.ts:51
 
 Absolute path to the installed game.
 
@@ -112,7 +112,7 @@ Absolute path to the installed game.
 installFolderName: string;
 ```
 
-Defined in: src/manifest.ts:53
+Defined in: manifest.ts:53
 
 Name of the install folder itself.
 
@@ -124,7 +124,7 @@ Name of the install folder itself.
 optional installLocationId?: string;
 ```
 
-Defined in: src/manifest.ts:55
+Defined in: manifest.ts:55
 
 Id of the install location holding it, if it is in a known one.
 
@@ -136,7 +136,7 @@ Id of the install location holding it, if it is in a known one.
 optional customInstallFolder?: string;
 ```
 
-Defined in: src/manifest.ts:57
+Defined in: manifest.ts:57
 
 Set when the game was installed outside any install location.
 
@@ -148,7 +148,7 @@ Set when the game was installed outside any install location.
 optional receiptPath?: string;
 ```
 
-Defined in: src/manifest.ts:59
+Defined in: manifest.ts:59
 
 Path of the on-disk receipt, when there is one.
 
@@ -160,7 +160,7 @@ Path of the on-disk receipt, when there is one.
 optional uploadId?: number;
 ```
 
-Defined in: src/manifest.ts:60
+Defined in: manifest.ts:60
 
 ***
 
@@ -170,7 +170,7 @@ Defined in: src/manifest.ts:60
 optional buildId?: number;
 ```
 
-Defined in: src/manifest.ts:61
+Defined in: manifest.ts:61
 
 ***
 
@@ -180,7 +180,7 @@ Defined in: src/manifest.ts:61
 optional version?: string;
 ```
 
-Defined in: src/manifest.ts:63
+Defined in: manifest.ts:63
 
 The developer's own version string, for butler-pushed uploads.
 
@@ -192,7 +192,7 @@ The developer's own version string, for butler-pushed uploads.
 optional channelName?: string;
 ```
 
-Defined in: src/manifest.ts:65
+Defined in: manifest.ts:65
 
 butler channel, e.g. `native-console-linux-64`.
 
@@ -204,7 +204,7 @@ butler channel, e.g. `native-console-linux-64`.
 optional installedAt?: string;
 ```
 
-Defined in: src/manifest.ts:66
+Defined in: manifest.ts:66
 
 ***
 
@@ -214,7 +214,7 @@ Defined in: src/manifest.ts:66
 optional lastPlayedAt?: string;
 ```
 
-Defined in: src/manifest.ts:67
+Defined in: manifest.ts:67
 
 ***
 
@@ -224,7 +224,7 @@ Defined in: src/manifest.ts:67
 optional secondsRun?: number;
 ```
 
-Defined in: src/manifest.ts:68
+Defined in: manifest.ts:68
 
 ***
 
@@ -234,7 +234,7 @@ Defined in: src/manifest.ts:68
 optional installedSize?: number;
 ```
 
-Defined in: src/manifest.ts:70
+Defined in: manifest.ts:70
 
 Size on disk in bytes, as itch last measured it.
 
@@ -246,7 +246,7 @@ Size on disk in bytes, as itch last measured it.
 optional pinned?: boolean;
 ```
 
-Defined in: src/manifest.ts:71
+Defined in: manifest.ts:71
 
 ***
 
@@ -256,7 +256,7 @@ Defined in: src/manifest.ts:71
 optional platforms?: IItchPlatforms;
 ```
 
-Defined in: src/manifest.ts:72
+Defined in: manifest.ts:72
 
 ***
 
@@ -266,7 +266,7 @@ Defined in: src/manifest.ts:72
 candidates: IItchLaunchCandidate[];
 ```
 
-Defined in: src/manifest.ts:74
+Defined in: manifest.ts:74
 
 Launchables butler found, with paths relative to [path](#path).
 
@@ -278,7 +278,7 @@ Launchables butler found, with paths relative to [path](#path).
 optional game?: IItchGame;
 ```
 
-Defined in: src/manifest.ts:75
+Defined in: manifest.ts:75
 
 ***
 
@@ -288,7 +288,7 @@ Defined in: src/manifest.ts:75
 optional upload?: IItchUpload;
 ```
 
-Defined in: src/manifest.ts:76
+Defined in: manifest.ts:76
 
 ***
 
@@ -298,7 +298,7 @@ Defined in: src/manifest.ts:76
 optional build?: IItchBuild;
 ```
 
-Defined in: src/manifest.ts:77
+Defined in: manifest.ts:77
 
 ***
 
@@ -308,4 +308,4 @@ Defined in: src/manifest.ts:77
 source: IItchManifestSource;
 ```
 
-Defined in: src/manifest.ts:78
+Defined in: manifest.ts:78

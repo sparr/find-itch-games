@@ -2,7 +2,7 @@
 
 # Interface: IItchInstallLocationRow
 
-Defined in: src/db.ts:27
+Defined in: db.ts:27
 
 An install location as butler.db records it.
 
@@ -14,7 +14,7 @@ An install location as butler.db records it.
 id: string;
 ```
 
-Defined in: src/db.ts:29
+Defined in: db.ts:29
 
 `appdata` for the built-in location, otherwise a uuid.
 
@@ -26,6 +26,6 @@ Defined in: src/db.ts:29
 path: string;
 ```
 
-Defined in: src/db.ts:31
+Defined in: db.ts:31
 
 Absolute path of the directory games are installed into.

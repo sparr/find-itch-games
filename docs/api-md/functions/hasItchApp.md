@@ -6,7 +6,7 @@
 function hasItchApp(game, options?): Promise<boolean>;
 ```
 
-Defined in: src/index.ts:500
+Defined in: index.ts:500
 
 Whether a game is currently installed, by game id or by name.
 

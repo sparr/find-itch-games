@@ -2,7 +2,7 @@
 
 # Interface: IItchJarInfo
 
-Defined in: src/types.ts:189
+Defined in: types.ts:189
 
 Details of a Java archive candidate.
 
@@ -14,6 +14,6 @@ Details of a Java archive candidate.
 optional mainClass?: string;
 ```
 
-Defined in: src/types.ts:191
+Defined in: types.ts:191
 
 The `Main-Class` from the jar's manifest.

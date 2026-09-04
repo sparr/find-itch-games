@@ -6,7 +6,7 @@
 function getStagingFolder(libraryPath, downloadId): string;
 ```
 
-Defined in: src/locations.ts:63
+Defined in: locations.ts:63
 
 Where an in-progress download is staged, matching butler's
 `InstallLocation.GetStagingFolder`.

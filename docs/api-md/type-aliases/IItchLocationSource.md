@@ -6,6 +6,6 @@
 type IItchLocationSource = "db" | "preferences" | "appdata" | "option";
 ```
 
-Defined in: src/locations.ts:19
+Defined in: locations.ts:19
 
 Where an install location's record came from.

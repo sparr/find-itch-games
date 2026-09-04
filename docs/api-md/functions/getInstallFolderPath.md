@@ -6,7 +6,7 @@
 function getInstallFolderPath(libraryPath, installFolderName): string;
 ```
 
-Defined in: src/locations.ts:76
+Defined in: locations.ts:76
 
 Where a game with the given install folder name lives inside a location.
 

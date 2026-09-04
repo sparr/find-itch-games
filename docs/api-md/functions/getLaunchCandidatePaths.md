@@ -6,7 +6,7 @@
 function getLaunchCandidatePaths(manifest): string[];
 ```
 
-Defined in: src/manifest.ts:86
+Defined in: manifest.ts:86
 
 Absolute paths of the launch candidates butler found, best first.
 

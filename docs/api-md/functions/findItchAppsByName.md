@@ -6,7 +6,7 @@
 function findItchAppsByName(name, options?): Promise<IItchApp[]>;
 ```
 
-Defined in: src/index.ts:463
+Defined in: index.ts:463
 
 Every installed game matching a title, url slug or install folder name.
 

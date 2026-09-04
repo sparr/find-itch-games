@@ -2,6 +2,6 @@
 
 # Interface: IItchLinuxInfo
 
-Defined in: src/types.ts:174
+Defined in: types.ts:174
 
 Details of a native Linux candidate. Currently empty.

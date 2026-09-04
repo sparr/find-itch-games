@@ -2,7 +2,7 @@
 
 # Interface: IItchApp
 
-Defined in: src/index.ts:113
+Defined in: index.ts:113
 
 One installed game inside a library.
 
@@ -14,7 +14,7 @@ One installed game inside a library.
 gameId: number;
 ```
 
-Defined in: src/index.ts:114
+Defined in: index.ts:114
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: src/index.ts:114
 path: string;
 ```
 
-Defined in: src/index.ts:116
+Defined in: index.ts:116
 
 Absolute path to the installed game.
 
@@ -36,7 +36,7 @@ Absolute path to the installed game.
 optional receiptPath?: string;
 ```
 
-Defined in: src/index.ts:118
+Defined in: index.ts:118
 
 Absolute path to the on-disk receipt, when there is one.
 
@@ -48,4 +48,4 @@ Absolute path to the on-disk receipt, when there is one.
 manifest: IItchAppManifest;
 ```
 
-Defined in: src/index.ts:119
+Defined in: index.ts:119

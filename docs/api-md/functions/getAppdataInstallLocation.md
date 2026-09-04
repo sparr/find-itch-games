@@ -6,7 +6,7 @@
 function getAppdataInstallLocation(itchPath): string;
 ```
 
-Defined in: src/itch.ts:124
+Defined in: itch.ts:124
 
 The built-in `appdata` install location, which itch derives from its own
 user-data directory rather than storing as a path.

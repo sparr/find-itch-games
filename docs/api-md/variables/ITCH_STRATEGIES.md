@@ -6,7 +6,7 @@
 const ITCH_STRATEGIES: readonly ["merge", "db", "receipts"];
 ```
 
-Defined in: src/index.ts:65
+Defined in: index.ts:65
 
 Every value [IItchStrategy](../type-aliases/IItchStrategy.md) accepts, in preference order.
 

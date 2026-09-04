@@ -6,7 +6,7 @@
 function getLegacyReceiptPath(installPath): string;
 ```
 
-Defined in: src/receipt.ts:84
+Defined in: receipt.ts:84
 
 The pre-v23 receipt path: `<installPath>/.itch/receipt.json`.
 

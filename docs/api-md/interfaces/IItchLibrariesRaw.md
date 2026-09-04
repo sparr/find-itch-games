@@ -2,7 +2,7 @@
 
 # Interface: IItchLibrariesRaw
 
-Defined in: src/locations.ts:39
+Defined in: locations.ts:39
 
 itch's install locations, with the state of the records they came from.
 
@@ -17,7 +17,7 @@ itch's install locations, with the state of the records they came from.
 itchPath: string;
 ```
 
-Defined in: src/locations.ts:40
+Defined in: locations.ts:40
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: src/locations.ts:40
 databasePath: string;
 ```
 
-Defined in: src/locations.ts:41
+Defined in: locations.ts:41
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: src/locations.ts:41
 databaseAvailable: boolean;
 ```
 
-Defined in: src/locations.ts:43
+Defined in: locations.ts:43
 
 Whether butler.db was present and readable.
 
@@ -49,4 +49,4 @@ Whether butler.db was present and readable.
 libraries: IItchLibraryRaw[];
 ```
 
-Defined in: src/locations.ts:44
+Defined in: locations.ts:44

@@ -6,7 +6,7 @@
 type IItchStrategy = typeof ITCH_STRATEGIES[number];
 ```
 
-Defined in: src/index.ts:80
+Defined in: index.ts:80
 
 Which of itch's records to trust.
 

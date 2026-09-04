@@ -6,7 +6,7 @@
 function findItch(options?): Promise<IItchLibraries>;
 ```
 
-Defined in: src/index.ts:166
+Defined in: index.ts:166
 
 Finds itch, its install locations and every game installed in them.
 

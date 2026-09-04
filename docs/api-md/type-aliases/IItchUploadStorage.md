@@ -6,6 +6,6 @@
 type IItchUploadStorage = OpenEnum<"hosted" | "build" | "external">;
 ```
 
-Defined in: src/types.ts:80
+Defined in: types.ts:80
 
 Where an upload's file is stored.

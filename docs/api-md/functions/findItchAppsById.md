@@ -6,7 +6,7 @@
 function findItchAppsById(gameId, options?): Promise<IItchApp[]>;
 ```
 
-Defined in: src/index.ts:430
+Defined in: index.ts:430
 
 Every install of a game, by itch.io game id.
 

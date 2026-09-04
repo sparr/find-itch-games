@@ -16,6 +16,6 @@ type IItchFlavor = OpenEnum<
 | "msi">;
 ```
 
-Defined in: src/types.ts:141
+Defined in: types.ts:141
 
 The kind of a launch candidate, from `github.com/itchio/dash`.

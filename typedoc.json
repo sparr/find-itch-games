@@ -8,6 +8,7 @@
   "name": "find-itch-games",
   "excludePrivate": true,
   "excludeInternal": true,
+  "excludeExternals": true,
   "categorizeByGroup": false,
   "sort": [
     "source-order"

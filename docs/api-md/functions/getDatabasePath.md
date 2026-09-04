@@ -6,7 +6,7 @@
 function getDatabasePath(itchPath): string;
 ```
 
-Defined in: src/itch.ts:79
+Defined in: itch.ts:79
 
 The default butler database inside an itch user-data directory.
 

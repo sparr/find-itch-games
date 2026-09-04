@@ -6,7 +6,7 @@
 function getLibraryDownloadsFolder(libraryPath): string;
 ```
 
-Defined in: src/locations.ts:52
+Defined in: locations.ts:52
 
 The staging directory itch downloads into inside an install location.
 

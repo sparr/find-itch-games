@@ -2,7 +2,7 @@
 
 # Interface: IItchLegacyReceiptInfo
 
-Defined in: src/receipt.ts:51
+Defined in: receipt.ts:51
 
 What the pre-v23 uncompressed `.itch/receipt.json` recorded.
 
@@ -18,7 +18,7 @@ format, only ids.
 optional caveId?: string;
 ```
 
-Defined in: src/receipt.ts:52
+Defined in: receipt.ts:52
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: src/receipt.ts:52
 gameId: number;
 ```
 
-Defined in: src/receipt.ts:53
+Defined in: receipt.ts:53
 
 ***
 
@@ -38,7 +38,7 @@ Defined in: src/receipt.ts:53
 optional uploadId?: number;
 ```
 
-Defined in: src/receipt.ts:54
+Defined in: receipt.ts:54
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: src/receipt.ts:54
 optional buildId?: number;
 ```
 
-Defined in: src/receipt.ts:55
+Defined in: receipt.ts:55
 
 ***
 
@@ -58,7 +58,7 @@ Defined in: src/receipt.ts:55
 optional installLocation?: string;
 ```
 
-Defined in: src/receipt.ts:57
+Defined in: receipt.ts:57
 
 Id of the install location, as the old client recorded it.
 
@@ -70,7 +70,7 @@ Id of the install location, as the old client recorded it.
 optional installFolder?: string;
 ```
 
-Defined in: src/receipt.ts:58
+Defined in: receipt.ts:58
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: src/receipt.ts:58
 optional pathScheme?: number;
 ```
 
-Defined in: src/receipt.ts:60
+Defined in: receipt.ts:60
 
 `2` is the only scheme butler will import.
 
@@ -92,7 +92,7 @@ Defined in: src/receipt.ts:60
 optional secondsRun?: number;
 ```
 
-Defined in: src/receipt.ts:61
+Defined in: receipt.ts:61
 
 ***
 
@@ -102,7 +102,7 @@ Defined in: src/receipt.ts:61
 optional installedAt?: string | number;
 ```
 
-Defined in: src/receipt.ts:63
+Defined in: receipt.ts:63
 
 A unix timestamp or an RFC3339 string, depending on the client version.
 
@@ -114,4 +114,4 @@ A unix timestamp or an RFC3339 string, depending on the client version.
 optional lastTouched?: number;
 ```
 
-Defined in: src/receipt.ts:64
+Defined in: receipt.ts:64

@@ -2,7 +2,7 @@
 
 # Interface: IItchLaunchCandidate
 
-Defined in: src/types.ts:200
+Defined in: types.ts:200
 
 A launchable target butler found while scanning an install folder.
 
@@ -17,7 +17,7 @@ resolve it.
 path: string;
 ```
 
-Defined in: src/types.ts:201
+Defined in: types.ts:201
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: src/types.ts:201
 optional mode?: number;
 ```
 
-Defined in: src/types.ts:203
+Defined in: types.ts:203
 
 File permission bits.
 
@@ -39,7 +39,7 @@ File permission bits.
 optional depth?: number;
 ```
 
-Defined in: src/types.ts:205
+Defined in: types.ts:205
 
 Number of path elements leading up to this candidate.
 
@@ -51,7 +51,7 @@ Number of path elements leading up to this candidate.
 optional flavor?: IItchFlavor;
 ```
 
-Defined in: src/types.ts:206
+Defined in: types.ts:206
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: src/types.ts:206
 optional arch?: IItchArch;
 ```
 
-Defined in: src/types.ts:207
+Defined in: types.ts:207
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: src/types.ts:207
 optional size?: number;
 ```
 
-Defined in: src/types.ts:208
+Defined in: types.ts:208
 
 ***
 
@@ -81,7 +81,7 @@ Defined in: src/types.ts:208
 optional spell?: string[];
 ```
 
-Defined in: src/types.ts:210
+Defined in: types.ts:210
 
 Raw output from itch's `wizardry` file-type detection.
 
@@ -93,7 +93,7 @@ Raw output from itch's `wizardry` file-type detection.
 optional windowsInfo?: IItchWindowsInfo;
 ```
 
-Defined in: src/types.ts:211
+Defined in: types.ts:211
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: src/types.ts:211
 optional linuxInfo?: IItchLinuxInfo;
 ```
 
-Defined in: src/types.ts:212
+Defined in: types.ts:212
 
 ***
 
@@ -113,7 +113,7 @@ Defined in: src/types.ts:212
 optional macosInfo?: IItchMacosInfo;
 ```
 
-Defined in: src/types.ts:213
+Defined in: types.ts:213
 
 ***
 
@@ -123,7 +123,7 @@ Defined in: src/types.ts:213
 optional loveInfo?: IItchLoveInfo;
 ```
 
-Defined in: src/types.ts:214
+Defined in: types.ts:214
 
 ***
 
@@ -133,7 +133,7 @@ Defined in: src/types.ts:214
 optional scriptInfo?: IItchScriptInfo;
 ```
 
-Defined in: src/types.ts:215
+Defined in: types.ts:215
 
 ***
 
@@ -143,7 +143,7 @@ Defined in: src/types.ts:215
 optional jarInfo?: IItchJarInfo;
 ```
 
-Defined in: src/types.ts:216
+Defined in: types.ts:216
 
 ***
 
@@ -153,4 +153,4 @@ Defined in: src/types.ts:216
 optional metadata?: Record<string, unknown>;
 ```
 
-Defined in: src/types.ts:217
+Defined in: types.ts:217

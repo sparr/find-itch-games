@@ -2,7 +2,7 @@
 
 # Interface: IItchLibraryRaw
 
-Defined in: src/locations.ts:22
+Defined in: locations.ts:22
 
 An install location, before its contents are looked at.
 
@@ -18,7 +18,7 @@ An install location, before its contents are looked at.
 id: string;
 ```
 
-Defined in: src/locations.ts:24
+Defined in: locations.ts:24
 
 itch's own id: a uuid, or the built-in `appdata`.
 
@@ -30,7 +30,7 @@ itch's own id: a uuid, or the built-in `appdata`.
 path: string;
 ```
 
-Defined in: src/locations.ts:25
+Defined in: locations.ts:25
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: src/locations.ts:25
 isDefault: boolean;
 ```
 
-Defined in: src/locations.ts:27
+Defined in: locations.ts:27
 
 True for the location itch installs into by default.
 
@@ -52,7 +52,7 @@ True for the location itch installs into by default.
 exists: boolean;
 ```
 
-Defined in: src/locations.ts:29
+Defined in: locations.ts:29
 
 Whether the directory currently exists on disk.
 
@@ -64,4 +64,4 @@ Whether the directory currently exists on disk.
 source: IItchLocationSource;
 ```
 
-Defined in: src/locations.ts:30
+Defined in: locations.ts:30

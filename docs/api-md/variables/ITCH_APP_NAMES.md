@@ -6,7 +6,7 @@
 const ITCH_APP_NAMES: readonly ["itch", "kitch"];
 ```
 
-Defined in: src/itch.ts:25
+Defined in: itch.ts:25
 
 The app names itch ships under.
 

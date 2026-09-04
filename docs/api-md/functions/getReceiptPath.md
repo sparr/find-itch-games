@@ -6,7 +6,7 @@
 function getReceiptPath(installPath): string;
 ```
 
-Defined in: src/receipt.ts:75
+Defined in: receipt.ts:75
 
 The current receipt path: `<installPath>/.itch/receipt.json.gz`.
 

@@ -15,6 +15,6 @@ type IItchGameClassification = OpenEnum<
 | "book">;
 ```
 
-Defined in: src/types.ts:29
+Defined in: types.ts:29
 
 What an itch.io page actually contains.

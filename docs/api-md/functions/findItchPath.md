@@ -6,7 +6,7 @@
 function findItchPath(): Promise<string | undefined>;
 ```
 
-Defined in: src/itch.ts:142
+Defined in: itch.ts:142
 
 Searches for the itch app's user-data directory.
 

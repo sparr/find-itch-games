@@ -6,6 +6,6 @@
 const RECEIPT_DIR: ".itch" = ".itch";
 ```
 
-Defined in: src/receipt.ts:68
+Defined in: receipt.ts:68
 
 The metadata directory itch keeps inside an install folder.

@@ -20,6 +20,6 @@ type IItchUploadType = OpenEnum<
 | "other">;
 ```
 
-Defined in: src/types.ts:83
+Defined in: types.ts:83
 
 What is in an upload.
