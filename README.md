@@ -432,11 +432,11 @@ Each registry needs its own credential:
 - **npm** — `npm login`, or `NPM_TOKEN` in the environment.
 - **JSR** — `npx jsr publish` opens a browser to authorise. The `@sparr` scope
   must exist first.
-- **GitHub Packages** — a token with the `write:packages` scope, in `~/.npmrc`
-  as `//npm.pkg.github.com/:_authToken=…`. Note that the `gh` CLI's default
-  token does **not** include `write:packages`; run
+- **GitHub Packages** — a token with the `write:packages` scope, set as
+  `//npm.pkg.github.com/:_authToken=…` in your user npm config. Note that the
+  `gh` CLI's default token does **not** include `write:packages`; run
   `gh auth refresh -s write:packages`, or use a personal access token. Never
-  commit that token — keep it in `~/.npmrc`, not the repository.
+  commit that token — it belongs in your user config, not the repository.
 
 Bumping a release means `npm version <level>` followed by `npm run version:sync`,
 since the two manifests carry the version separately.
