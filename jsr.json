@@ -10,12 +10,5 @@
       "LICENSE",
       "jsr.json"
     ]
-  },
-  "description": "Find the itch.io app, its install locations and installed itch.io games on disk",
-  "runtimeCompat": {
-    "node": true,
-    "bun": true,
-    "deno": false,
-    "browser": false
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "find-itch-games",
   "version": "0.1.0",
-  "description": "Find the itch.io app, its install locations, and installed itch.io games on disk",
+  "description": "Find the itch.io app, its install locations, and the games installed in them.",
   "keywords": [
     "itch",
     "itch.io",

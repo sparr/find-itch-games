@@ -466,6 +466,12 @@ Each registry needs its own credential:
 Bumping a release means `npm version <level>` followed by `npm run version:sync`,
 since the two manifests carry the version separately.
 
+Note that [`jsr.json`](jsr.json) accepts only `name`, `version`, `license`,
+`exports` and `publish`. A package's description, its runtime compatibility and
+its linked GitHub repository are **not** configured there — they are settings on
+jsr.io, edited through the web interface, and putting them in the file has no
+effect.
+
 ## AI disclosure
 
 This library was written by Claude Opus 5, Anthropic's model, in a
