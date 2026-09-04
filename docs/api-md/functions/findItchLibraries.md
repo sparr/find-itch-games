@@ -6,7 +6,7 @@
 function findItchLibraries(options?): Promise<IItchLibrariesRaw>;
 ```
 
-Defined in: [src/index.ts:356](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L356)
+Defined in: [src/index.ts:366](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L366)
 
 Install locations with their metadata, but without scanning for games.
 

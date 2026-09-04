@@ -35,6 +35,7 @@
     "TypeAlias"
   ],
   "intentionallyNotExported": [
-    "OpenEnum"
+    "OpenEnum",
+    "STRATEGIES"
   ]
 }

@@ -22,7 +22,7 @@ import { isDirectory, isFile } from "./utils.js";
  * and `kitch` (canary), selected by whether the release tag ends in `-canary`.
  * Each gets its own Electron `userData` directory.
  */
-export const ITCH_APP_NAMES = Object.freeze(["itch", "kitch"] as const);
+export const ITCH_APP_NAMES: readonly string[] = Object.freeze(["itch", "kitch"]);
 
 /**
  * Directories the itch app may keep its user data in, most specific first.

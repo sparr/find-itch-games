@@ -3,10 +3,10 @@
 # Variable: ITCH\_STRATEGIES
 
 ```ts
-const ITCH_STRATEGIES: readonly ["merge", "db", "receipts"];
+const ITCH_STRATEGIES: readonly IItchStrategy[];
 ```
 
-Defined in: [src/index.ts:65](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L65)
+Defined in: [src/index.ts:75](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L75)
 
 Every value [IItchStrategy](../type-aliases/IItchStrategy.md) accepts, in preference order.
 

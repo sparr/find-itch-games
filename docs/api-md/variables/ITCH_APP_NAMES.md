@@ -3,7 +3,7 @@
 # Variable: ITCH\_APP\_NAMES
 
 ```ts
-const ITCH_APP_NAMES: readonly ["itch", "kitch"];
+const ITCH_APP_NAMES: readonly string[];
 ```
 
 Defined in: [src/itch.ts:25](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L25)

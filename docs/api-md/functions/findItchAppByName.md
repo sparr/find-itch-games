@@ -6,7 +6,7 @@
 function findItchAppByName(name, options?): Promise<string>;
 ```
 
-Defined in: [src/index.ts:487](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L487)
+Defined in: [src/index.ts:497](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L497)
 
 Finds where a game is installed, by title, url slug or install folder name.
 

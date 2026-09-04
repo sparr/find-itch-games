@@ -398,6 +398,49 @@ one, and demanding a comment on each would add noise rather than information.
 Functions, classes, interfaces and type aliases must all be documented, and
 the docs currently build with zero warnings.
 
+## Publishing
+
+The package targets three registries. They disagree about names, so it goes out
+under two:
+
+| Registry | Name | Manifest | What is published |
+| --- | --- | --- | --- |
+| [npm](https://www.npmjs.com/) | `find-itch-games` | `package.json` | Built `lib/` plus `src/` |
+| [JSR](https://jsr.io/) | `@sparr/find-itch-games` | [`jsr.json`](jsr.json) | TypeScript source; JSR generates its own types |
+| [GitHub Packages](https://github.com/features/packages) | `@sparr/find-itch-games` | `package.json`, rewritten at publish time | Same tarball as npm |
+
+GitHub Packages only accepts names scoped to the owning account, so the
+unscoped npm name cannot be used there.
+[`scripts/publish-github.mjs`](scripts/publish-github.mjs) rewrites `name` and
+`publishConfig`, publishes, and restores `package.json` in a `finally` — so a
+failed publish cannot leave the scoped name behind.
+
+```bash
+npm run version:check    # package.json and jsr.json agree (also runs pre-publish)
+npm run version:sync     # copy package.json's version into jsr.json
+
+npm run publish:npm
+npm run publish:jsr
+npm run publish:github
+```
+
+`prepublishOnly` runs the version check, a clean rebuild and the full test suite,
+so none of these can publish a stale or broken `lib/`.
+
+Each registry needs its own credential:
+
+- **npm** — `npm login`, or `NPM_TOKEN` in the environment.
+- **JSR** — `npx jsr publish` opens a browser to authorise. The `@sparr` scope
+  must exist first.
+- **GitHub Packages** — a token with the `write:packages` scope, in `~/.npmrc`
+  as `//npm.pkg.github.com/:_authToken=…`. Note that the `gh` CLI's default
+  token does **not** include `write:packages`; run
+  `gh auth refresh -s write:packages`, or use a personal access token. Never
+  commit that token — keep it in `~/.npmrc`, not the repository.
+
+Bumping a release means `npm version <level>` followed by `npm run version:sync`,
+since the two manifests carry the version separately.
+
 ## AI disclosure
 
 This library was written by Claude Opus 5, Anthropic's model, in a

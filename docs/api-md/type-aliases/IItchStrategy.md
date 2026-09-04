@@ -3,10 +3,10 @@
 # Type Alias: IItchStrategy
 
 ```ts
-type IItchStrategy = typeof ITCH_STRATEGIES[number];
+type IItchStrategy = typeof STRATEGIES[number];
 ```
 
-Defined in: [src/index.ts:80](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L80)
+Defined in: [src/index.ts:90](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L90)
 
 Which of itch's records to trust.
 

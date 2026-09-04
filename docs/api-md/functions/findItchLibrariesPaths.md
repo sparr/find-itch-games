@@ -6,7 +6,7 @@
 function findItchLibrariesPaths(options?): Promise<string[]>;
 ```
 
-Defined in: [src/index.ts:346](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L346)
+Defined in: [src/index.ts:356](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L356)
 
 Just the install location paths, cheapest call in the library.
 

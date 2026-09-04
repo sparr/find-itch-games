@@ -53,6 +53,16 @@ import type { IFoundReceipt, IItchLegacyReceiptInfo, IItchReceipt } from "./rece
 import { isDirectory, normalizeName } from "./utils.js";
 
 /**
+ * The strategy names, written once.
+ *
+ * Kept private so the exported constant below can carry an explicit type
+ * without repeating the list: JSR requires public symbols to be annotated, and
+ * annotating the exported array directly would mean writing these strings
+ * twice.
+ */
+const STRATEGIES = ["merge", "db", "receipts"] as const;
+
+/**
  * Every value {@link IItchStrategy} accepts, in preference order.
  *
  * Exported so callers can offer the choice without hard-coding the list, and
@@ -62,7 +72,7 @@ import { isDirectory, normalizeName } from "./utils.js";
  * on these values directly, so widening the list would only disable the check
  * and let the new value fall through to `merge` behaviour.
  */
-export const ITCH_STRATEGIES = Object.freeze(["merge", "db", "receipts"] as const);
+export const ITCH_STRATEGIES: readonly IItchStrategy[] = Object.freeze(STRATEGIES);
 
 /**
  * Which of itch's records to trust.
@@ -77,7 +87,7 @@ export const ITCH_STRATEGIES = Object.freeze(["merge", "db", "receipts"] as cons
  *   database has. Install locations still come from the database, since
  *   nothing on disk records them.
  */
-export type IItchStrategy = (typeof ITCH_STRATEGIES)[number];
+export type IItchStrategy = (typeof STRATEGIES)[number];
 
 /**
  * Options shared by every lookup in this library.

@@ -2,7 +2,7 @@
 
 # Interface: IItchLibraries
 
-Defined in: [src/index.ts:128](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L128)
+Defined in: [src/index.ts:138](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L138)
 
 The full picture: where itch is, where it installs, and what is installed.
 
@@ -14,7 +14,7 @@ The full picture: where itch is, where it installs, and what is installed.
 itchPath: string;
 ```
 
-Defined in: [src/index.ts:129](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L129)
+Defined in: [src/index.ts:139](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L139)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/index.ts:129](https://github.com/sparr/find-itch-games/blob/mai
 databasePath: string;
 ```
 
-Defined in: [src/index.ts:130](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L130)
+Defined in: [src/index.ts:140](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L140)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [src/index.ts:130](https://github.com/sparr/find-itch-games/blob/mai
 databaseAvailable: boolean;
 ```
 
-Defined in: [src/index.ts:131](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L131)
+Defined in: [src/index.ts:141](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L141)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [src/index.ts:131](https://github.com/sparr/find-itch-games/blob/mai
 strategy: "db" | "merge" | "receipts";
 ```
 
-Defined in: [src/index.ts:132](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L132)
+Defined in: [src/index.ts:142](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L142)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: [src/index.ts:132](https://github.com/sparr/find-itch-games/blob/mai
 libraries: IItchLibrary[];
 ```
 
-Defined in: [src/index.ts:133](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L133)
+Defined in: [src/index.ts:143](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L143)
