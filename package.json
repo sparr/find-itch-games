@@ -13,6 +13,14 @@
   ],
   "license": "MIT",
   "author": "Clarence \"Sparr\" Risher <sparr0@gmail.com>",
+  "homepage": "https://sparr.github.io/find-itch-games/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sparr/find-itch-games.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sparr/find-itch-games/issues"
+  },
   "type": "module",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
