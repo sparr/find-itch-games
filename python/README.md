@@ -5,7 +5,7 @@ Find the itch.io app, its install locations, and the games installed in them.
 - PyPI: `find-itch-games`
 - API reference: <https://sparr.github.io/find-itch-games/python/api/>
 
-See the [root README](../README.md) for how itch stores its data, where it
+See the [root README](https://github.com/sparr/find-itch-games/blob/main/README.md) for how itch stores its data, where it
 installs games, and the shared definitions both language implementations are
 built against. This page covers the Python API.
 
@@ -178,9 +178,9 @@ python -m pytest
 ```
 
 The tests build the shared installation described by
-[`shared/fixtures.json`](../shared/fixtures.json), using the schema in
-[`shared/butler-schema.sql`](../shared/butler-schema.sql), and assert against
-the vocabulary in [`shared/definitions.json`](../shared/definitions.json) — the
+[`shared/fixtures.json`](https://github.com/sparr/find-itch-games/blob/main/shared/fixtures.json), using the schema in
+[`shared/butler-schema.sql`](https://github.com/sparr/find-itch-games/blob/main/shared/butler-schema.sql), and assert against
+the vocabulary in [`shared/definitions.json`](https://github.com/sparr/find-itch-games/blob/main/shared/definitions.json) — the
 same three files the JavaScript suite uses.
 
 `tests/test_parity.py` additionally runs both implementations against the real
@@ -195,7 +195,7 @@ pipx run twine check dist/*
 ```
 
 The version is single-sourced from `__version__` in
-[`src/find_itch_games/__init__.py`](src/find_itch_games/__init__.py), and is
+[`src/find_itch_games/__init__.py`](https://github.com/sparr/find-itch-games/blob/main/python/src/find_itch_games/__init__.py), and is
 kept in lockstep with the JavaScript package by `npm run version:sync` in
-[`node/`](../node). Because Python was added after the first JavaScript
+[`node/`](https://github.com/sparr/find-itch-games/tree/main/node). Because Python was added after the first JavaScript
 release, PyPI has no `0.1.0`.
