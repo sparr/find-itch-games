@@ -70,8 +70,21 @@ user-added one.
 npm i find-itch-games
 ```
 
-Requires Node 22.5 or newer, or Bun 1.4.0 or newer — both for `node:sqlite`,
-which this library reads `butler.db` through. Ships ESM and CommonJS.
+Requires one of:
+
+| Runtime | Minimum | Why |
+| --- | --- | --- |
+| Node | 22.5 | `node:sqlite` added |
+| Deno | 2.2.0 | `node:sqlite`, including read-only databases |
+| Bun | 1.4.0 | `node:sqlite` added |
+
+The floor is set entirely by `node:sqlite`, which this library reads
+`butler.db` through. Ships ESM and CommonJS; Deno can also consume the
+TypeScript source from JSR:
+
+```ts
+import { findItch } from "jsr:@sparr/find-itch-games";
+```
 
 ## Usage
 
