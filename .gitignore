@@ -1,3 +1,11 @@
 node_modules/
-lib/
+node/lib/
 *.tgz
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+python/dist/
+python/src/*.egg-info/

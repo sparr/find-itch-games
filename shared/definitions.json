@@ -1,0 +1,117 @@
+{
+  "$comment": [
+    "Language-neutral vocabulary shared by every implementation of this library.",
+    "",
+    "Each value is either itch's own (traced to the upstream source named in",
+    "`source`) or this library's own model. Both test suites assert their",
+    "constants against this file, so an implementation cannot quietly disagree",
+    "with the others about what a valid value is."
+  ],
+
+  "appNames": {
+    "source": "itchio/itch README - the app builds as `itch` (stable) or `kitch` (canary)",
+    "values": ["itch", "kitch"]
+  },
+
+  "strategies": {
+    "source": "this library",
+    "values": ["merge", "db", "receipts"],
+    "default": "merge"
+  },
+
+  "manifestSources": {
+    "source": "this library",
+    "values": ["db", "receipt", "db+receipt"]
+  },
+
+  "locationSources": {
+    "source": "this library",
+    "values": ["db", "preferences", "appdata", "option"]
+  },
+
+  "builtinInstallLocationId": {
+    "source": "itchio/itch src/main/reactors/setup.ts",
+    "value": "appdata",
+    "relativePath": "apps"
+  },
+
+  "stagingFolderName": {
+    "source": "itchio/butler database/models/install_location.go GetStagingFolder",
+    "value": "downloads"
+  },
+
+  "receipt": {
+    "source": "itchio/hush bfs/receipt.go",
+    "directory": ".itch",
+    "fileName": "receipt.json.gz",
+    "legacyFileName": "receipt.json"
+  },
+
+  "databaseFileName": {
+    "source": "itchio/itch src/main/util/paths.ts butlerDbPath",
+    "value": "butler.db",
+    "alternatePattern": "^butler.*\\.db$"
+  },
+
+  "flavors": {
+    "source": "itchio/dash types.go Flavor",
+    "values": [
+      "linux", "macos", "windows", "app-macos", "script",
+      "windows-script", "jar", "html", "love", "msi"
+    ]
+  },
+
+  "architectures": {
+    "source": "itchio/dash types.go Arch",
+    "values": ["386", "amd64"]
+  },
+
+  "platformArchitectures": {
+    "source": "itchio/go-itchio types.go Architectures",
+    "values": ["all", "386", "amd64"]
+  },
+
+  "gameClassifications": {
+    "source": "itchio/go-itchio types.go GameClassification",
+    "values": [
+      "game", "tool", "assets", "game_mod", "physical_game",
+      "soundtrack", "other", "comic", "book"
+    ]
+  },
+
+  "uploadStorages": {
+    "source": "itchio/go-itchio types.go UploadStorage",
+    "values": ["hosted", "build", "external"]
+  },
+
+  "uploadTypes": {
+    "source": "itchio/go-itchio types.go UploadType",
+    "values": [
+      "default", "flash", "unity", "java", "html", "soundtrack", "book",
+      "video", "documentation", "mod", "audio_assets", "graphical_assets",
+      "sourcecode", "other"
+    ]
+  },
+
+  "windowsInstallerTypes": {
+    "source": "itchio/dash types.go WindowsInstallerType",
+    "values": ["msi", "inno", "nsis", "archive"]
+  },
+
+  "environmentOverrides": {
+    "source": "this library, not read by the itch app itself",
+    "values": ["ITCH_USER_DATA_DIR", "ITCH_APP_DIR"]
+  },
+
+  "pathCandidates": {
+    "source": "Electron app.getPath(\"userData\") per platform",
+    "$comment": "Templates are joined with the platform separator. {home} is the user's home directory, {app} is each entry in appNames, and ${VAR} reads the environment.",
+    "win32": ["${APPDATA}/{app}", "{home}/AppData/Roaming/{app}", "${LOCALAPPDATA}/{app}"],
+    "darwin": ["{home}/Library/Application Support/{app}"],
+    "linux": [
+      "${XDG_CONFIG_HOME}/{app}",
+      "{home}/.config/{app}",
+      "{home}/.var/app/io.{app}.{app}/config/{app}"
+    ]
+  }
+}

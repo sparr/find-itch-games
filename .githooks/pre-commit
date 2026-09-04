@@ -3,34 +3,53 @@
 # Regenerates the TypeDoc output whenever anything it is derived from is
 # committed, and stages the result, so docs/ cannot drift from the code.
 #
-# Enabled by `npm install` (the `prepare` script points core.hooksPath here).
-# Skip it for a single commit with `git commit --no-verify`.
+# The docs are built from the *index*, not the working tree, by extracting the
+# staged content into a scratch directory. A partial staging therefore produces
+# docs describing exactly the commit being made, and an interrupted hook cannot
+# disturb the working tree the way `git stash` can.
+#
+# Enabled by `npm install` in node/ (its `prepare` script points core.hooksPath
+# here). Skip it for a single commit with `git commit --no-verify`.
 
 set -e
 
 # Nothing the docs are built from is staged, so leave them alone. Committing
-# only the README or a test should not rebuild 150 files.
+# only the README, a test or the Python package should not rebuild 150 files.
 if ! git diff --cached --name-only --diff-filter=ACMR |
-  grep -qE '^(src/|tsconfig[^/]*\.json$|typedoc[^/]*\.json$|package\.json$)'; then
+  grep -qE '^(node/src/|node/tsconfig[^/]*\.json$|node/typedoc[^/]*\.json$|node/package\.json$|shared/)'; then
   exit 0
 fi
 
-if [ ! -x node_modules/.bin/typedoc ]; then
-  echo "pre-commit: typedoc is not installed. Run \`npm install\`, or commit" >&2
-  echo "            with --no-verify to skip the docs rebuild." >&2
+if [ ! -x node/node_modules/.bin/typedoc ]; then
+  echo "pre-commit: typedoc is not installed. Run \`npm install\` in node/, or" >&2
+  echo "            commit with --no-verify to skip the docs rebuild." >&2
   exit 1
 fi
 
-# TypeDoc reads the working tree, not the index. If only some source changes
-# are staged, the docs will describe code this commit does not contain.
-if ! git diff --quiet -- src tsconfig.json typedoc.json typedoc.markdown.json; then
-  echo "pre-commit: warning — src has unstaged changes, so the generated docs" >&2
-  echo "            will describe the working tree, not just this commit." >&2
-fi
+repo=$(git rev-parse --show-toplevel)
+staged=$(mktemp -d "${TMPDIR:-/tmp}/find-itch-docs.XXXXXX")
+trap 'rm -rf "$staged" "$repo/docs.new"' EXIT HUP INT TERM
 
-echo "pre-commit: regenerating API docs…"
-npm run --silent docs
-npm run --silent docs:md
-git add docs
+# Exactly what is about to be committed: every index entry, and nothing that is
+# merely sitting in the working tree.
+git checkout-index --all --force --prefix="$staged/"
 
+# The toolchain is untracked, so it is absent from the extracted tree. Link it
+# rather than copying ~100MB on every commit.
+ln -s "$repo/node/node_modules" "$staged/node/node_modules"
+
+echo "pre-commit: regenerating API docs from the staged tree…"
+(
+  cd "$staged/node"
+  "$repo/node/node_modules/.bin/typedoc" --out "$staged/docs/node/api"
+  "$repo/node/node_modules/.bin/typedoc" --options typedoc.markdown.json --out "$staged/docs/node/api-md"
+)
+
+# Swap rather than regenerate in place, so a failure above leaves the committed
+# docs intact, and so files TypeDoc no longer emits are actually removed.
+cp -R "$staged/docs" "$repo/docs.new"
+rm -rf "$repo/docs"
+mv "$repo/docs.new" "$repo/docs"
+
+git add --all docs
 echo "pre-commit: staged $(git diff --cached --name-only -- docs | wc -l | tr -d ' ') doc files"

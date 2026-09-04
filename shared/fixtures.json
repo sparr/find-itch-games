@@ -1,0 +1,128 @@
+{
+  "$comment": [
+    "The canonical test installation, shared by every implementation.",
+    "",
+    "Each suite builds a real itch installation from this file -- a SQLite",
+    "butler.db created from butler-schema.sql, plus gzipped receipts on disk --",
+    "so the implementations are tested against identical data and cannot drift",
+    "apart in what they consider a correct result.",
+    "",
+    "The games are real itch.io games, with ids and metadata taken from an actual",
+    "install, so the shapes are realistic rather than invented."
+  ],
+
+  "defaultInstallLocation": "87c69020-7130-495e-a91e-fa146c0125df",
+
+  "installLocations": [
+    { "id": "appdata", "path": "{itch}/apps" },
+    { "id": "b85d5b35-9d3e-4985-94b0-6c6d47a5afa9", "path": "{root}/Games" },
+    { "id": "87c69020-7130-495e-a91e-fa146c0125df", "path": "{root}/Games/itch" }
+  ],
+
+  "caves": [
+    {
+      "id": "cave-distributrains",
+      "gameId": 4225297,
+      "installLocationId": "87c69020-7130-495e-a91e-fa146c0125df",
+      "installFolderName": "distributrains",
+      "installedSize": 35495975,
+      "secondsRun": 120,
+      "lastPlayedAt": "2026-05-01T10:00:00Z",
+      "game": {
+        "url": "https://oddwarg.itch.io/distributrains",
+        "title": "Distributrains",
+        "classification": "game",
+        "linux": "all",
+        "windows": "all",
+        "user": { "id": 1, "username": "oddwarg" }
+      },
+      "upload": { "id": 17222913, "filename": "Distributrains.zip", "size": 19715532 },
+      "verdict": {
+        "basePath": "{root}/Games/itch/distributrains",
+        "totalSize": 35495975,
+        "candidates": [
+          { "path": "Distributrains/Distributrains64", "depth": 2, "flavor": "linux", "arch": "amd64" }
+        ]
+      },
+      "onDisk": { "receipt": true, "files": ["Distributrains/Distributrains64"] }
+    },
+    {
+      "id": "cave-godot-pck-explorer",
+      "gameId": 1323129,
+      "installLocationId": "87c69020-7130-495e-a91e-fa146c0125df",
+      "installFolderName": "godot-pck-explorer",
+      "installedSize": 15783510,
+      "pinned": true,
+      "game": {
+        "url": "https://dmitriysalnikov.itch.io/godot-pck-explorer",
+        "title": "Godot PCK Explorer",
+        "classification": "tool",
+        "linux": "all",
+        "user": { "id": 133178, "username": "DmitriySalnikov" }
+      },
+      "upload": {
+        "id": 11178280,
+        "storage": "build",
+        "channelName": "native-console-linux-64",
+        "buildId": 1385998
+      },
+      "build": { "id": 1385998, "version": 8, "userVersion": "1.6.0" },
+      "verdict": {
+        "candidates": [{ "path": "GodotPCKExplorer.Console", "depth": 1, "flavor": "linux" }]
+      },
+      "onDisk": { "receipt": true }
+    },
+    {
+      "$comment": "itch keeps the cave when the folder is deleted from outside the app.",
+      "id": "cave-vanished",
+      "gameId": 999001,
+      "installLocationId": "87c69020-7130-495e-a91e-fa146c0125df",
+      "installFolderName": "vanished",
+      "game": { "url": "https://someone.itch.io/vanished", "title": "Vanished" },
+      "onDisk": false
+    },
+    {
+      "$comment": "\"Install elsewhere\" puts a game outside every install location.",
+      "id": "cave-elsewhere",
+      "gameId": 999002,
+      "customInstallFolder": "{root}/Elsewhere/portable-game",
+      "game": { "url": "https://someone.itch.io/portable-game", "title": "Portable Game" },
+      "onDisk": { "receipt": true }
+    }
+  ],
+
+  "receiptOnlyFolders": [
+    {
+      "$comment": "No cave: reinstalled after a database reset. Written uncompressed.",
+      "path": "{root}/Games/itch/cosmic-collapse",
+      "gzip": false,
+      "game": {
+        "id": 2328674,
+        "url": "https://johanpeitz.itch.io/cosmic-collapse",
+        "title": "Cosmic Collapse, a suika-like",
+        "classification": "game"
+      }
+    }
+  ],
+
+  "noiseFolders": {
+    "$comment": "Must never be reported: itch's staging area, and the unrelated directories a user keeps in a shared install location.",
+    "paths": [
+      "{root}/Games/itch/downloads",
+      "{root}/Games/Steam/steamapps",
+      "{root}/Games/VintageStory"
+    ]
+  },
+
+  "expected": {
+    "$comment": "What a correct implementation must report for the fixture above.",
+    "installLocationPaths": ["{itch}/apps", "{root}/Games", "{root}/Games/itch"],
+    "gameIdsByStrategy": {
+      "merge": [1323129, 2328674, 4225297, 999002],
+      "db": [1323129, 4225297, 999002],
+      "receipts": [1323129, 2328674, 4225297]
+    },
+    "droppedWhenCheckExists": [999001],
+    "librariesWithNoGames": ["{root}/Games", "{itch}/apps"]
+  }
+}

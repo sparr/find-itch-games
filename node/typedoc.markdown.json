@@ -1,0 +1,12 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "extends": [
+    "./typedoc.json"
+  ],
+  "plugin": [
+    "typedoc-plugin-markdown"
+  ],
+  "out": "../docs/node/api-md",
+  "hidePageHeader": true,
+  "useCodeBlocks": true
+}
