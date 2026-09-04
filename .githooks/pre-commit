@@ -15,14 +15,23 @@ set -e
 
 # Nothing the docs are built from is staged, so leave them alone. Committing
 # only the README, a test or the Python package should not rebuild 150 files.
-if ! git diff --cached --name-only --diff-filter=ACMR |
-  grep -qE '^(node/src/|node/tsconfig[^/]*\.json$|node/typedoc[^/]*\.json$|node/package\.json$|shared/)'; then
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+echo "$staged" | grep -qE '^(node/src/|node/tsconfig[^/]*\.json$|node/typedoc[^/]*\.json$|node/package\.json$|shared/)' && build_node=yes || build_node=
+echo "$staged" | grep -qE '^(python/src/|python/build-docs\.py$)' && build_python=yes || build_python=
+if [ -z "$build_node$build_python" ]; then
   exit 0
 fi
 
-if [ ! -x node/node_modules/.bin/typedoc ]; then
+if [ -n "$build_node" ] && [ ! -x node/node_modules/.bin/typedoc ]; then
   echo "pre-commit: typedoc is not installed. Run \`npm install\` in node/, or" >&2
   echo "            commit with --no-verify to skip the docs rebuild." >&2
+  exit 1
+fi
+
+if [ -n "$build_python" ] && [ ! -x python/.venv/bin/pdoc ]; then
+  echo "pre-commit: pdoc is not installed. Run this in python/:" >&2
+  echo "              python -m venv .venv && .venv/bin/pip install -e \".[dev]\"" >&2
+  echo "            or commit with --no-verify to skip the docs rebuild." >&2
   exit 1
 fi
 
@@ -36,14 +45,20 @@ git checkout-index --all --force --prefix="$staged/"
 
 # The toolchain is untracked, so it is absent from the extracted tree. Link it
 # rather than copying ~100MB on every commit.
-ln -s "$repo/node/node_modules" "$staged/node/node_modules"
+[ -n "$build_node" ] && ln -s "$repo/node/node_modules" "$staged/node/node_modules"
+[ -n "$build_python" ] && ln -s "$repo/python/.venv" "$staged/python/.venv"
 
 echo "pre-commit: regenerating API docs from the staged tree…"
-(
-  cd "$staged/node"
-  "$repo/node/node_modules/.bin/typedoc" --out "$staged/docs/node/api"
-  "$repo/node/node_modules/.bin/typedoc" --options typedoc.markdown.json --out "$staged/docs/node/api-md"
-)
+if [ -n "$build_node" ]; then
+  (
+    cd "$staged/node"
+    "$repo/node/node_modules/.bin/typedoc" --out "$staged/docs/node/api"
+    "$repo/node/node_modules/.bin/typedoc" --options typedoc.markdown.json --out "$staged/docs/node/api-md"
+  )
+fi
+if [ -n "$build_python" ]; then
+  ( cd "$staged/python" && ./build-docs.py >/dev/null )
+fi
 
 # Swap rather than regenerate in place, so a failure above leaves the committed
 # docs intact, and so files TypeDoc no longer emits are actually removed.

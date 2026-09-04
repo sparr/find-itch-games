@@ -175,14 +175,14 @@ describes what itch does — install folder resolution, the scan rules, the
 receipt formats, the `appdata` default — it is describing code read in those
 repositories.
 
-Two limits are worth knowing at `0.1.0`:
+Two limits are worth knowing:
 
-- The library was exercised against one real itch installation, on Linux. The
-  Windows, macOS and Flatpak paths are covered only by the synthetic fixtures
-  in [`node/test/fixtures.mjs`](node/test/fixtures.mjs), so they are reasoned about
-  rather than observed.
-- The schema those fixtures use was taken from that same installation's
-  `butler.db`. butler generates its schema at runtime and ships no reference
-  database, so the fixtures can drift from future butler releases without the
-  tests noticing.
+- Everything has been run on Linux, against one real itch installation. The
+  Windows, macOS and Flatpak path rules have their own tests — the lookup seam
+  lets them be checked without running on those systems — but no code here has
+  actually executed on Windows or macOS.
+- The schema in [`shared/butler-schema.sql`](shared/butler-schema.sql) came
+  from that same installation. butler generates its schema at runtime and ships
+  no reference database, so it can drift from future butler releases without
+  either test suite noticing.
 

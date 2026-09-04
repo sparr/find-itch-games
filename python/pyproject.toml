@@ -36,7 +36,7 @@ Repository = "https://github.com/sparr/find-itch-games"
 Issues = "https://github.com/sparr/find-itch-games/issues"
 
 [project.optional-dependencies]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "pdoc>=16"]
 
 [tool.hatch.version]
 # Single-sourced from the package itself, so there is no second place to forget.
