@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Regenerates the TypeDoc output whenever anything it is derived from is
+# committed, and stages the result, so docs/ cannot drift from the code.
+#
+# Enabled by `npm install` (the `prepare` script points core.hooksPath here).
+# Skip it for a single commit with `git commit --no-verify`.
+
+set -e
+
+# Nothing the docs are built from is staged, so leave them alone. Committing
+# only the README or a test should not rebuild 150 files.
+if ! git diff --cached --name-only --diff-filter=ACMR |
+  grep -qE '^(src/|tsconfig[^/]*\.json$|typedoc[^/]*\.json$|package\.json$)'; then
+  exit 0
+fi
+
+if [ ! -x node_modules/.bin/typedoc ]; then
+  echo "pre-commit: typedoc is not installed. Run \`npm install\`, or commit" >&2
+  echo "            with --no-verify to skip the docs rebuild." >&2
+  exit 1
+fi
+
+# TypeDoc reads the working tree, not the index. If only some source changes
+# are staged, the docs will describe code this commit does not contain.
+if ! git diff --quiet -- src tsconfig.json typedoc.json typedoc.markdown.json; then
+  echo "pre-commit: warning — src has unstaged changes, so the generated docs" >&2
+  echo "            will describe the working tree, not just this commit." >&2
+fi
+
+echo "pre-commit: regenerating API docs…"
+npm run --silent docs
+npm run --silent docs:md
+git add docs
+
+echo "pre-commit: staged $(git diff --cached --name-only -- docs | wc -l | tr -d ' ') doc files"

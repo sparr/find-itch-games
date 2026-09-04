@@ -1,0 +1,36 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts"
+  ],
+  "out": "docs/api",
+  "readme": "none",
+  "name": "find-itch-games",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "categorizeByGroup": false,
+  "sort": [
+    "source-order"
+  ],
+  "navigationLinks": {
+    "npm": "https://www.npmjs.com/package/find-itch-games"
+  },
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": true
+  },
+  "requiredToBeDocumented": [
+    "Enum",
+    "Variable",
+    "Function",
+    "Class",
+    "Interface",
+    "Method",
+    "Accessor",
+    "TypeAlias"
+  ],
+  "intentionallyNotExported": [
+    "OpenEnum"
+  ]
+}

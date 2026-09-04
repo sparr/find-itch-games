@@ -1,0 +1,16 @@
+{
+  // The build config covers `src` only, which leaves the editor to guess at a
+  // project for these files -- and guess wrong, since it neither loads
+  // @types/node nor knows the module settings. This config exists purely so
+  // the language server has something to attach them to; nothing emits.
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    // Override the build config's `src`, which these files sit outside of.
+    "rootDir": ".",
+    "allowJs": true,
+    // Plain JS build tooling; resolution matters here, strict types don't.
+    "checkJs": false
+  },
+  "include": ["."]
+}

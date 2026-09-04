@@ -1,0 +1,421 @@
+# find-itch-games
+
+Find the itch.io app, its install locations, and the games installed in them.
+
+An itch.io counterpart to [`@ciberus/find-steam-app`](https://github.com/ciberusps/find-steam-app),
+with the same shape of API. Zero runtime dependencies — it reads itch's own
+`butler.db` through Node's built-in `node:sqlite`.
+
+The generated API reference lives in [`docs/api-md`](docs/api-md/README.md),
+which GitHub renders directly; [`docs/api`](docs/api) holds the same thing as a
+browsable HTML site.
+
+Data structures and lookup rules follow the upstream sources: the
+[itch client](https://github.com/itchio/itch), [butler](https://github.com/itchio/butler)
+and its [`dash`](https://github.com/itchio/dash), [`hush`](https://github.com/itchio/hush) and
+[`go-itchio`](https://github.com/itchio/go-itchio) packages.
+
+## How it works
+
+itch keeps two independent records of what you have installed, and this library
+reads both.
+
+- **`butler.db`** — a SQLite database in the itch user-data directory
+  (`~/.config/itch/db/butler.db` on Linux). Its `install_locations` table is the
+  only place the install locations are written down, and its `caves` table is
+  itch's record of each installed game: which upload and build, when it was
+  installed, how long you have played it, and the launchable executables butler
+  found when it last scanned the folder.
+- **Receipts** — itch writes a gzipped `.itch/receipt.json.gz` into every folder
+  it installs a game into, describing the game, the upload and the extracted
+  files. This is the on-disk source of truth. It survives a database reset, and
+  it is what distinguishes an itch game folder from any other directory — which
+  matters, because an install location is often a directory you keep other
+  things in too.
+
+Scanning an install location follows the same rules as butler's own
+`install.locations.scan`: skip a folder named `downloads`, require a `.itch`
+directory, then read `receipt.json.gz`, falling back to the pre-v23
+uncompressed `receipt.json`. Resolving a game's folder follows butler's
+`Cave.GetInstallFolder`: a `customInstallFolder` if set, otherwise the install
+location's path joined with the install folder name.
+
+Nothing is hard-coded: install locations come from the database (or, on older
+itch versions, from `preferences.json`), and the itch directory itself is found
+the way Electron resolves `app.getPath("userData")` on each platform.
+
+## Where itch installs games
+
+There is no standard games directory to look in. itch creates exactly one
+install location out of the box — `appdata`, which is `apps/` inside its own
+user-data directory:
+
+| Platform | The `appdata` location |
+| --- | --- |
+| Linux | `~/.config/itch/apps` |
+| macOS | `~/Library/Application Support/itch/apps` |
+| Windows | `%APPDATA%\itch\apps` |
+
+`appdata` is also the initial `defaultInstallLocation`. Every other location is
+one the user added, stored under a random uuid with a path they chose — it
+could be `~/Games`, `D:\itch`, an external drive, anything. That is why
+this library reads the locations out of itch's own records rather than guessing,
+and why several examples below show two locations: the built-in one and a
+user-added one.
+
+## Install
+
+```bash
+npm i find-itch-games
+```
+
+Requires Node 22.5 or newer (for `node:sqlite`). Ships ESM and CommonJS.
+
+## Usage
+
+```ts
+import {
+  findItch,
+  findItchPath,
+  findItchApps,
+  findItchAppById,
+  findItchAppByName,
+  findItchAppManifest,
+  findItchLibraries,
+  findItchLibrariesPaths,
+  getLaunchCandidatePaths,
+  hasItchApp,
+} from "find-itch-games";
+
+await findItchPath();
+// => '/home/you/.config/itch'
+
+await findItchLibrariesPaths();
+// => ['/home/you/.config/itch/apps',   // the built-in `appdata` location
+//     '/home/you/Games']               // one the user added
+
+await findItchAppById(4225297);
+// => '/home/you/Games/distributrains'
+
+await findItchAppByName("Distributrains");
+// => '/home/you/Games/distributrains'
+// the game's title, its url slug ("distributrains") and its install folder
+// name all work
+
+await hasItchApp(4225297);
+// => true
+```
+
+### Looking games up by name
+
+By default a name has to match the title, url slug or install folder name
+exactly — the same spirit as `findSteamAppByName`, which matches a Steam
+install directory exactly. Pass `exact: false` for a forgiving search that
+ignores case, spacing and punctuation:
+
+```ts
+await findItchAppByName("Cosmic Collapse, a suika-like");   // exact title
+await findItchAppByName("cosmic-collapse");                 // exact slug
+await findItchAppByName("cosmic collapse", { exact: false }); // fuzzy
+```
+
+Two things can make a lookup ambiguous: a fuzzy search matching similarly named
+games, and the same game legitimately being installed in two locations. Use the
+plural forms to see every match, or `strict` to fail rather than guess:
+
+```ts
+const matches = await findItchAppsByName("reboot", { exact: false });
+// => [{ gameId: 11, path: '.../re-boot', manifest: {...} },
+//     { gameId: 22, path: '.../reboot',  manifest: {...} }]
+
+await findItchAppsById(4225297);
+// => every install of that game, usually one
+
+await findItchAppByName("reboot", { exact: false });
+// => picks the first match, deterministically
+
+await findItchAppByName("reboot", { exact: false, strict: true });
+// => throws AmbiguousAppError, with `.paths` listing both
+```
+
+`hasItchApp` takes the same options, so `hasItchApp(name, { exact: false })`
+answers the fuzzy question.
+
+### `findItch()`
+
+The whole picture in one call:
+
+```ts
+const itch = await findItch();
+// => {
+//      itchPath: '/home/you/.config/itch',
+//      databasePath: '/home/you/.config/itch/db/butler.db',
+//      databaseAvailable: true,
+//      strategy: 'merge',
+//      libraries: [{
+//        id: 'appdata',                        // the built-in location
+//        path: '/home/you/.config/itch/apps',
+//        isDefault: false,
+//        exists: true,
+//        source: 'db',
+//        apps: []
+//      }, {
+//        id: '87c69020-7130-495e-a91e-fa146c0125df',  // user-added
+//        path: '/home/you/Games',
+//        isDefault: true,
+//        exists: true,
+//        source: 'db',
+//        apps: [{
+//          gameId: 4225297,
+//          path: '/home/you/Games/distributrains',
+//          receiptPath: '/home/you/Games/distributrains/.itch/receipt.json.gz',
+//          manifest: { ... }
+//        }]
+//      }]
+//    }
+```
+
+### `findItchAppManifest(gameId)`
+
+The itch answer to Steam's `appmanifest_*.acf`: the cave row and the receipt,
+merged and flattened.
+
+```ts
+const manifest = await findItchAppManifest(1323129);
+// => {
+//      gameId: 1323129,
+//      caveId: '429e6fbe-527d-4964-9010-2e55a8dba9e2',
+//      title: 'Godot PCK Explorer',
+//      url: 'https://dmitriysalnikov.itch.io/godot-pck-explorer',
+//      slug: 'godot-pck-explorer',
+//      author: 'dmitriysalnikov',
+//      classification: 'tool',
+//      path: '/home/you/Games/godot-pck-explorer',
+//      installFolderName: 'godot-pck-explorer',
+//      installLocationId: '87c69020-7130-495e-a91e-fa146c0125df',
+//      receiptPath: '.../.itch/receipt.json.gz',
+//      uploadId: 11178280,
+//      buildId: 1385998,
+//      version: '1.6.0',
+//      channelName: 'native-console-linux-64',
+//      installedAt: '2026-08-29T03:10:36Z',
+//      lastPlayedAt: ...,
+//      secondsRun: 0,
+//      installedSize: 15783510,
+//      platforms: { windows: 'all', linux: 'all', osx: 'all' },
+//      candidates: [{ path: 'GodotPCKExplorer.Console', flavor: 'linux', arch: 'amd64' }],
+//      game: { ... }, upload: { ... }, build: { ... },
+//      source: 'db+receipt'
+//    }
+
+getLaunchCandidatePaths(manifest);
+// => ['/home/you/Games/godot-pck-explorer/GodotPCKExplorer.Console']
+```
+
+`candidates` is butler's own scan of the folder, so it is how you find the
+binary to run without guessing. Each entry's `flavor` is one of `linux`,
+`windows`, `macos`, `app-macos`, `script`, `jar`, `html`, and so on. It is empty
+for games butler has not configured yet.
+
+## Options
+
+Every function takes the same options object.
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `itchPath` | auto-detected | Use this itch user-data directory instead of searching. |
+| `strategy` | `"merge"` | Which of itch's records to read — see below. |
+| `checkExists` | `true` | Drop games whose install folder no longer exists. |
+| `extraLibraries` | `[]` | Additional install locations to scan. |
+| `ignoreDatabase` | `false` | Never open `butler.db`, not even for install locations. |
+
+The lookup functions take two more:
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `exact` | `true` | Name lookups only. `false` ignores case, spacing and punctuation. |
+| `strict` | `false` | Throw `AmbiguousAppError` instead of returning the first of several matches. |
+
+### Strategies
+
+- **`merge`** — read `butler.db`, confirm each game against the receipt in its
+  install folder, then add any receipt with no matching row. Most complete.
+- **`db`** — read `butler.db` only. Fastest, and the only source of play times,
+  launch candidates, pinning and custom install folders.
+- **`receipts`** — ignore the `caves` table and scan the install locations for
+  receipts. Useful when the database is stale. Install locations still come from
+  the database, since nothing on disk records them.
+
+`manifest.source` tells you which record each result came from: `"db"`,
+`"receipt"` or `"db+receipt"`.
+
+The valid values are exported as `ITCH_STRATEGIES`, so you can offer the choice
+without hard-coding the list:
+
+```ts
+import { ITCH_STRATEGIES } from "find-itch-games";
+// => ['merge', 'db', 'receipts']
+```
+
+Anything else throws a `TypeError`. Each strategy is defined by what it is
+*not*, so an unrecognised value would otherwise satisfy every check and quietly
+behave like `merge` — which TypeScript would catch, but a JavaScript caller
+would not.
+
+The array is frozen. It is the guard, not a registry: `findItch` dispatches on
+these values directly, so appending to it would disable the check without
+implementing anything, and the new value would fall through to `merge`.
+Strategies pick between itch's two fixed records — butler.db and the on-disk
+receipts — so there is nothing for a third-party strategy to be.
+
+## Locating itch
+
+itch builds two variants that install side by side and get separate Electron
+`userData` directories: **itch** (stable) and **kitch** (canary, which is also
+what a development build runs as). Both are searched, stable first.
+
+`findItchPath()` checks, for each of `itch` and `kitch`:
+
+- Windows: `%APPDATA%\<name>`, `%LOCALAPPDATA%\<name>`
+- macOS: `~/Library/Application Support/<name>`
+- Linux: `$XDG_CONFIG_HOME/<name>`, `~/.config/<name>`,
+  `~/.var/app/io.<name>.<name>/config/<name>` (Flatpak)
+
+`$ITCH_USER_DATA_DIR` and `$ITCH_APP_DIR` are checked first on every platform.
+These are this library's own escape hatch for unusual installs — the itch app
+does not read them. Prefer the `itchPath` option in code.
+
+A candidate counts as an itch installation if it holds `db/butler.db`,
+`preferences.json`, or an `apps/` directory.
+
+The database is normally `db/butler.db`, but a build configured against a
+non-standard itch.io host names it `db/butler-<host>.db`; `resolveDatabasePath()`
+prefers the default name and falls back to whatever `butler*.db` is there.
+
+## Edge cases handled
+
+- An install location shared with non-itch directories — only folders carrying a
+  receipt are reported, so `~/Games` holding both itch games and a Steam library
+  works.
+- itch's `downloads` staging folder inside an install location.
+- Caves left behind after a game's folder is deleted outside the app
+  (`checkExists`).
+- Games installed outside every install location via `custom_install_folder`;
+  these are grouped under a synthesized library entry.
+- Games installed on disk that the database has no cave for, after a database
+  reset or a folder copied in from another machine.
+- The `appdata` install location — itch's only built-in one — which it derives
+  from its own directory and never stores as a path.
+- An install location the database has since forgotten — the cave's recorded
+  `verdict.basePath` is used as a last resort.
+- Reading the database while the itch app has it open in WAL mode; if the file
+  itself cannot be opened, a private copy of the database and its journal is
+  read instead.
+- An unreadable or corrupt `butler.db` degrades to `preferences.json` plus a
+  receipt scan rather than failing.
+- The pre-v23 uncompressed `.itch/receipt.json`, whose schema recorded a cave's
+  ids rather than the game — normalized into the same shape, with the raw ids
+  kept under `receipt.legacy`.
+- The `kitch` canary build, installed alongside stable itch.
+- A `db/butler-<host>.db` from a build pointed at a non-standard itch.io host.
+
+## Errors
+
+- `ItchNotFoundError` — no itch user-data directory found.
+- `AppNotFoundError` — thrown by `findItchAppById` / `findItchAppByName`.
+- `AmbiguousAppError` — more than one installed game matched; only thrown when
+  `strict` is set. Its `paths` lists every match.
+- `ItchDatabaseError` — `butler.db` exists but cannot be read.
+- `TypeError` — `strategy` was not one of `ITCH_STRATEGIES`.
+
+## Reading itch's data safely
+
+The database is only ever opened read-only, and nothing in this library writes
+to the itch directory or to any install folder.
+
+## Development
+
+```bash
+npm install
+npm run build
+npm test
+npm run docs      # HTML API reference in docs/api
+npm run docs:md   # the same as markdown, in docs/api-md
+```
+
+`npm install` also points `core.hooksPath` at [`.githooks`](.githooks), whose
+[pre-commit hook](.githooks/pre-commit) rebuilds the API reference and stages it
+whenever `src`, a tsconfig or a typedoc config is committed — so the checked-in
+docs cannot fall behind the code. Skip it for one commit with
+`git commit --no-verify`.
+
+[`test/fixtures.mjs`](test/fixtures.mjs) builds a synthetic itch installation —
+a real SQLite `butler.db` with itch's schema, plus gzipped receipts on disk —
+so the tests never touch a real itch install.
+
+There are four TypeScript configs. [`tsconfig.json`](tsconfig.json) builds the
+ESM output and [`tsconfig.cjs.json`](tsconfig.cjs.json) extends it for
+CommonJS; both cover [`src`](src) only. The
+[`test/tsconfig.json`](test/tsconfig.json) and
+[`scripts/tsconfig.json`](scripts/tsconfig.json) files emit nothing and exist
+so an editor's language server has a project to attach those files to —
+without them it infers one, which loads neither `@types/node` nor the module
+settings, and reports errors that the build never sees.
+
+### Doc comments
+
+Comments follow [TSDoc](https://tsdoc.org), rendered by
+[TypeDoc](https://typedoc.org). TSDoc rather than JSDoc because the signature
+already carries the types, so tags never repeat them: it is
+`@param name - description`, not `@param {string} name`. `tsc` copies these
+comments into `lib/esm/*.d.ts`, so they become hover tooltips for consumers.
+
+Conventions:
+
+- Every file opens with a `@module` comment; [`src/index.ts`](src/index.ts) uses
+  `@packageDocumentation` instead, and becomes the front page of the generated
+  docs.
+- Block tags go in the order `@param`, `@returns`, `@throws`, `@defaultValue`,
+  separated from the description by a blank line.
+- Use `@defaultValue`, not JSDoc's `@default`.
+- Reference other symbols with `{@link Name}` so they render as links —
+  including in `@throws`, which takes `@throws {@link SomeError} when ...`
+  rather than JSDoc's `@throws {SomeError}`.
+
+[`typedoc.json`](typedoc.json) turns on TypeDoc's `notDocumented`,
+`notExported` and
+`invalidLink` validation, so a missing or broken doc comment shows up as a
+build warning. `requiredToBeDocumented` deliberately omits `Property`: the
+fields on `IItchGame`, `IItchUpload` and friends mirror itch.io's API one for
+one, and demanding a comment on each would add noise rather than information.
+Functions, classes, interfaces and type aliases must all be documented, and
+the docs currently build with zero warnings.
+
+## AI disclosure
+
+This library was written by Claude Opus 5, Anthropic's model, in a
+[Claude Code](https://claude.com/claude-code) session directed by the author.
+
+Facts about itch's behaviour were checked against the upstream sources rather
+than inferred from the local install: the [itch client](https://github.com/itchio/itch),
+[butler](https://github.com/itchio/butler), and butler's
+[`dash`](https://github.com/itchio/dash), [`hush`](https://github.com/itchio/hush) and
+[`go-itchio`](https://github.com/itchio/go-itchio) packages. Where this README
+describes what itch does — install folder resolution, the scan rules, the
+receipt formats, the `appdata` default — it is describing code read in those
+repositories.
+
+Two limits are worth knowing at `0.1.0`:
+
+- The library was exercised against one real itch installation, on Linux. The
+  Windows, macOS and Flatpak paths are covered only by the synthetic fixtures
+  in [`test/fixtures.mjs`](test/fixtures.mjs), so they are reasoned about
+  rather than observed.
+- The schema those fixtures use was taken from that same installation's
+  `butler.db`. butler generates its schema at runtime and ships no reference
+  database, so the fixtures can drift from future butler releases without the
+  tests noticing.
+
+## License
+
+[MIT](LICENSE)

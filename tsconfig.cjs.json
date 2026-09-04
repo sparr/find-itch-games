@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "outDir": "lib/cjs",
+    "declaration": false,
+    "declarationMap": false,
+    // Without this, tsc inlines ~34 lines of __importStar/__createBinding
+    // helpers into every file that uses a namespace import. Those wrappers
+    // only matter for default imports, and this package has none -- so the
+    // CommonJS build also fails fast if one is ever added.
+    "esModuleInterop": false
+  }
+}

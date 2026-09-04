@@ -1,0 +1,52 @@
+{
+  "name": "find-itch-games",
+  "version": "0.1.0",
+  "description": "Find the itch.io app, its install locations, and installed itch.io games on disk",
+  "keywords": [
+    "itch",
+    "itch.io",
+    "butler",
+    "games",
+    "search",
+    "install",
+    "library"
+  ],
+  "license": "MIT",
+  "author": "Clarence \"Sparr\" Risher <sparr0@gmail.com>",
+  "type": "module",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/esm/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "prepare": "node scripts/install-hooks.mjs",
+    "build": "node scripts/build.mjs",
+    "clean": "node -e \"require('node:fs').rmSync('lib',{recursive:true,force:true})\"",
+    "test": "npm run build && node --test \"test/**/*.test.mjs\"",
+    "docs": "typedoc",
+    "docs:md": "typedoc --options typedoc.markdown.json",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.13.0",
+    "typescript": "^5.6.0"
+  }
+}
