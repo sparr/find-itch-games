@@ -6,7 +6,7 @@
 function getReceiptPath(installPath): string;
 ```
 
-Defined in: receipt.ts:75
+Defined in: [src/receipt.ts:75](https://github.com/sparr/find-itch-games/blob/main/src/receipt.ts#L75)
 
 The current receipt path: `<installPath>/.itch/receipt.json.gz`.
 

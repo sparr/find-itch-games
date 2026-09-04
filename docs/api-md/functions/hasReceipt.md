@@ -6,7 +6,7 @@
 function hasReceipt(installPath): Promise<boolean>;
 ```
 
-Defined in: receipt.ts:194
+Defined in: [src/receipt.ts:194](https://github.com/sparr/find-itch-games/blob/main/src/receipt.ts#L194)
 
 Whether an install folder carries an itch receipt.
 

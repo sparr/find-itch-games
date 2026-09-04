@@ -6,7 +6,7 @@
 function getLibraryDownloadsFolder(libraryPath): string;
 ```
 
-Defined in: locations.ts:52
+Defined in: [src/locations.ts:52](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L52)
 
 The staging directory itch downloads into inside an install location.
 

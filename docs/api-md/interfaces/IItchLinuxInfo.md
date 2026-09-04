@@ -2,6 +2,6 @@
 
 # Interface: IItchLinuxInfo
 
-Defined in: types.ts:174
+Defined in: [src/types.ts:174](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L174)
 
 Details of a native Linux candidate. Currently empty.

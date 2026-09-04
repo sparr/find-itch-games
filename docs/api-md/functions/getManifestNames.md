@@ -6,7 +6,7 @@
 function getManifestNames(manifest): string[];
 ```
 
-Defined in: manifest.ts:95
+Defined in: [src/manifest.ts:95](https://github.com/sparr/find-itch-games/blob/main/src/manifest.ts#L95)
 
 Names a manifest answers to in [findItchAppByName](findItchAppByName.md).
 

@@ -2,7 +2,7 @@
 
 # Interface: IItchPlatforms
 
-Defined in: types.ts:19
+Defined in: [src/types.ts:19](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L19)
 
 Which OS/architectures a game or upload is compatible with.
 
@@ -14,7 +14,7 @@ Which OS/architectures a game or upload is compatible with.
 optional windows?: IItchArchitectures;
 ```
 
-Defined in: types.ts:20
+Defined in: [src/types.ts:20](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L20)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: types.ts:20
 optional linux?: IItchArchitectures;
 ```
 
-Defined in: types.ts:21
+Defined in: [src/types.ts:21](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L21)
 
 ***
 
@@ -34,4 +34,4 @@ Defined in: types.ts:21
 optional osx?: IItchArchitectures;
 ```
 
-Defined in: types.ts:22
+Defined in: [src/types.ts:22](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L22)

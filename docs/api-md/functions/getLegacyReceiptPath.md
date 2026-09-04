@@ -6,7 +6,7 @@
 function getLegacyReceiptPath(installPath): string;
 ```
 
-Defined in: receipt.ts:84
+Defined in: [src/receipt.ts:84](https://github.com/sparr/find-itch-games/blob/main/src/receipt.ts#L84)
 
 The pre-v23 receipt path: `<installPath>/.itch/receipt.json`.
 

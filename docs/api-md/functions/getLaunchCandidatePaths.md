@@ -6,7 +6,7 @@
 function getLaunchCandidatePaths(manifest): string[];
 ```
 
-Defined in: manifest.ts:86
+Defined in: [src/manifest.ts:86](https://github.com/sparr/find-itch-games/blob/main/src/manifest.ts#L86)
 
 Absolute paths of the launch candidates butler found, best first.
 

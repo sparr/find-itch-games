@@ -2,7 +2,7 @@
 
 # Interface: IItchLibrariesRaw
 
-Defined in: locations.ts:39
+Defined in: [src/locations.ts:39](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L39)
 
 itch's install locations, with the state of the records they came from.
 
@@ -17,7 +17,7 @@ itch's install locations, with the state of the records they came from.
 itchPath: string;
 ```
 
-Defined in: locations.ts:40
+Defined in: [src/locations.ts:40](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L40)
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: locations.ts:40
 databasePath: string;
 ```
 
-Defined in: locations.ts:41
+Defined in: [src/locations.ts:41](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L41)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: locations.ts:41
 databaseAvailable: boolean;
 ```
 
-Defined in: locations.ts:43
+Defined in: [src/locations.ts:43](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L43)
 
 Whether butler.db was present and readable.
 
@@ -49,4 +49,4 @@ Whether butler.db was present and readable.
 libraries: IItchLibraryRaw[];
 ```
 
-Defined in: locations.ts:44
+Defined in: [src/locations.ts:44](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L44)

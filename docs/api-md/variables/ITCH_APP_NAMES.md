@@ -6,7 +6,7 @@
 const ITCH_APP_NAMES: readonly ["itch", "kitch"];
 ```
 
-Defined in: itch.ts:25
+Defined in: [src/itch.ts:25](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L25)
 
 The app names itch ships under.
 

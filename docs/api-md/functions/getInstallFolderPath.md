@@ -6,7 +6,7 @@
 function getInstallFolderPath(libraryPath, installFolderName): string;
 ```
 
-Defined in: locations.ts:76
+Defined in: [src/locations.ts:76](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L76)
 
 Where a game with the given install folder name lives inside a location.
 

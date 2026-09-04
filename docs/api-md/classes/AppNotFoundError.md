@@ -2,7 +2,7 @@
 
 # Class: AppNotFoundError
 
-Defined in: errors.ts:21
+Defined in: [src/errors.ts:21](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L21)
 
 Thrown when a game is installed nowhere itch knows about.
 
@@ -18,7 +18,7 @@ Thrown when a game is installed nowhere itch knows about.
 new AppNotFoundError(query): AppNotFoundError;
 ```
 
-Defined in: errors.ts:24
+Defined in: [src/errors.ts:24](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L24)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Error.constructor
 readonly name: "AppNotFoundError" = "AppNotFoundError";
 ```
 
-Defined in: errors.ts:22
+Defined in: [src/errors.ts:22](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L22)
 
 #### Overrides
 
@@ -60,4 +60,4 @@ Error.name
 readonly query: string | number;
 ```
 
-Defined in: errors.ts:24
+Defined in: [src/errors.ts:24](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L24)

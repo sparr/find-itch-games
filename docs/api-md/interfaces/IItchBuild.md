@@ -2,7 +2,7 @@
 
 # Interface: IItchBuild
 
-Defined in: types.ts:125
+Defined in: [src/types.ts:125](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L125)
 
 Present only for wharf (`storage: "build"`) uploads.
 
@@ -14,7 +14,7 @@ Present only for wharf (`storage: "build"`) uploads.
 id: number;
 ```
 
-Defined in: types.ts:126
+Defined in: [src/types.ts:126](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L126)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: types.ts:126
 optional parentBuildId?: number;
 ```
 
-Defined in: types.ts:127
+Defined in: [src/types.ts:127](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L127)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: types.ts:127
 optional state?: OpenEnum<"started" | "processing" | "completed" | "failed">;
 ```
 
-Defined in: types.ts:128
+Defined in: [src/types.ts:128](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L128)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: types.ts:128
 optional version?: number;
 ```
 
-Defined in: types.ts:130
+Defined in: [src/types.ts:130](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L130)
 
 Monotonic build number assigned by itch.io.
 
@@ -56,7 +56,7 @@ Monotonic build number assigned by itch.io.
 optional userVersion?: string;
 ```
 
-Defined in: types.ts:132
+Defined in: [src/types.ts:132](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L132)
 
 The developer's own version string, e.g. `1.6.0`.
 
@@ -68,7 +68,7 @@ The developer's own version string, e.g. `1.6.0`.
 optional uploadId?: number;
 ```
 
-Defined in: types.ts:133
+Defined in: [src/types.ts:133](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L133)
 
 ***
 
@@ -78,7 +78,7 @@ Defined in: types.ts:133
 optional gameId?: number;
 ```
 
-Defined in: types.ts:134
+Defined in: [src/types.ts:134](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L134)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: types.ts:134
 optional userId?: number;
 ```
 
-Defined in: types.ts:135
+Defined in: [src/types.ts:135](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L135)
 
 ***
 
@@ -98,7 +98,7 @@ Defined in: types.ts:135
 optional createdAt?: string;
 ```
 
-Defined in: types.ts:136
+Defined in: [src/types.ts:136](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L136)
 
 ***
 
@@ -108,4 +108,4 @@ Defined in: types.ts:136
 optional updatedAt?: string;
 ```
 
-Defined in: types.ts:137
+Defined in: [src/types.ts:137](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L137)

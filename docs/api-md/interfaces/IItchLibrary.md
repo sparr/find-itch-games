@@ -2,7 +2,7 @@
 
 # Interface: IItchLibrary
 
-Defined in: index.ts:123
+Defined in: [src/index.ts:123](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L123)
 
 An install location together with the games in it.
 
@@ -18,7 +18,7 @@ An install location together with the games in it.
 apps: IItchApp[];
 ```
 
-Defined in: index.ts:124
+Defined in: [src/index.ts:124](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L124)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: index.ts:124
 id: string;
 ```
 
-Defined in: locations.ts:24
+Defined in: [src/locations.ts:24](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L24)
 
 itch's own id: a uuid, or the built-in `appdata`.
 
@@ -44,7 +44,7 @@ itch's own id: a uuid, or the built-in `appdata`.
 path: string;
 ```
 
-Defined in: locations.ts:25
+Defined in: [src/locations.ts:25](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L25)
 
 #### Inherited from
 
@@ -58,7 +58,7 @@ Defined in: locations.ts:25
 isDefault: boolean;
 ```
 
-Defined in: locations.ts:27
+Defined in: [src/locations.ts:27](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L27)
 
 True for the location itch installs into by default.
 
@@ -74,7 +74,7 @@ True for the location itch installs into by default.
 exists: boolean;
 ```
 
-Defined in: locations.ts:29
+Defined in: [src/locations.ts:29](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L29)
 
 Whether the directory currently exists on disk.
 
@@ -90,7 +90,7 @@ Whether the directory currently exists on disk.
 source: IItchLocationSource;
 ```
 
-Defined in: locations.ts:30
+Defined in: [src/locations.ts:30](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L30)
 
 #### Inherited from
 

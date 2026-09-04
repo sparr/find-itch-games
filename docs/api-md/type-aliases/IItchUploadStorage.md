@@ -6,6 +6,6 @@
 type IItchUploadStorage = OpenEnum<"hosted" | "build" | "external">;
 ```
 
-Defined in: types.ts:80
+Defined in: [src/types.ts:80](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L80)
 
 Where an upload's file is stored.

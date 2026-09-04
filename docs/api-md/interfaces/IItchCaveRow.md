@@ -2,7 +2,7 @@
 
 # Interface: IItchCaveRow
 
-Defined in: db.ts:35
+Defined in: [src/db.ts:35](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L35)
 
 A "cave" is itch's record of one installed game.
 
@@ -14,7 +14,7 @@ A "cave" is itch's record of one installed game.
 id: string;
 ```
 
-Defined in: db.ts:37
+Defined in: [src/db.ts:37](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L37)
 
 uuid identifying this installation.
 
@@ -26,7 +26,7 @@ uuid identifying this installation.
 gameId: number;
 ```
 
-Defined in: db.ts:39
+Defined in: [src/db.ts:39](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L39)
 
 itch.io game id.
 
@@ -38,7 +38,7 @@ itch.io game id.
 optional uploadId?: number;
 ```
 
-Defined in: db.ts:41
+Defined in: [src/db.ts:41](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L41)
 
 The upload that was installed.
 
@@ -50,7 +50,7 @@ The upload that was installed.
 optional buildId?: number;
 ```
 
-Defined in: db.ts:43
+Defined in: [src/db.ts:43](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L43)
 
 The wharf build that was installed; only for `storage: "build"` uploads.
 
@@ -62,7 +62,7 @@ The wharf build that was installed; only for `storage: "build"` uploads.
 optional installLocationId?: string;
 ```
 
-Defined in: db.ts:45
+Defined in: [src/db.ts:45](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L45)
 
 Install location holding the game; unset when `customInstallFolder` is.
 
@@ -74,7 +74,7 @@ Install location holding the game; unset when `customInstallFolder` is.
 optional installFolderName?: string;
 ```
 
-Defined in: db.ts:47
+Defined in: [src/db.ts:47](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L47)
 
 Folder name within the install location.
 
@@ -86,7 +86,7 @@ Folder name within the install location.
 optional customInstallFolder?: string;
 ```
 
-Defined in: db.ts:49
+Defined in: [src/db.ts:49](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L49)
 
 Absolute path used instead of an install location, if the user chose one.
 
@@ -98,7 +98,7 @@ Absolute path used instead of an install location, if the user chose one.
 optional installedAt?: string;
 ```
 
-Defined in: db.ts:51
+Defined in: [src/db.ts:51](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L51)
 
 When the game was last installed or updated.
 
@@ -110,7 +110,7 @@ When the game was last installed or updated.
 optional lastTouchedAt?: string;
 ```
 
-Defined in: db.ts:53
+Defined in: [src/db.ts:53](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L53)
 
 Last run, reconciled with itch.io's cross-device play summary.
 
@@ -122,7 +122,7 @@ Last run, reconciled with itch.io's cross-device play summary.
 optional lastPlayedAt?: string;
 ```
 
-Defined in: db.ts:55
+Defined in: [src/db.ts:55](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L55)
 
 Last run on this machine, which itch tracks separately.
 
@@ -134,7 +134,7 @@ Last run on this machine, which itch tracks separately.
 optional secondsRun?: number;
 ```
 
-Defined in: db.ts:57
+Defined in: [src/db.ts:57](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L57)
 
 Total play time in seconds, as itch.io reports it across devices.
 
@@ -146,7 +146,7 @@ Total play time in seconds, as itch.io reports it across devices.
 optional installedSize?: number;
 ```
 
-Defined in: db.ts:59
+Defined in: [src/db.ts:59](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L59)
 
 Size on disk in bytes, as itch last measured it.
 
@@ -158,7 +158,7 @@ Size on disk in bytes, as itch last measured it.
 optional pinned?: boolean;
 ```
 
-Defined in: db.ts:61
+Defined in: [src/db.ts:61](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L61)
 
 Whether the user pinned this install in the itch app.
 
@@ -170,7 +170,7 @@ Whether the user pinned this install in the itch app.
 optional verdict?: IItchVerdict;
 ```
 
-Defined in: db.ts:63
+Defined in: [src/db.ts:63](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L63)
 
 Butler's scan of the install folder: launch candidates and total size.
 
@@ -182,7 +182,7 @@ Butler's scan of the install folder: launch candidates and total size.
 optional game?: IItchGame;
 ```
 
-Defined in: db.ts:65
+Defined in: [src/db.ts:65](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L65)
 
 The joined `games` row, when itch still has one.
 
@@ -194,7 +194,7 @@ The joined `games` row, when itch still has one.
 optional upload?: IItchUpload;
 ```
 
-Defined in: db.ts:67
+Defined in: [src/db.ts:67](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L67)
 
 The joined `uploads` row.
 
@@ -206,6 +206,6 @@ The joined `uploads` row.
 optional build?: IItchBuild;
 ```
 
-Defined in: db.ts:69
+Defined in: [src/db.ts:69](https://github.com/sparr/find-itch-games/blob/main/src/db.ts#L69)
 
 The joined `builds` row.

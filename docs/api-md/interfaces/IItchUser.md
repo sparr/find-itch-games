@@ -2,7 +2,7 @@
 
 # Interface: IItchUser
 
-Defined in: types.ts:68
+Defined in: [src/types.ts:68](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L68)
 
 The itch.io account a game belongs to.
 
@@ -14,7 +14,7 @@ The itch.io account a game belongs to.
 optional id?: number;
 ```
 
-Defined in: types.ts:69
+Defined in: [src/types.ts:69](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L69)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: types.ts:69
 optional username?: string;
 ```
 
-Defined in: types.ts:70
+Defined in: [src/types.ts:70](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L70)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: types.ts:70
 optional displayName?: string;
 ```
 
-Defined in: types.ts:71
+Defined in: [src/types.ts:71](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L71)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: types.ts:71
 optional developer?: boolean;
 ```
 
-Defined in: types.ts:72
+Defined in: [src/types.ts:72](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L72)
 
 ***
 
@@ -54,7 +54,7 @@ Defined in: types.ts:72
 optional pressUser?: boolean;
 ```
 
-Defined in: types.ts:73
+Defined in: [src/types.ts:73](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L73)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: types.ts:73
 optional url?: string;
 ```
 
-Defined in: types.ts:74
+Defined in: [src/types.ts:74](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L74)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: types.ts:74
 optional coverUrl?: string;
 ```
 
-Defined in: types.ts:75
+Defined in: [src/types.ts:75](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L75)
 
 ***
 
@@ -84,4 +84,4 @@ Defined in: types.ts:75
 optional stillCoverUrl?: string;
 ```
 
-Defined in: types.ts:76
+Defined in: [src/types.ts:76](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L76)

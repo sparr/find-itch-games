@@ -2,7 +2,7 @@
 
 # Class: ItchNotFoundError
 
-Defined in: errors.ts:8
+Defined in: [src/errors.ts:8](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L8)
 
 Thrown when the itch app's user-data directory can't be located.
 
@@ -18,7 +18,7 @@ Thrown when the itch app's user-data directory can't be located.
 new ItchNotFoundError(searched?): ItchNotFoundError;
 ```
 
-Defined in: errors.ts:11
+Defined in: [src/errors.ts:11](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L11)
 
 #### Parameters
 
@@ -44,7 +44,7 @@ Error.constructor
 readonly name: "ItchNotFoundError" = "ItchNotFoundError";
 ```
 
-Defined in: errors.ts:9
+Defined in: [src/errors.ts:9](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L9)
 
 #### Overrides
 

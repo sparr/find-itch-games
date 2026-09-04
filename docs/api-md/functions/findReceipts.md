@@ -6,7 +6,7 @@
 function findReceipts(libraryPath): Promise<IFoundReceipt[]>;
 ```
 
-Defined in: receipt.ts:218
+Defined in: [src/receipt.ts:218](https://github.com/sparr/find-itch-games/blob/main/src/receipt.ts#L218)
 
 Scans the immediate subdirectories of an install location for receipts.
 

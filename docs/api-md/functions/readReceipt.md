@@ -6,7 +6,7 @@
 function readReceipt(installPath): Promise<IItchReceipt | null>;
 ```
 
-Defined in: receipt.ts:122
+Defined in: [src/receipt.ts:122](https://github.com/sparr/find-itch-games/blob/main/src/receipt.ts#L122)
 
 Reads the receipt itch left inside an install folder.
 

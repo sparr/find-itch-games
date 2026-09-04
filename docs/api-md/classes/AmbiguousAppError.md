@@ -2,7 +2,7 @@
 
 # Class: AmbiguousAppError
 
-Defined in: errors.ts:51
+Defined in: [src/errors.ts:51](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L51)
 
 Thrown when a lookup matches more than one installed game.
 
@@ -21,7 +21,7 @@ Only raised when `strict` is set; otherwise the first match wins. Use
 new AmbiguousAppError(query, paths): AmbiguousAppError;
 ```
 
-Defined in: errors.ts:54
+Defined in: [src/errors.ts:54](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L54)
 
 #### Parameters
 
@@ -51,7 +51,7 @@ Error.constructor
 readonly name: "AmbiguousAppError" = "AmbiguousAppError";
 ```
 
-Defined in: errors.ts:52
+Defined in: [src/errors.ts:52](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L52)
 
 #### Overrides
 
@@ -67,7 +67,7 @@ Error.name
 readonly query: string | number;
 ```
 
-Defined in: errors.ts:55
+Defined in: [src/errors.ts:55](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L55)
 
 ***
 
@@ -77,4 +77,4 @@ Defined in: errors.ts:55
 readonly paths: readonly string[];
 ```
 
-Defined in: errors.ts:56
+Defined in: [src/errors.ts:56](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L56)

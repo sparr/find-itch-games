@@ -2,7 +2,7 @@
 
 # Interface: IItchUpload
 
-Defined in: types.ts:101
+Defined in: [src/types.ts:101](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L101)
 
 The specific file/channel that was installed.
 
@@ -14,7 +14,7 @@ The specific file/channel that was installed.
 id: number;
 ```
 
-Defined in: types.ts:102
+Defined in: [src/types.ts:102](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L102)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: types.ts:102
 optional storage?: IItchUploadStorage;
 ```
 
-Defined in: types.ts:103
+Defined in: [src/types.ts:103](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L103)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: types.ts:103
 optional host?: string;
 ```
 
-Defined in: types.ts:105
+Defined in: [src/types.ts:105](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L105)
 
 Only set for `external` storage.
 
@@ -46,7 +46,7 @@ Only set for `external` storage.
 optional filename?: string;
 ```
 
-Defined in: types.ts:107
+Defined in: [src/types.ts:107](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L107)
 
 Original file name, e.g. `Overland_x64.zip`.
 
@@ -58,7 +58,7 @@ Original file name, e.g. `Overland_x64.zip`.
 optional displayName?: string;
 ```
 
-Defined in: types.ts:109
+Defined in: [src/types.ts:109](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L109)
 
 Name set by the developer, e.g. `Overland for Windows 64-bit`.
 
@@ -70,7 +70,7 @@ Name set by the developer, e.g. `Overland for Windows 64-bit`.
 optional size?: number;
 ```
 
-Defined in: types.ts:111
+Defined in: [src/types.ts:111](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L111)
 
 Size in bytes; for wharf uploads this is the archive size.
 
@@ -82,7 +82,7 @@ Size in bytes; for wharf uploads this is the archive size.
 optional channelName?: string;
 ```
 
-Defined in: types.ts:113
+Defined in: [src/types.ts:113](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L113)
 
 Set only for wharf (butler-pushed) uploads.
 
@@ -94,7 +94,7 @@ Set only for wharf (butler-pushed) uploads.
 optional buildId?: number;
 ```
 
-Defined in: types.ts:114
+Defined in: [src/types.ts:114](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L114)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: types.ts:114
 optional build?: IItchBuild;
 ```
 
-Defined in: types.ts:115
+Defined in: [src/types.ts:115](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L115)
 
 ***
 
@@ -114,7 +114,7 @@ Defined in: types.ts:115
 optional type?: IItchUploadType;
 ```
 
-Defined in: types.ts:116
+Defined in: [src/types.ts:116](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L116)
 
 ***
 
@@ -124,7 +124,7 @@ Defined in: types.ts:116
 optional preorder?: boolean;
 ```
 
-Defined in: types.ts:117
+Defined in: [src/types.ts:117](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L117)
 
 ***
 
@@ -134,7 +134,7 @@ Defined in: types.ts:117
 optional demo?: boolean;
 ```
 
-Defined in: types.ts:118
+Defined in: [src/types.ts:118](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L118)
 
 ***
 
@@ -144,7 +144,7 @@ Defined in: types.ts:118
 optional platforms?: IItchPlatforms;
 ```
 
-Defined in: types.ts:119
+Defined in: [src/types.ts:119](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L119)
 
 ***
 
@@ -154,7 +154,7 @@ Defined in: types.ts:119
 optional createdAt?: string;
 ```
 
-Defined in: types.ts:120
+Defined in: [src/types.ts:120](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L120)
 
 ***
 
@@ -164,4 +164,4 @@ Defined in: types.ts:120
 optional updatedAt?: string;
 ```
 
-Defined in: types.ts:121
+Defined in: [src/types.ts:121](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L121)

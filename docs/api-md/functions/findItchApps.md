@@ -6,7 +6,7 @@
 function findItchApps(options?): Promise<IItchApp[]>;
 ```
 
-Defined in: index.ts:336
+Defined in: [src/index.ts:336](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L336)
 
 Every installed game, flattened out of [findItch](findItch.md).
 

@@ -6,6 +6,6 @@
 type IItchManifestSource = "db" | "receipt" | "db+receipt";
 ```
 
-Defined in: manifest.ts:27
+Defined in: [src/manifest.ts:27](https://github.com/sparr/find-itch-games/blob/main/src/manifest.ts#L27)
 
 Which of itch's two records an app was assembled from.

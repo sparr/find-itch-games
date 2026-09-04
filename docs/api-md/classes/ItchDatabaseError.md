@@ -2,7 +2,7 @@
 
 # Class: ItchDatabaseError
 
-Defined in: errors.ts:30
+Defined in: [src/errors.ts:30](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L30)
 
 Thrown when butler.db exists but can't be opened or read.
 
@@ -18,7 +18,7 @@ Thrown when butler.db exists but can't be opened or read.
 new ItchDatabaseError(databasePath, cause): ItchDatabaseError;
 ```
 
-Defined in: errors.ts:33
+Defined in: [src/errors.ts:33](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L33)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Error.constructor
 readonly name: "ItchDatabaseError" = "ItchDatabaseError";
 ```
 
-Defined in: errors.ts:31
+Defined in: [src/errors.ts:31](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L31)
 
 #### Overrides
 
@@ -64,7 +64,7 @@ Error.name
 readonly databasePath: string;
 ```
 
-Defined in: errors.ts:34
+Defined in: [src/errors.ts:34](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L34)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: errors.ts:34
 readonly cause: unknown;
 ```
 
-Defined in: errors.ts:35
+Defined in: [src/errors.ts:35](https://github.com/sparr/find-itch-games/blob/main/src/errors.ts#L35)
 
 #### Inherited from
 

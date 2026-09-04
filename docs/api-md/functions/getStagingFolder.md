@@ -6,7 +6,7 @@
 function getStagingFolder(libraryPath, downloadId): string;
 ```
 
-Defined in: locations.ts:63
+Defined in: [src/locations.ts:63](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L63)
 
 Where an in-progress download is staged, matching butler's
 `InstallLocation.GetStagingFolder`.

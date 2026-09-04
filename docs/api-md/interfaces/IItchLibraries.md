@@ -2,7 +2,7 @@
 
 # Interface: IItchLibraries
 
-Defined in: index.ts:128
+Defined in: [src/index.ts:128](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L128)
 
 The full picture: where itch is, where it installs, and what is installed.
 
@@ -14,7 +14,7 @@ The full picture: where itch is, where it installs, and what is installed.
 itchPath: string;
 ```
 
-Defined in: index.ts:129
+Defined in: [src/index.ts:129](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L129)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: index.ts:129
 databasePath: string;
 ```
 
-Defined in: index.ts:130
+Defined in: [src/index.ts:130](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L130)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: index.ts:130
 databaseAvailable: boolean;
 ```
 
-Defined in: index.ts:131
+Defined in: [src/index.ts:131](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L131)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: index.ts:131
 strategy: "db" | "merge" | "receipts";
 ```
 
-Defined in: index.ts:132
+Defined in: [src/index.ts:132](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L132)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: index.ts:132
 libraries: IItchLibrary[];
 ```
 
-Defined in: index.ts:133
+Defined in: [src/index.ts:133](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L133)

@@ -6,7 +6,7 @@
 function findItchAppById(gameId, options?): Promise<string>;
 ```
 
-Defined in: index.ts:447
+Defined in: [src/index.ts:447](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L447)
 
 Finds where a game is installed, by itch.io game id.
 

@@ -2,7 +2,7 @@
 
 # Interface: IItchLoveInfo
 
-Defined in: types.ts:177
+Defined in: [src/types.ts:177](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L177)
 
 Details of a Love2D bundle candidate.
 
@@ -14,6 +14,6 @@ Details of a Love2D bundle candidate.
 optional version?: string;
 ```
 
-Defined in: types.ts:179
+Defined in: [src/types.ts:179](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L179)
 
 The love2d version required to open the bundle.

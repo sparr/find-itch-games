@@ -6,6 +6,6 @@
 type IItchLocationSource = "db" | "preferences" | "appdata" | "option";
 ```
 
-Defined in: locations.ts:19
+Defined in: [src/locations.ts:19](https://github.com/sparr/find-itch-games/blob/main/src/locations.ts#L19)
 
 Where an install location's record came from.

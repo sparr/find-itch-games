@@ -2,7 +2,7 @@
 
 # Interface: IItchLaunchCandidate
 
-Defined in: types.ts:200
+Defined in: [src/types.ts:200](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L200)
 
 A launchable target butler found while scanning an install folder.
 
@@ -17,7 +17,7 @@ resolve it.
 path: string;
 ```
 
-Defined in: types.ts:201
+Defined in: [src/types.ts:201](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L201)
 
 ***
 
@@ -27,7 +27,7 @@ Defined in: types.ts:201
 optional mode?: number;
 ```
 
-Defined in: types.ts:203
+Defined in: [src/types.ts:203](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L203)
 
 File permission bits.
 
@@ -39,7 +39,7 @@ File permission bits.
 optional depth?: number;
 ```
 
-Defined in: types.ts:205
+Defined in: [src/types.ts:205](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L205)
 
 Number of path elements leading up to this candidate.
 
@@ -51,7 +51,7 @@ Number of path elements leading up to this candidate.
 optional flavor?: IItchFlavor;
 ```
 
-Defined in: types.ts:206
+Defined in: [src/types.ts:206](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L206)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: types.ts:206
 optional arch?: IItchArch;
 ```
 
-Defined in: types.ts:207
+Defined in: [src/types.ts:207](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L207)
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: types.ts:207
 optional size?: number;
 ```
 
-Defined in: types.ts:208
+Defined in: [src/types.ts:208](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L208)
 
 ***
 
@@ -81,7 +81,7 @@ Defined in: types.ts:208
 optional spell?: string[];
 ```
 
-Defined in: types.ts:210
+Defined in: [src/types.ts:210](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L210)
 
 Raw output from itch's `wizardry` file-type detection.
 
@@ -93,7 +93,7 @@ Raw output from itch's `wizardry` file-type detection.
 optional windowsInfo?: IItchWindowsInfo;
 ```
 
-Defined in: types.ts:211
+Defined in: [src/types.ts:211](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L211)
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: types.ts:211
 optional linuxInfo?: IItchLinuxInfo;
 ```
 
-Defined in: types.ts:212
+Defined in: [src/types.ts:212](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L212)
 
 ***
 
@@ -113,7 +113,7 @@ Defined in: types.ts:212
 optional macosInfo?: IItchMacosInfo;
 ```
 
-Defined in: types.ts:213
+Defined in: [src/types.ts:213](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L213)
 
 ***
 
@@ -123,7 +123,7 @@ Defined in: types.ts:213
 optional loveInfo?: IItchLoveInfo;
 ```
 
-Defined in: types.ts:214
+Defined in: [src/types.ts:214](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L214)
 
 ***
 
@@ -133,7 +133,7 @@ Defined in: types.ts:214
 optional scriptInfo?: IItchScriptInfo;
 ```
 
-Defined in: types.ts:215
+Defined in: [src/types.ts:215](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L215)
 
 ***
 
@@ -143,7 +143,7 @@ Defined in: types.ts:215
 optional jarInfo?: IItchJarInfo;
 ```
 
-Defined in: types.ts:216
+Defined in: [src/types.ts:216](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L216)
 
 ***
 
@@ -153,4 +153,4 @@ Defined in: types.ts:216
 optional metadata?: Record<string, unknown>;
 ```
 
-Defined in: types.ts:217
+Defined in: [src/types.ts:217](https://github.com/sparr/find-itch-games/blob/main/src/types.ts#L217)
