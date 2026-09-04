@@ -6,7 +6,7 @@
 function findItchAppManifest(gameId, options?): Promise<IItchAppManifest | null>;
 ```
 
-Defined in: [src/index.ts:380](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L380)
+Defined in: [src/index.ts:386](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L386)
 
 Reads the merged cave/receipt record for a game.
 

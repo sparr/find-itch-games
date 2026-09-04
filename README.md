@@ -70,7 +70,8 @@ user-added one.
 npm i find-itch-games
 ```
 
-Requires Node 22.5 or newer (for `node:sqlite`). Ships ESM and CommonJS.
+Requires Node 22.5 or newer, or Bun 1.4.0 or newer — both for `node:sqlite`,
+which this library reads `butler.db` through. Ships ESM and CommonJS.
 
 ## Usage
 
@@ -268,6 +269,30 @@ these values directly, so appending to it would disable the check without
 implementing anything, and the new value would fall through to `merge`.
 Strategies pick between itch's two fixed records — butler.db and the on-disk
 receipts — so there is nothing for a third-party strategy to be.
+
+## Searching as another user
+
+Every entry point accepts a `lookup`, and `findItchPath` /
+`getItchPathCandidates` take one directly. It overrides the ambient home
+directory, environment and platform that the search is based on:
+
+```ts
+import { getItchPathCandidates, findItchPath } from "find-itch-games";
+
+// Where would itch be for a Windows user, from a mounted disk?
+getItchPathCandidates({
+  home: "/mnt/disk/Users/someone",
+  env: { APPDATA: "/mnt/disk/Users/someone/AppData/Roaming" },
+  platform: "win32",
+});
+
+await findItchPath({ home: "/mnt/disk/Users/someone" });
+await findItch({ lookup: { home: "/mnt/disk/Users/someone" } });
+```
+
+Each field defaults to `os.homedir()`, `process.env` and `process.platform`, so
+omitting them searches for the running user. `itchPath` takes precedence when
+both are given, since it names the directory outright.
 
 ## Locating itch
 

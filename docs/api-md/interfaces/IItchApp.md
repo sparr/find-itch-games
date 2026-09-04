@@ -2,7 +2,7 @@
 
 # Interface: IItchApp
 
-Defined in: [src/index.ts:123](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L123)
+Defined in: [src/index.ts:129](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L129)
 
 One installed game inside a library.
 
@@ -14,7 +14,7 @@ One installed game inside a library.
 gameId: number;
 ```
 
-Defined in: [src/index.ts:124](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L124)
+Defined in: [src/index.ts:130](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L130)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/index.ts:124](https://github.com/sparr/find-itch-games/blob/mai
 path: string;
 ```
 
-Defined in: [src/index.ts:126](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L126)
+Defined in: [src/index.ts:132](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L132)
 
 Absolute path to the installed game.
 
@@ -36,7 +36,7 @@ Absolute path to the installed game.
 optional receiptPath?: string;
 ```
 
-Defined in: [src/index.ts:128](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L128)
+Defined in: [src/index.ts:134](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L134)
 
 Absolute path to the on-disk receipt, when there is one.
 
@@ -48,4 +48,4 @@ Absolute path to the on-disk receipt, when there is one.
 manifest: IItchAppManifest;
 ```
 
-Defined in: [src/index.ts:129](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L129)
+Defined in: [src/index.ts:135](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L135)

@@ -6,7 +6,7 @@
 type IItchStrategy = typeof STRATEGIES[number];
 ```
 
-Defined in: [src/index.ts:90](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L90)
+Defined in: [src/index.ts:91](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L91)
 
 Which of itch's records to trust.
 

@@ -25,6 +25,38 @@ import { isDirectory, isFile } from "./utils.js";
 export const ITCH_APP_NAMES: readonly string[] = Object.freeze(["itch", "kitch"]);
 
 /**
+ * Where to look for itch, when not the current user on the current machine.
+ *
+ * Every field defaults to the ambient value, so passing nothing searches for
+ * the running user's own installation. Supplying them lets a caller ask where
+ * itch *would* be for another home directory, environment or operating system
+ * -- useful for tools that scan several user profiles or inspect a mounted
+ * disk, and the reason this library's own tests never have to mutate
+ * `process.env`.
+ */
+export interface IItchPathLookup {
+  /**
+   * Home directory to resolve `~`-relative candidates against.
+   *
+   * @defaultValue `os.homedir()`
+   */
+  home?: string;
+  /**
+   * Environment to read `APPDATA`, `XDG_CONFIG_HOME` and this library's own
+   * overrides from.
+   *
+   * @defaultValue `process.env`
+   */
+  env?: Record<string, string | undefined>;
+  /**
+   * Operating system whose conventions to follow.
+   *
+   * @defaultValue `process.platform`
+   */
+  platform?: NodeJS.Platform;
+}
+
+/**
  * Directories the itch app may keep its user data in, most specific first.
  *
  * This mirrors Electron's `app.getPath("userData")` for each app variant, so
@@ -32,31 +64,35 @@ export const ITCH_APP_NAMES: readonly string[] = Object.freeze(["itch", "kitch"]
  *
  * `ITCH_USER_DATA_DIR` and `ITCH_APP_DIR` are this library's own escape hatch
  * for unusual installs -- the itch app itself does not read them.
+ *
+ * @param lookup - See {@link IItchPathLookup}. Defaults to the current user.
  */
-export function getItchPathCandidates(): string[] {
-  const home = homedir();
+export function getItchPathCandidates(lookup: IItchPathLookup = {}): string[] {
+  const home = lookup.home ?? homedir();
+  const env = lookup.env ?? process.env;
+  const platform = lookup.platform ?? process.platform;
   const candidates: string[] = [];
 
   const push = (...parts: (string | undefined)[]) => {
     if (parts.every((part) => part)) candidates.push(path.join(...(parts as string[])));
   };
 
-  push(process.env["ITCH_USER_DATA_DIR"]);
-  push(process.env["ITCH_APP_DIR"]);
+  push(env["ITCH_USER_DATA_DIR"]);
+  push(env["ITCH_APP_DIR"]);
 
   for (const appName of ITCH_APP_NAMES) {
-    switch (process.platform) {
+    switch (platform) {
       case "win32":
         // Electron's `appData` on Windows is %APPDATA% (Roaming).
-        push(process.env["APPDATA"], appName);
+        push(env["APPDATA"], appName);
         push(home, "AppData", "Roaming", appName);
-        push(process.env["LOCALAPPDATA"], appName);
+        push(env["LOCALAPPDATA"], appName);
         break;
       case "darwin":
         push(home, "Library", "Application Support", appName);
         break;
       default:
-        push(process.env["XDG_CONFIG_HOME"], appName);
+        push(env["XDG_CONFIG_HOME"], appName);
         push(home, ".config", appName);
         // Flatpak redirects XDG_CONFIG_HOME inside the sandbox only; from
         // outside it, the app's config lives here.
@@ -137,10 +173,11 @@ async function looksLikeItchPath(candidate: string): Promise<boolean> {
 /**
  * Searches for the itch app's user-data directory.
  *
+ * @param lookup - See {@link IItchPathLookup}. Defaults to the current user.
  * @returns Location of itch. `undefined` if itch wasn't found.
  */
-export async function findItchPath(): Promise<string | undefined> {
-  for (const candidate of getItchPathCandidates()) {
+export async function findItchPath(lookup: IItchPathLookup = {}): Promise<string | undefined> {
+  for (const candidate of getItchPathCandidates(lookup)) {
     if (await looksLikeItchPath(candidate)) return candidate;
   }
   return undefined;
@@ -150,14 +187,18 @@ export async function findItchPath(): Promise<string | undefined> {
  * Like {@link findItchPath}, but throws {@link ItchNotFoundError} instead.
  *
  * @param itchPath - Use this directory instead of searching, if given.
+ * @param lookup - See {@link IItchPathLookup}. Ignored when `itchPath` is set.
  */
-export async function requireItchPath(itchPath?: string): Promise<string> {
+export async function requireItchPath(
+  itchPath?: string,
+  lookup: IItchPathLookup = {},
+): Promise<string> {
   if (itchPath !== undefined) {
     if (!(await isDirectory(itchPath))) throw new ItchNotFoundError([itchPath]);
     return itchPath;
   }
 
-  const found = await findItchPath();
-  if (found === undefined) throw new ItchNotFoundError(getItchPathCandidates());
+  const found = await findItchPath(lookup);
+  if (found === undefined) throw new ItchNotFoundError(getItchPathCandidates(lookup));
   return found;
 }

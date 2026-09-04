@@ -2,7 +2,7 @@
 
 # Interface: IItchLibrary
 
-Defined in: [src/index.ts:133](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L133)
+Defined in: [src/index.ts:139](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L139)
 
 An install location together with the games in it.
 
@@ -18,7 +18,7 @@ An install location together with the games in it.
 apps: IItchApp[];
 ```
 
-Defined in: [src/index.ts:134](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L134)
+Defined in: [src/index.ts:140](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L140)
 
 ***
 

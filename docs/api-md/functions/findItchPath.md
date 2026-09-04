@@ -3,12 +3,20 @@
 # Function: findItchPath()
 
 ```ts
-function findItchPath(): Promise<string | undefined>;
+function findItchPath(lookup?): Promise<string | undefined>;
 ```
 
-Defined in: [src/itch.ts:142](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L142)
+Defined in: [src/itch.ts:179](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L179)
 
 Searches for the itch app's user-data directory.
+
+## Parameters
+
+### lookup?
+
+[`IItchPathLookup`](../interfaces/IItchPathLookup.md) = `{}`
+
+See [IItchPathLookup](../interfaces/IItchPathLookup.md). Defaults to the current user.
 
 ## Returns
 

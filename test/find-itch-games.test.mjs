@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import * as fs from "node:fs";
+import * as os from "node:os";
 import * as path from "node:path";
 import { after, before, describe, it } from "node:test";
 
@@ -37,10 +38,17 @@ import {
   makeReceipt,
   writeDatabase,
   writeInstallFolder,
-  withIsolatedHome,
   writeLegacyInstallFolder,
   writePreferences,
 } from "./fixtures.mjs";
+
+/**
+ * A home directory with nothing in it.
+ *
+ * Passed to the lookup seam so path-searching tests can never reach a real
+ * itch installation. Nothing writes here, so one directory serves every test.
+ */
+const EMPTY_HOME = fs.mkdtempSync(path.join(os.tmpdir(), "find-itch-empty-home-"));
 
 const LOCATION_ID = "87c69020-7130-495e-a91e-fa146c0125df";
 const SECOND_LOCATION_ID = "b85d5b35-9d3e-4985-94b0-6c6d47a5afa9";
@@ -189,29 +197,30 @@ describe("find-itch-games", () => {
   after(() => fixture.cleanup());
 
   describe("findItchPath", () => {
+    // An empty home with an empty environment: nothing on this machine can be
+    // reached, so these assert about the search itself rather than about
+    // whatever itch install the developer happens to have.
+    const nowhere = { home: EMPTY_HOME, env: {} };
+
     it("honours the ITCH_USER_DATA_DIR override", async () => {
-      await withIsolatedHome({ ITCH_USER_DATA_DIR: fixture.itchPath }, async () => {
-        assert.equal(await findItchPath(), fixture.itchPath);
-      });
+      const lookup = { ...nowhere, env: { ITCH_USER_DATA_DIR: fixture.itchPath } };
+      assert.equal(await findItchPath(lookup), fixture.itchPath);
     });
 
     it("skips a directory that isn't an itch installation", async () => {
-      // `~/Games` exists but holds no butler.db, preferences.json or apps/,
-      // so it must be rejected rather than returned.
-      await withIsolatedHome({ ITCH_USER_DATA_DIR: fixture.dir("Games") }, async () => {
-        assert.equal(await findItchPath(), undefined);
-      });
+      // `Games` exists but holds no butler.db, preferences.json or apps/, so
+      // it must be rejected rather than returned.
+      const lookup = { ...nowhere, env: { ITCH_USER_DATA_DIR: fixture.dir("Games") } };
+      assert.equal(await findItchPath(lookup), undefined);
     });
 
-    it("searches only under the current home directory", async () => {
-      await withIsolatedHome({}, async (home) => {
-        const candidates = getItchPathCandidates();
-        assert.ok(candidates.length > 0);
-        assert.ok(
-          candidates.every((candidate) => candidate.startsWith(home + path.sep)),
-          `candidates escaped the home directory: ${candidates.join(", ")}`,
-        );
-      });
+    it("searches only under the given home directory", () => {
+      const candidates = getItchPathCandidates(nowhere);
+      assert.ok(candidates.length > 0);
+      assert.ok(
+        candidates.every((candidate) => candidate.startsWith(EMPTY_HOME + path.sep)),
+        `candidates escaped the home directory: ${candidates.join(", ")}`,
+      );
     });
 
     it("throws ItchNotFoundError for a bad explicit path", async () => {
@@ -222,38 +231,76 @@ describe("find-itch-games", () => {
     });
   });
 
-  describe("when itch isn't installed at all", () => {
-    it("findItchPath returns undefined", async () => {
-      await withIsolatedHome({}, async () => {
-        assert.equal(await findItchPath(), undefined);
+  describe("platform conventions", () => {
+    // The lookup seam is the only way to exercise these: the paths differ per
+    // operating system, and the suite runs on one.
+    const forPlatform = (platform, env = {}) =>
+      getItchPathCandidates({ home: "/home/u", env, platform });
+
+    it("follows Electron's userData location on Windows", () => {
+      const candidates = forPlatform("win32", {
+        APPDATA: "C:\\Users\\u\\AppData\\Roaming",
+        LOCALAPPDATA: "C:\\Users\\u\\AppData\\Local",
       });
+      assert.ok(candidates.includes(path.join("C:\\Users\\u\\AppData\\Roaming", "itch")));
+      assert.ok(candidates.includes(path.join("C:\\Users\\u\\AppData\\Local", "kitch")));
+      assert.ok(candidates.includes(path.join("/home/u", "AppData", "Roaming", "itch")));
+      assert.ok(!candidates.some((c) => c.includes(".config")));
+    });
+
+    it("follows Electron's userData location on macOS", () => {
+      const candidates = forPlatform("darwin");
+      assert.deepEqual(candidates, [
+        path.join("/home/u", "Library", "Application Support", "itch"),
+        path.join("/home/u", "Library", "Application Support", "kitch"),
+      ]);
+    });
+
+    it("follows XDG and Flatpak conventions on Linux", () => {
+      const candidates = forPlatform("linux", { XDG_CONFIG_HOME: "/xdg" });
+      assert.ok(candidates.includes(path.join("/xdg", "itch")));
+      assert.ok(candidates.includes(path.join("/home/u", ".config", "itch")));
+      assert.ok(
+        candidates.includes(path.join("/home/u", ".var", "app", "io.itch.itch", "config", "itch")),
+      );
+    });
+
+    it("checks this library's own overrides first, on every platform", () => {
+      for (const platform of ["win32", "darwin", "linux"]) {
+        const candidates = forPlatform(platform, { ITCH_USER_DATA_DIR: "/override" });
+        assert.equal(candidates[0], "/override");
+      }
+    });
+  });
+
+  describe("when itch isn't installed at all", () => {
+    const lookup = { home: EMPTY_HOME, env: {} };
+
+    it("findItchPath returns undefined", async () => {
+      assert.equal(await findItchPath(lookup), undefined);
     });
 
     it("every entry point throws ItchNotFoundError", async () => {
-      await withIsolatedHome({}, async () => {
-        for (const call of [
-          () => findItch(),
-          () => findItchApps(),
-          () => findItchLibraries(),
-          () => findItchLibrariesPaths(),
-          () => findItchAppById(4225297),
-          () => findItchAppByName("Distributrains"),
-          () => findItchAppManifest(4225297),
-          () => hasItchApp(4225297),
-        ]) {
-          await assert.rejects(call, ItchNotFoundError);
-        }
-      });
+      for (const call of [
+        () => findItch({ lookup }),
+        () => findItchApps({ lookup }),
+        () => findItchLibraries({ lookup }),
+        () => findItchLibrariesPaths({ lookup }),
+        () => findItchAppById(4225297, { lookup }),
+        () => findItchAppByName("Distributrains", { lookup }),
+        () => findItchAppManifest(4225297, { lookup }),
+        () => hasItchApp(4225297, { lookup }),
+      ]) {
+        await assert.rejects(call, ItchNotFoundError);
+      }
     });
 
     it("names the directories it searched", async () => {
-      await withIsolatedHome({}, async (home) => {
-        await assert.rejects(findItch(), (error) => {
-          assert.ok(error instanceof ItchNotFoundError);
-          assert.match(error.message, /itch installation not found/);
-          assert.ok(error.message.includes(home), "should list the searched paths");
-          return true;
-        });
+      await assert.rejects(findItch({ lookup }), (error) => {
+        assert.ok(error instanceof ItchNotFoundError);
+        assert.match(error.message, /itch installation not found/);
+        assert.ok(error.message.includes(EMPTY_HOME), "should list the searched paths");
+        return true;
       });
     });
   });
@@ -701,9 +748,8 @@ describe("itch app variants", () => {
   it("finds the kitch canary build's user-data directory", async () => {
     const canary = createFixture({ appName: "kitch" });
     try {
-      await withIsolatedHome({ ITCH_USER_DATA_DIR: canary.itchPath }, async () => {
-        assert.equal(await findItchPath(), canary.itchPath);
-      });
+      const lookup = { home: EMPTY_HOME, env: { ITCH_USER_DATA_DIR: canary.itchPath } };
+      assert.equal(await findItchPath(lookup), canary.itchPath);
       assert.ok(canary.itchPath.endsWith(path.join("config", "kitch")));
       const paths = await findItchLibrariesPaths({ itchPath: canary.itchPath });
       assert.deepEqual(paths, [path.join(canary.itchPath, "apps")]);
@@ -717,18 +763,16 @@ describe("itch app variants", () => {
     assert.throws(() => ITCH_APP_NAMES.push("witch"), TypeError);
   });
 
-  it("searches for kitch as well as itch", async () => {
+  it("searches for kitch as well as itch", () => {
     // Asserted on the final path segment rather than a full path, since the
     // directory around it differs per platform.
-    await withIsolatedHome({}, async () => {
-      const candidates = getItchPathCandidates();
-      for (const appName of ["itch", "kitch"]) {
-        assert.ok(
-          candidates.some((candidate) => path.basename(candidate) === appName),
-          `no candidate for ${appName} in ${candidates.join(", ")}`,
-        );
-      }
-    });
+    const candidates = getItchPathCandidates({ home: EMPTY_HOME, env: {} });
+    for (const appName of ["itch", "kitch"]) {
+      assert.ok(
+        candidates.some((candidate) => path.basename(candidate) === appName),
+        `no candidate for ${appName} in ${candidates.join(", ")}`,
+      );
+    }
   });
 });
 

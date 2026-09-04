@@ -2,7 +2,7 @@
 
 # Interface: IItchLookupOptions
 
-Defined in: [src/index.ts:389](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L389)
+Defined in: [src/index.ts:395](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L395)
 
 Options for looking up a single game.
 
@@ -22,7 +22,7 @@ Options for looking up a single game.
 optional itchPath?: string;
 ```
 
-Defined in: [src/index.ts:100](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L100)
+Defined in: [src/index.ts:101](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L101)
 
 Override the itch user-data directory instead of searching for it.
 
@@ -38,7 +38,7 @@ Override the itch user-data directory instead of searching for it.
 optional strategy?: "db" | "merge" | "receipts";
 ```
 
-Defined in: [src/index.ts:102](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L102)
+Defined in: [src/index.ts:103](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L103)
 
 #### Default Value
 
@@ -58,7 +58,7 @@ Defined in: [src/index.ts:102](https://github.com/sparr/find-itch-games/blob/mai
 optional checkExists?: boolean;
 ```
 
-Defined in: [src/index.ts:109](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L109)
+Defined in: [src/index.ts:110](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L110)
 
 Drop games whose install folder is gone. itch leaves caves behind when a
 folder is deleted outside the app, so this defaults to on.
@@ -81,7 +81,7 @@ true
 optional extraLibraries?: readonly string[];
 ```
 
-Defined in: [src/index.ts:111](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L111)
+Defined in: [src/index.ts:112](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L112)
 
 Extra install locations to scan, e.g. a drive itch was moved off.
 
@@ -97,7 +97,7 @@ Extra install locations to scan, e.g. a drive itch was moved off.
 optional ignoreDatabase?: boolean;
 ```
 
-Defined in: [src/index.ts:119](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L119)
+Defined in: [src/index.ts:120](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L120)
 
 Don't touch butler.db at all, not even for install locations. Only
 `preferences.json`, the built-in `appdata` location and `extraLibraries`
@@ -115,13 +115,30 @@ false
 
 ***
 
+### lookup?
+
+```ts
+optional lookup?: IItchPathLookup;
+```
+
+Defined in: [src/index.ts:125](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L125)
+
+Search as though for a different user, environment or operating system.
+Ignored when `itchPath` is given, which names the directory outright.
+
+#### Inherited from
+
+[`IItchOptions`](IItchOptions.md).[`lookup`](IItchOptions.md#lookup)
+
+***
+
 ### strict?
 
 ```ts
 optional strict?: boolean;
 ```
 
-Defined in: [src/index.ts:398](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L398)
+Defined in: [src/index.ts:404](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L404)
 
 Throw [AmbiguousAppError](../classes/AmbiguousAppError.md) when more than one installed game matches,
 instead of returning the first. The same game can legitimately be

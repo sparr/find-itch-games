@@ -6,7 +6,7 @@
 function getPreferencesPath(itchPath): string;
 ```
 
-Defined in: [src/itch.ts:114](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L114)
+Defined in: [src/itch.ts:150](https://github.com/sparr/find-itch-games/blob/main/src/itch.ts#L150)
 
 The itch app's preferences file inside an itch user-data directory.
 

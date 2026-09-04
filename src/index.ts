@@ -33,6 +33,7 @@ import {
   getStagingFolder,
   loadItchLibraries,
 } from "./locations.js";
+import type { IItchPathLookup } from "./itch.js";
 import type { IItchLibrariesRaw, IItchLibraryRaw, IItchLocationSource } from "./locations.js";
 import {
   getLaunchCandidatePaths,
@@ -117,6 +118,11 @@ export interface IItchOptions {
    * @defaultValue false
    */
   ignoreDatabase?: boolean;
+  /**
+   * Search as though for a different user, environment or operating system.
+   * Ignored when `itchPath` is given, which names the directory outright.
+   */
+  lookup?: IItchPathLookup;
 }
 
 /** One installed game inside a library. */
@@ -176,7 +182,7 @@ function resolveStrategy(options: IItchOptions): IItchStrategy {
 export async function findItch(options: IItchOptions = {}): Promise<IItchLibraries> {
   const strategy = resolveStrategy(options);
   const checkExists = options.checkExists ?? true;
-  const itchPath = await requireItchPath(options.itchPath);
+  const itchPath = await requireItchPath(options.itchPath, options.lookup);
 
   const raw = await loadItchLibraries(itchPath, {
     extraLibraries: options.extraLibraries,
@@ -364,7 +370,7 @@ export async function findItchLibrariesPaths(options: IItchOptions = {}): Promis
  * @param options - See {@link IItchOptions}.
  */
 export async function findItchLibraries(options: IItchOptions = {}): Promise<IItchLibrariesRaw> {
-  return loadItchLibraries(await requireItchPath(options.itchPath), {
+  return loadItchLibraries(await requireItchPath(options.itchPath, options.lookup), {
     extraLibraries: options.extraLibraries,
     skipDatabase: options.ignoreDatabase,
   });
@@ -546,6 +552,7 @@ export {
 export type {
   IFoundReceipt,
   IItchAppManifest,
+  IItchPathLookup,
   IItchLegacyReceiptInfo,
   IItchCaveRow,
   IItchInstallLocationRow,

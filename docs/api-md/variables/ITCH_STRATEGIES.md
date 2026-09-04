@@ -6,7 +6,7 @@
 const ITCH_STRATEGIES: readonly IItchStrategy[];
 ```
 
-Defined in: [src/index.ts:75](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L75)
+Defined in: [src/index.ts:76](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L76)
 
 Every value [IItchStrategy](../type-aliases/IItchStrategy.md) accepts, in preference order.
 

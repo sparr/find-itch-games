@@ -6,7 +6,7 @@
 function hasItchApp(game, options?): Promise<boolean>;
 ```
 
-Defined in: [src/index.ts:510](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L510)
+Defined in: [src/index.ts:516](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L516)
 
 Whether a game is currently installed, by game id or by name.
 

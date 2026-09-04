@@ -2,7 +2,7 @@
 
 # Interface: IItchLibraries
 
-Defined in: [src/index.ts:138](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L138)
+Defined in: [src/index.ts:144](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L144)
 
 The full picture: where itch is, where it installs, and what is installed.
 
@@ -14,7 +14,7 @@ The full picture: where itch is, where it installs, and what is installed.
 itchPath: string;
 ```
 
-Defined in: [src/index.ts:139](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L139)
+Defined in: [src/index.ts:145](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L145)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: [src/index.ts:139](https://github.com/sparr/find-itch-games/blob/mai
 databasePath: string;
 ```
 
-Defined in: [src/index.ts:140](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L140)
+Defined in: [src/index.ts:146](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L146)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: [src/index.ts:140](https://github.com/sparr/find-itch-games/blob/mai
 databaseAvailable: boolean;
 ```
 
-Defined in: [src/index.ts:141](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L141)
+Defined in: [src/index.ts:147](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L147)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: [src/index.ts:141](https://github.com/sparr/find-itch-games/blob/mai
 strategy: "db" | "merge" | "receipts";
 ```
 
-Defined in: [src/index.ts:142](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L142)
+Defined in: [src/index.ts:148](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L148)
 
 ***
 
@@ -54,4 +54,4 @@ Defined in: [src/index.ts:142](https://github.com/sparr/find-itch-games/blob/mai
 libraries: IItchLibrary[];
 ```
 
-Defined in: [src/index.ts:143](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L143)
+Defined in: [src/index.ts:149](https://github.com/sparr/find-itch-games/blob/main/src/index.ts#L149)

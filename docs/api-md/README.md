@@ -23,6 +23,7 @@ with [findItch](functions/findItch.md) for the whole picture, or [findItchAppByI
 - [IItchLibraries](interfaces/IItchLibraries.md)
 - [IItchLookupOptions](interfaces/IItchLookupOptions.md)
 - [IItchNameLookupOptions](interfaces/IItchNameLookupOptions.md)
+- [IItchPathLookup](interfaces/IItchPathLookup.md)
 - [IItchLibraryRaw](interfaces/IItchLibraryRaw.md)
 - [IItchLibrariesRaw](interfaces/IItchLibrariesRaw.md)
 - [IItchAppManifest](interfaces/IItchAppManifest.md)
