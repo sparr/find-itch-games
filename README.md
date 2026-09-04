@@ -349,6 +349,12 @@ whenever `src`, a tsconfig or a typedoc config is committed — so the checked-i
 docs cannot fall behind the code. Skip it for one commit with
 `git commit --no-verify`.
 
+The hook builds from the *index*, not the working tree: it extracts the staged
+content with `git checkout-index` into a scratch directory and runs TypeDoc
+there. A partial staging therefore produces docs describing the commit being
+made rather than whatever else is lying around, and an interrupted hook cannot
+disturb the working tree the way `git stash` can.
+
 [`test/fixtures.mjs`](test/fixtures.mjs) builds a synthetic itch installation —
 a real SQLite `butler.db` with itch's schema, plus gzipped receipts on disk —
 so the tests never touch a real itch install.
