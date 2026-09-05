@@ -10,3 +10,8 @@ __pycache__/
 python/.venv/
 python/dist/
 python/src/*.egg-info/
+
+# Credentials. Never commit these.
+.pypirc
+.npmrc
+*.env
