@@ -9,7 +9,7 @@ tested against the same fixtures.
 | Language | Package | Install | Docs |
 | --- | --- | --- | --- |
 | JavaScript / TypeScript | `find-itch-games` (npm), `@sparr/find-itch-games` (JSR) | `npm i find-itch-games` | [node/README.md](node/README.md) · [API](https://sparr.github.io/find-itch-games/node/api/) |
-| Python | `find-itch-games` (PyPI) | `pip install find-itch-games` | [python/README.md](python/README.md) |
+| Python | `find-itch-games` (PyPI) | `pip install find-itch-games` | [python/README.md](python/README.md) · [API](https://sparr.github.io/find-itch-games/python/api/) |
 
 Neither has runtime dependencies. This page describes what itch does and how
 the libraries find things; the per-language READMEs cover their APIs.
