@@ -161,6 +161,19 @@ The database is only ever opened read-only, and nothing in this library writes
 to the itch directory or to any install folder.
 
 
+## Limitations
+
+Two are worth knowing:
+
+- Everything has been run on Linux, against one real itch installation. The
+  Windows, macOS and Flatpak path rules have their own tests — the lookup seam
+  lets them be checked without running on those systems — but no code here has
+  actually executed on Windows or macOS.
+- The schema in [`shared/butler-schema.sql`](shared/butler-schema.sql) came
+  from that same installation. butler generates its schema at runtime and ships
+  no reference database, so it can drift from future butler releases without
+  either test suite noticing.
+
 ## AI disclosure
 
 This library was written by Claude Opus 5, Anthropic's model, in a
@@ -174,15 +187,4 @@ than inferred from the local install: the [itch client](https://github.com/itchi
 describes what itch does — install folder resolution, the scan rules, the
 receipt formats, the `appdata` default — it is describing code read in those
 repositories.
-
-Two limits are worth knowing:
-
-- Everything has been run on Linux, against one real itch installation. The
-  Windows, macOS and Flatpak path rules have their own tests — the lookup seam
-  lets them be checked without running on those systems — but no code here has
-  actually executed on Windows or macOS.
-- The schema in [`shared/butler-schema.sql`](shared/butler-schema.sql) came
-  from that same installation. butler generates its schema at runtime and ships
-  no reference database, so it can drift from future butler releases without
-  either test suite noticing.
 
