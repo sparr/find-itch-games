@@ -2,7 +2,7 @@
 
 Find the itch.io app, its install locations, and the games installed in them.
 
-- PyPI: `find-itch-games`
+- PyPI: [`find-itch-games`](https://pypi.org/project/find-itch-games/)
 - API reference: <https://sparr.github.io/find-itch-games/python/api/>
 
 See the [root README](https://github.com/sparr/find-itch-games/blob/main/README.md) for how itch stores its data, where it
