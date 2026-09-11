@@ -191,10 +191,14 @@ _itch_query() {
 
 # Install locations, tab-separated: id, path
 itch_db_locations() {
-    local db
+    local db json
     db=${1:-$(itch_database_path)} || return 1
-    _itch_query "$db" 'SELECT id, path FROM install_locations' |
-        jq -r '.[]? | [.id, .path] | @tsv'
+    # Captured rather than piped: a pipeline's exit status is the last
+    # command's, so `| jq` would report success even for a missing or
+    # unreadable database.
+    json=$(_itch_query "$db" 'SELECT id, path FROM install_locations') || return 1
+    [ -n "$json" ] || return 0
+    printf '%s' "$json" | jq -r '.[]? | [.id, .path] | @tsv'
 }
 
 # Every installed game the database knows about, as one JSON object per line.
@@ -342,7 +346,12 @@ itch_libraries() {
 # Just the install location paths, one per line.
 # shellcheck disable=SC2120  # the optional itch path is forwarded to itch_libraries
 itch_library_paths() {
-    itch_libraries "$@" | cut -f2
+    local rows
+    # Captured rather than piped, for the same reason: `| cut` would mask a
+    # failure to find itch behind cut's success.
+    rows=$(itch_libraries "$@") || return 1
+    [ -n "$rows" ] || return 0
+    printf '%s\n' "$rows" | cut -f2
 }
 
 # ---------------------------------------------------------------------------

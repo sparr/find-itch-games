@@ -372,5 +372,31 @@ assert_equal 'short options may be bundled' \
 assert_equal 'a -- argument ends option processing' '1' \
     "$("$CLI" app -- --version >/dev/null 2>&1; echo $?)"
 
+# ---------------------------------------------------------------------------
+# failures must not be masked by a pipeline
+# ---------------------------------------------------------------------------
+#
+# A pipeline's exit status is the last command's, so a function ending in
+# `| cut` or `| jq` reports that command's success even when the work before it
+# failed. A caller writing `itch_library_paths || handle_error` would never see
+# the failure.
+
+NOWHERE=$(mktemp -d "${TMPDIR:-/tmp}/find-itch-nowhere.XXXXXX")
+
+assert_equal 'itch_library_paths reports that itch was not found' '1' \
+    "$( (unset ITCH_PATH; FIND_ITCH_HOME="$NOWHERE" XDG_CONFIG_HOME='' itch_library_paths) >/dev/null 2>&1; echo $?)"
+
+assert_equal 'itch_libraries reports that itch was not found' '1' \
+    "$( (unset ITCH_PATH; FIND_ITCH_HOME="$NOWHERE" XDG_CONFIG_HOME='' itch_libraries) >/dev/null 2>&1; echo $?)"
+
+assert_equal 'itch_db_locations reports a missing database' '1' \
+    "$(itch_db_locations /nonexistent/butler.db >/dev/null 2>&1; echo $?)"
+
+assert_equal 'itch_library_paths still lists the locations it finds' \
+    "$(itch_libraries | cut -f2 | sort | tr '\n' ' ')" \
+    "$(itch_library_paths | sort | tr '\n' ' ')"
+
+rmdir "$NOWHERE" 2>/dev/null || true
+
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]
