@@ -398,5 +398,23 @@ assert_equal 'itch_library_paths still lists the locations it finds' \
 
 rmdir "$NOWHERE" 2>/dev/null || true
 
+# ---------------------------------------------------------------------------
+# the committed help text matches what shellman generates
+# ---------------------------------------------------------------------------
+#
+# itch_usage()'s heredoc is written by build-docs.sh from the `## \tag`
+# comments. Editing either by hand would let them drift, so this regenerates
+# the help text and compares. Skipped where shellman is not installed, since it
+# is only needed to change the documentation.
+
+if command -v shellman >/dev/null 2>&1; then
+    assert_equal 'the committed --help matches the documentation comments' \
+        "$(shellman -t "path:$HERE/../templates/helptext" \
+             --context-file "$HERE/../templates/context.json" "$LIB")" \
+        "$("$LIB" --help)"
+else
+    printf '  skip shellman not installed; --help drift not checked\n'
+fi
+
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

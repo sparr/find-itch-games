@@ -1,0 +1,106 @@
+{#-
+   find-itch-games help text.
+
+   Derived from shellman's helptext template.
+   shellman is ISC licensed, Copyright (c) 2020, Timothée Mazzucotelli:
+
+     Permission to use, copy, modify, and/or distribute this software for any
+     purpose with or without fee is hereby granted, provided that the above
+     copyright notice and this permission notice appear in all copies.
+
+     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+   Changed: the Functions section is removed. The function reference belongs
+   in the docs rather than a terminal, and including it made --help 403 lines
+   instead of 96. A bug address and home page footer is added, per the GNU
+   coding standards, from values passed in by build-docs.sh.
+
+   Regenerated into the script by build-docs.sh; do not edit the heredoc in
+   itch_usage() by hand.
+-#}
+{% set indent = indent|default(2, true) %}
+{% set option_padding = option_padding|default(22, true) %}
+{% if indent is string %}{% set indent=indent|int %}{% endif %}
+{% set indent_str=" "*indent %}
+{% if option_padding is string %}{% set option_padding=option_padding|int %}{% endif %}
+{% if shellman.doc.usage %}
+Usage: {{ shellman.doc.usage[0].program }} {{ shellman.doc.usage[0].command|smartwrap(8 + shellman.doc.usage[0].program|length, indentfirst=False) }}
+{% for usage in shellman.doc.usage[1:] %}
+       {{ usage.program }} {{ usage.command|smartwrap(8 + usage.program|length, indentfirst=False) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.brief %}
+{{ shellman.doc.brief[0].text }}
+
+{% endif %}
+{% if shellman.doc.option %}
+Options:
+{% for opt_group, opt_list in shellman.doc.option|groupby('group', sort=False) %}
+{% if opt_group %}
+{{ ' ' * (indent / 2)|int }}{{ opt_group }}:
+{% endif %}
+{% for option in opt_list %}
+{{ indent_str }}{{ "{sign:{padding}}"|format(sign=option.signature, padding=option_padding-1) }} {% if option.signature|length > option_padding-2 %}{{ '\n' + option.description|smartwrap(indent + option_padding) + '\n' }}{% else %}{{ option.description|smartwrap(indent + option_padding, indentfirst=False) + '\n' }}{% endif %}
+{% endfor %}
+{% if not loop.last %}{{ '\n' }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.env %}
+Environment Variables:
+{% for env in shellman.doc.env %}
+{{ indent_str }}{{ env.name }}
+{{ env.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.file %}
+Files:
+{% for file in shellman.doc.file %}
+{{ indent_str }}{{ file.name }}
+{{ file.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.exit %}
+Exit Status:
+{% for exit in shellman.doc.exit %}
+{{ indent_str }}{{ exit.code }}
+{{ exit.description|smartwrap(indent*2) }}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.example %}
+Examples:
+{% for example in shellman.doc.example %}
+{{ indent_str }}{{ example.brief|indent(indent * 2) }}
+{% if example.description %}
+{{ indent_str }}{{ indent_str }}{{ example.description }}
+{% endif %}
+{% if not loop.last %}{{ "
+" }}{% endif %}
+{% endfor %}
+
+{% endif %}
+{% if shellman.doc.note %}
+{% for note in shellman.doc.note %}
+{{ note.text|smartwrap(0) }}
+{% endfor %}
+
+{% endif %}
+{# The GNU coding standards ask for these at the end of --help output. The
+   addresses are passed in by build-docs.sh, read from the script itself, so
+   they are not duplicated here. #}
+{% if bug_address %}
+Report bugs to: <{{ bug_address }}>
+{% endif %}
+{% if home_page %}
+{{ program }} home page: <{{ home_page }}>
+{% endif %}

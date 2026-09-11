@@ -10,7 +10,7 @@ tested against the same fixtures.
 | --- | --- | --- | --- |
 | JavaScript / TypeScript | `find-itch-games` (npm), `@sparr/find-itch-games` (JSR) | `npm i find-itch-games` | [node/README.md](node/README.md) · [API](https://sparr.github.io/find-itch-games/node/api/) |
 | Python | `find-itch-games` (PyPI) | `pip install find-itch-games` | [python/README.md](python/README.md) · [API](https://sparr.github.io/find-itch-games/python/api/) |
-| POSIX shell | `find-itch-games` ([bpkg](https://github.com/bpkg/bpkg)) | `bpkg install sparr/find-itch-games` | [shell/README.md](shell/README.md) |
+| POSIX shell | `find-itch-games` ([bpkg](https://github.com/bpkg/bpkg)) | `bpkg install sparr/find-itch-games` | [shell/README.md](shell/README.md) · [API](https://sparr.github.io/find-itch-games/shell/api/) |
 
 The Node and Python packages have no runtime dependencies. The shell script
 needs `sqlite3`, `jq` and `gzip`, because a shell cannot read SQLite or JSON on

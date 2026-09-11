@@ -1,0 +1,455 @@
+.if n.ad l
+.nh
+
+.TH find-itch-games.sh 1 "2026-09-11" "shellman 1.0.2" "User Commands"
+
+.SH "NAME"
+find-itch-games.sh \- Find the itch.io app, its install locations, and the games installed in them.
+
+.SH "SYNOPSIS"
+\fBfind-itch-games\fR [\fIOPTION\fR]\.\.\. \fICOMMAND\fR [\fIARGUMENT\fR]\.\.\.
+
+
+.SH "DESCRIPTION"
+The only shell extension relied on is `local`, which is not in POSIX.1
+but is implemented by dash, ash, ksh, bash and zsh.
+
+Lists are tab-separated, one record per line. Parse them with awk -F'\t',
+not `read`: POSIX treats a tab as IFS whitespace, so `read` folds runs of
+tabs together and a game with no title would shift every later field left.
+
+
+.SH "OPTIONS"
+.IP "path" 4
+Print the itch user-data directory. See itch_path.
+
+.IP "db\fB\-path\fR" 4
+Print the path of the butler database. See itch_database_path.
+
+.IP "libraries" 4
+List install locations, tab-separated: id, path, is_default, exists, source.
+See itch_libraries.
+
+.IP "library\fB\-paths\fR" 4
+List just the install location paths. See itch_library_paths.
+
+.IP "apps" 4
+List installed games, tab-separated: game_id, path, source, title,
+install_folder_name, version, channel. See itch_apps.
+
+.IP "app \fIID\fR\-\fIOR\fR\-\fINAME\fR" 4
+Print where one game is installed. See itch_app_by_id and itch_app_by_name.
+
+.IP "manifest \fIID\fR" 4
+Print the merged cave/receipt record, as JSON. See itch_app_manifest.
+
+.IP "launch \fIID\fR" 4
+Print the launch candidates butler found. See itch_launch_candidates.
+
+.IP "receipt \fIDIRECTORY\fR" 4
+Print an install folder's receipt, as JSON. See itch_receipt.
+
+.IP "receipts \fILIBRARY\fR" 4
+List install folders under LIBRARY that have one. See itch_receipts.
+
+
+.IP "\fB\-s\fR, \fB\-\-strategy\fR =\fISTRATEGY\fR" 4
+Which of itch's records to read: merge (default), db, or receipts.
+
+.IP "\fB\-p\fR, \fB\-\-itch\-path\fR =\fIDIR\fR" 4
+Use DIR as the itch user-data directory instead of searching for it.
+
+.IP "\fB\-H\fR, \fB\-\-home\fR =\fIDIR\fR" 4
+Search as though the home directory were DIR.
+
+.IP "\fB\-P\fR, \fB\-\-platform\fR =\fINAME\fR" 4
+Follow the conventions of NAME: linux, darwin, or win32.
+
+.IP "\fB\-e\fR, \fB\-\-exact\fR " 4
+Match names exactly. This is the default.
+
+.IP "\fB\-f\fR, \fB\-\-fuzzy\fR " 4
+Match names ignoring case, spacing and punctuation.
+
+.IP "\fB\-k\fR, \fB\-\-keep\-missing\fR " 4
+Keep games whose install folder no longer exists.
+
+.IP "\fB\-h\fR, \fB\-\-help\fR " 4
+Display this help and exit.
+
+.IP "\fB\-V\fR, \fB\-\-version\fR " 4
+Output version information and exit.
+
+Options may appear before or after the command. A '--' argument ends option
+processing, so an operand beginning with '-' can still be passed.
+
+
+
+.SH "ENVIRONMENT VARIABLES"
+.TP
+.B ITCH_PATH
+Use this itch user-data directory instead of searching.
+.TP
+.B ITCH_USER_DATA_DIR
+Checked before the platform defaults. The itch app does not read this.
+.TP
+.B FIND_ITCH_HOME
+Search as though this were the home directory.
+.TP
+.B FIND_ITCH_PLATFORM
+linux, darwin or win32.
+.TP
+.B ITCH_EXACT
+Set to false to match names loosely.
+.TP
+.B ITCH_CHECK_EXISTS
+Set to false to keep games whose install folder is gone.
+
+
+.SH "EXIT STATUS"
+.TP
+.B 0
+Success.
+.TP
+.B 1
+itch or the requested game was not found.
+.TP
+.B 2
+A command-line usage error.
+
+
+.SH "FUNCTIONS"
+.IP "\fBitch_path_candidates\fR" 4
+Directories itch may keep its user data in, most specific first.
+
+Mirrors Electron's app.getPath("userData") for each app
+variant. ITCH_USER_DATA_DIR and ITCH_APP_DIR are this library's own escape
+hatch; the itch app itself does not read them.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I See also
+    itch_path
+
+.I Standard output
+    One candidate directory per line, deduplicated.
+
+.IP "\fBitch_path\fR" 4
+Print the itch user-data directory.
+
+.I Return codes
+    \fB0\fR - If itch was found.
+    \fB1\fR - If no candidate holds db/butler.db, preferences.json or apps/.
+
+.I See also
+    itch_path_candidates
+
+.I Standard output
+    The first candidate that looks like an itch installation.
+
+.IP "\fBitch_database_path [itch_path]\fR" 4
+Print the path of the butler database.
+
+Allows for the butler-<host>.db name that builds
+configured against a non-standard itch.io host use, falling back to the
+default name when there is none on disk.
+
+.I Arguments
+    \fBitch_path\fR - The itch user-data directory. Defaults to itch_path.
+
+.I Return codes
+    \fB0\fR - If an itch directory was found.
+    \fB1\fR - If it was not.
+
+.I Standard output
+    The database path.
+
+.IP "\fBitch_db_locations [database]\fR" 4
+Print the install locations recorded in butler.db.
+
+.I Arguments
+    \fBdatabase\fR - The database path. Defaults to itch_database_path.
+
+.I Return codes
+    \fB0\fR - If the database was read.
+    \fB1\fR - If no database was found.
+
+.I Standard output
+    Tab-separated: id, path.
+
+.IP "\fBitch_receipt <directory>\fR" 4
+Print an install folder's receipt as JSON.
+
+Falls back to the pre-v23 uncompressed receipt.json,
+whose schema recorded a cave's ids rather than the game; that shape is
+normalized to the modern one with the ids kept under .legacy.
+
+.I Arguments
+    \fBdirectory\fR - An install folder.
+
+.I Return codes
+    \fB0\fR - If the folder has a readable receipt.
+    \fB1\fR - If it does not.
+
+.I Standard output
+    The receipt, as compact JSON.
+
+.IP "\fBitch_receipts <library>\fR" 4
+List install folders under a location that carry a receipt.
+
+Follows butler's own scan rules: skip the downloads
+staging folder, require a .itch directory, then read the receipt.
+
+.I Arguments
+    \fBlibrary\fR - An install location.
+
+.I Return codes
+    \fB0\fR - Always, including when the location does not exist.
+
+.I Standard output
+    One install folder path per line.
+
+.IP "\fBitch_libraries [itch_path]\fR" 4
+List itch's install locations.
+
+butler.db is authoritative when readable;
+preferences.json covers itch versions that predate it, and the built-in
+appdata location is derived from the itch directory because itch never
+stores it as a path.
+
+.I Arguments
+    \fBitch_path\fR - The itch user-data directory. Defaults to itch_path.
+
+.I Return codes
+    \fB0\fR - If an itch directory was found.
+    \fB1\fR - If it was not.
+
+.I Standard output
+    Tab-separated: id, path, is_default, exists, source.
+
+.IP "\fBitch_library_paths [itch_path]\fR" 4
+List just the install location paths.
+
+.I Arguments
+    \fBitch_path\fR - The itch user-data directory. Defaults to itch_path.
+
+.I Return codes
+    \fB0\fR - If an itch directory was found.
+    \fB1\fR - If it was not.
+
+.I See also
+    itch_libraries
+
+.I Standard output
+    One path per line.
+
+.IP "\fBitch_apps [strategy] [itch_path]\fR" 4
+List every installed game.
+
+The strategy chooses which of itch's records to read.
+merge reads butler.db and confirms each game against the receipt in its
+install folder, then adds any receipt the database has no row for. db reads
+butler.db only, and is the only source of play times, launch candidates and
+custom install folders. receipts scans the install locations instead of
+reading caves.
+
+.I Arguments
+    \fBstrategy \fR - merge (default), db or receipts.
+    \fBitch_path\fR - The itch user-data directory. Defaults to itch_path.
+
+.I Return codes
+    \fB0\fR - If the games were listed.
+    \fB1\fR - If itch was not found, or the strategy is not one of the three.
+
+.I Standard output
+    Tab-separated: game_id, path, source, title, install_folder_name, version, channel.
+
+.IP "\fBitch_apps_paths_only <strategy> <itch_path>\fR" 4
+List the paths the database half of a strategy would report.
+
+Used to avoid reporting a game twice when receipts are
+scanned afterwards.
+
+.I Arguments
+    \fBstrategy \fR - merge, db or receipts.
+    \fBitch_path\fR - The itch user-data directory.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I Standard output
+    One install path per line.
+
+.IP "\fBitch_app_by_id <game_id> [strategy]\fR" 4
+Print where a game is installed, by itch.io game id.
+
+.I Arguments
+    \fBgame_id \fR - An itch.io game id.
+    \fBstrategy\fR - Defaults to merge.
+
+.I Return codes
+    \fB0\fR - If the game is installed.
+    \fB1\fR - If no id was given, or the game is not installed.
+
+.I See also
+    itch_apps_by_id
+
+.I Standard output
+    The install path of the first match.
+
+.IP "\fBitch_apps_by_id <game_id> [strategy]\fR" 4
+List every install of a game.
+
+Usually zero or one, but itch will happily install the
+same game into more than one location.
+
+.I Arguments
+    \fBgame_id \fR - An itch.io game id.
+    \fBstrategy\fR - Defaults to merge.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I Standard output
+    One install path per line.
+
+.IP "\fBitch_app_by_name <name> [strategy]\fR" 4
+Print where a game is installed, by name.
+
+Matches the title, url slug or install folder name.
+Set ITCH_EXACT=false to ignore case, spacing and punctuation.
+
+.I Arguments
+    \fBname    \fR - A title, url slug or install folder name.
+    \fBstrategy\fR - Defaults to merge.
+
+.I Return codes
+    \fB0\fR - If a game matched.
+    \fB1\fR - If no name was given, or nothing matched.
+
+.I See also
+    itch_apps_by_name
+
+.I Standard output
+    The install path of the first match.
+
+.IP "\fBitch_apps_by_name <name> [strategy]\fR" 4
+List every installed game matching a name.
+
+Parsed with awk rather than read, because IFS treats a
+tab as whitespace: consecutive tabs would collapse into one, so a game with
+no title would shift every later field left.
+
+.I Arguments
+    \fBname    \fR - A title, url slug or install folder name.
+    \fBstrategy\fR - Defaults to merge.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I Standard output
+    One install path per line.
+
+.IP "\fBitch_has_app <game_id_or_name>\fR" 4
+Report whether a game is installed.
+
+.I Arguments
+    \fBgame_id_or_name\fR - An itch.io game id, or a title, url slug or folder name.
+
+.I Return codes
+    \fB0\fR - If the game is installed.
+    \fB1\fR - If it is not.
+
+.IP "\fBitch_app_manifest <game_id>\fR" 4
+Print the merged cave/receipt record for a game.
+
+The itch answer to Steam's appmanifest_*.acf.
+
+.I Arguments
+    \fBgame_id\fR - An itch.io game id.
+
+.I Return codes
+    \fB0\fR - If the game is installed.
+    \fB1\fR - If it is not.
+
+.I Standard output
+    A JSON object with the game, its paths, the cave row, the receipt and butler's launch candidates.
+
+.IP "\fBitch_launch_candidates <game_id>\fR" 4
+Print the launch candidates butler found for a game.
+
+.I Arguments
+    \fBgame_id\fR - An itch.io game id.
+
+.I Return codes
+    \fB0\fR - If the game is installed.
+    \fB1\fR - If it is not.
+
+.I See also
+    itch_app_manifest
+
+.I Standard output
+    One absolute path per line, best first.
+
+.IP "\fBitch_version\fR" 4
+Print name, version, origin and legal status.
+
+The first line is meant to be machine-parsable: the
+version number proper starts after the last space.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I Standard output
+    Five lines, per the GNU coding standards.
+
+.IP "\fBitch_usage\fR" 4
+Print brief documentation for how to invoke the program.
+
+.I Return codes
+    \fB0\fR - Always.
+
+.I Standard output
+    A usage line, the commands, the options, the exit statuses, and the bug address and home page.
+
+.IP "\fBitch_main [option]\.\.\. <command> [argument]\.\.\.\fR" 4
+Parse options and dispatch a command.
+
+Options are permitted anywhere among the arguments,
+which is the GNU extension to the POSIX guidelines: each argument is either
+consumed as an option or pushed to the back of the positional parameters, so
+after one pass only the operands remain, in their original order.
+
+.I Arguments
+    \fBoption \fR - Any option listed above.
+    \fBcommand\fR - One of the commands listed above.
+
+.I Return codes
+    \fB0\fR - On success.
+    \fB1\fR - If itch or the requested game was not found.
+    \fB2\fR - On a command-line usage error.
+
+.I Standard output
+    Whatever the dispatched command prints.
+
+
+.SH "EXAMPLES"
+.IP "\fBfind-itch-games apps
+List every installed game.\fR" 4
+
+.IP "\fBfind-itch-games --strategy db app 4225297
+Print where one game is installed, reading butler.db only.\fR" 4
+
+.IP "\fB. ./find-itch-games.sh && itch_apps
+Source the script and call the functions directly.
+\fR" 4
+
+.SH "NOTES"
+Requires sqlite3, jq and gzip, because a shell cannot read SQLite or
+JSON on its own.
+
+
+.SH "SEE ALSO"
+The Node and Python implementations, which read the same records:
+<https://github.com/sparr/find-itch-games>

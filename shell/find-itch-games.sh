@@ -1,27 +1,93 @@
 #!/bin/sh
 # shellcheck shell=sh disable=SC3043  # `local` is not POSIX.1 but is universal in practice
 #
-# find-itch-games -- find the itch.io app, its install locations, and the games
-# installed in them.
-#
-# Source this file to use the itch_* functions, or run it directly as a CLI:
-#
-#     . ./find-itch-games.sh   &&  itch_apps
-#     ./find-itch-games.sh apps
-#
-# POSIX sh. The only shell extension relied on is `local`, which is not in
-# POSIX.1 but is implemented by dash, ash, ksh, bash and zsh.
-#
-# External tools, because a shell cannot read SQLite or JSON on its own:
-#
-#     sqlite3   reads butler.db
-#     jq        parses receipts, verdicts and the database's JSON output
-#     gzip      decompresses receipts
-#
-# Every function prints to stdout and returns non-zero on failure. Lists are
-# tab-separated with one record per line, so they survive titles containing
-# spaces; nothing emitted here contains a literal tab or newline, because the
-# values come out of jq with those escaped.
+## \brief Find the itch.io app, its install locations, and the games installed in them.
+## \desc The only shell extension relied on is `local`, which is not in POSIX.1
+## but is implemented by dash, ash, ksh, bash and zsh.
+##
+## Lists are tab-separated, one record per line. Parse them with awk -F'\t',
+## not `read`: POSIX treats a tab as IFS whitespace, so `read` folds runs of
+## tabs together and a game with no title would shift every later field left.
+##
+## \note Requires sqlite3, jq and gzip, because a shell cannot read SQLite or
+## JSON on its own.
+##
+## \usage find-itch-games [OPTION]... COMMAND [ARGUMENT]...
+##
+## \option path
+## Print the itch user-data directory. See itch_path.
+## \option db-path
+## Print the path of the butler database. See itch_database_path.
+## \option libraries
+## List install locations, tab-separated: id, path, is_default, exists, source.
+## See itch_libraries.
+## \option library-paths
+## List just the install location paths. See itch_library_paths.
+## \option apps
+## List installed games, tab-separated: game_id, path, source, title,
+## install_folder_name, version, channel. See itch_apps.
+## \option app ID-OR-NAME
+## Print where one game is installed. See itch_app_by_id and itch_app_by_name.
+## \option manifest ID
+## Print the merged cave/receipt record, as JSON. See itch_app_manifest.
+## \option launch ID
+## Print the launch candidates butler found. See itch_launch_candidates.
+## \option receipt DIRECTORY
+## Print an install folder's receipt, as JSON. See itch_receipt.
+## \option receipts LIBRARY
+## List install folders under LIBRARY that have one. See itch_receipts.
+##
+## \option -s, --strategy=STRATEGY
+## Which of itch's records to read: merge (default), db, or receipts.
+## \option -p, --itch-path=DIR
+## Use DIR as the itch user-data directory instead of searching for it.
+## \option -H, --home=DIR
+## Search as though the home directory were DIR.
+## \option -P, --platform=NAME
+## Follow the conventions of NAME: linux, darwin, or win32.
+## \option -e, --exact
+## Match names exactly. This is the default.
+## \option -f, --fuzzy
+## Match names ignoring case, spacing and punctuation.
+## \option -k, --keep-missing
+## Keep games whose install folder no longer exists.
+## \option -h, --help
+## Display this help and exit.
+## \option -V, --version
+## Output version information and exit.
+##
+## Options may appear before or after the command. A '--' argument ends option
+## processing, so an operand beginning with '-' can still be passed.
+##
+## \env ITCH_PATH
+## Use this itch user-data directory instead of searching.
+## \env ITCH_USER_DATA_DIR
+## Checked before the platform defaults. The itch app does not read this.
+## \env FIND_ITCH_HOME
+## Search as though this were the home directory.
+## \env FIND_ITCH_PLATFORM
+## linux, darwin or win32.
+## \env ITCH_EXACT
+## Set to false to match names loosely.
+## \env ITCH_CHECK_EXISTS
+## Set to false to keep games whose install folder is gone.
+##
+## \exit 0
+## Success.
+## \exit 1
+## itch or the requested game was not found.
+## \exit 2
+## A command-line usage error.
+##
+## \example find-itch-games apps
+## \example-descr List every installed game.
+## \example find-itch-games --strategy db app 4225297
+## \example-descr Print where one game is installed, reading butler.db only.
+## \example . ./find-itch-games.sh && itch_apps
+## \example-descr Source the script and call the functions directly.
+##
+## \seealso The Node and Python implementations, which read the same records:
+## <https://github.com/sparr/find-itch-games>
 
 ITCH_APP_NAMES='itch kitch'
 ITCH_STRATEGIES='merge db receipts'
@@ -81,11 +147,14 @@ _itch_print_if_set() {
 # locating itch
 # ---------------------------------------------------------------------------
 
-# Directories itch may keep its user data in, most specific first.
-#
-# Mirrors Electron's app.getPath("userData") for each app variant.
-# ITCH_USER_DATA_DIR and ITCH_APP_DIR are this library's own escape hatch; the
-# itch app itself does not read them.
+## \function itch_path_candidates
+## \function-brief Directories itch may keep its user data in, most specific first.
+## \function-description Mirrors Electron's app.getPath("userData") for each app
+## variant. ITCH_USER_DATA_DIR and ITCH_APP_DIR are this library's own escape
+## hatch; the itch app itself does not read them.
+## \function-stdout One candidate directory per line, deduplicated.
+## \function-return 0 Always.
+## \function-seealso itch_path
 itch_path_candidates() {
     local home platform app old_ifs
     # Defensive: a caller that has narrowed IFS would otherwise stop
@@ -128,7 +197,12 @@ _itch_looks_like_itch_path() {
     [ -f "$1/db/butler.db" ] || [ -f "$1/preferences.json" ] || [ -d "$1/apps" ]
 }
 
-# Prints the itch user-data directory, or fails if there is none.
+## \function itch_path
+## \function-brief Print the itch user-data directory.
+## \function-stdout The first candidate that looks like an itch installation.
+## \function-return 0 If itch was found.
+## \function-return 1 If no candidate holds db/butler.db, preferences.json or apps/.
+## \function-seealso itch_path_candidates
 itch_path() {
     local candidate
     if [ -n "${ITCH_PATH:-}" ]; then
@@ -153,8 +227,15 @@ EOF
     return 1
 }
 
-# Prints butler.db's path, allowing for the butler-<host>.db name that builds
-# configured against a non-standard itch.io host use.
+## \function itch_database_path [itch_path]
+## \function-brief Print the path of the butler database.
+## \function-description Allows for the butler-<host>.db name that builds
+## configured against a non-standard itch.io host use, falling back to the
+## default name when there is none on disk.
+## \function-argument itch_path The itch user-data directory. Defaults to itch_path.
+## \function-stdout The database path.
+## \function-return 0 If an itch directory was found.
+## \function-return 1 If it was not.
 itch_database_path() {
     local itch db alternate
     itch=${1:-$(itch_path)} || return 1
@@ -189,7 +270,12 @@ _itch_query() {
     sqlite3 -json "file:$db?mode=ro" "$1" 2>/dev/null
 }
 
-# Install locations, tab-separated: id, path
+## \function itch_db_locations [database]
+## \function-brief Print the install locations recorded in butler.db.
+## \function-argument database The database path. Defaults to itch_database_path.
+## \function-stdout Tab-separated: id, path.
+## \function-return 0 If the database was read.
+## \function-return 1 If no database was found.
 itch_db_locations() {
     local db json
     db=${1:-$(itch_database_path)} || return 1
@@ -242,11 +328,15 @@ _itch_db_caves() {
 
 ITCH_RECEIPT_DIR='.itch'
 
-# Prints an install folder's receipt as JSON, or fails if it has none.
-#
-# Falls back to the pre-v23 uncompressed receipt.json, whose schema recorded a
-# cave's ids rather than the game; that shape is normalized to the modern one
-# with the ids kept under .legacy.
+## \function itch_receipt <directory>
+## \function-brief Print an install folder's receipt as JSON.
+## \function-description Falls back to the pre-v23 uncompressed receipt.json,
+## whose schema recorded a cave's ids rather than the game; that shape is
+## normalized to the modern one with the ids kept under .legacy.
+## \function-argument directory An install folder.
+## \function-stdout The receipt, as compact JSON.
+## \function-return 0 If the folder has a readable receipt.
+## \function-return 1 If it does not.
 itch_receipt() {
     local dir modern legacy json
     dir=$1
@@ -283,10 +373,13 @@ itch_receipt() {
         }' 2>/dev/null || return 1
 }
 
-# Install folders under a location that carry a receipt, one path per line.
-#
-# Follows butler's own scan rules: skip the downloads staging folder, require a
-# .itch directory, then read the receipt.
+## \function itch_receipts <library>
+## \function-brief List install folders under a location that carry a receipt.
+## \function-description Follows butler's own scan rules: skip the downloads
+## staging folder, require a .itch directory, then read the receipt.
+## \function-argument library An install location.
+## \function-stdout One install folder path per line.
+## \function-return 0 Always, including when the location does not exist.
 itch_receipts() {
     local library entry name
     library=$1
@@ -305,11 +398,16 @@ itch_receipts() {
 # install locations
 # ---------------------------------------------------------------------------
 
-# Install locations, tab-separated: id, path, is_default, exists, source
-#
-# butler.db is authoritative when readable; preferences.json covers itch
-# versions that predate it, and the built-in appdata location is derived from
-# the itch directory because itch never stores it as a path.
+## \function itch_libraries [itch_path]
+## \function-brief List itch's install locations.
+## \function-description butler.db is authoritative when readable;
+## preferences.json covers itch versions that predate it, and the built-in
+## appdata location is derived from the itch directory because itch never
+## stores it as a path.
+## \function-argument itch_path The itch user-data directory. Defaults to itch_path.
+## \function-stdout Tab-separated: id, path, is_default, exists, source.
+## \function-return 0 If an itch directory was found.
+## \function-return 1 If it was not.
 itch_libraries() {
     local itch db prefs default seen id path source
     itch=${1:-$(itch_path)} || return 1
@@ -343,7 +441,13 @@ itch_libraries() {
     done
 }
 
-# Just the install location paths, one per line.
+## \function itch_library_paths [itch_path]
+## \function-brief List just the install location paths.
+## \function-argument itch_path The itch user-data directory. Defaults to itch_path.
+## \function-stdout One path per line.
+## \function-return 0 If an itch directory was found.
+## \function-return 1 If it was not.
+## \function-seealso itch_libraries
 # shellcheck disable=SC2120  # the optional itch path is forwarded to itch_libraries
 itch_library_paths() {
     local rows
@@ -398,15 +502,19 @@ _itch_cave_path() {
     printf '%s\n' "$base"
 }
 
-# Every installed game, tab-separated:
-#   game_id, path, source, title, install_folder_name, version, channel
-#
-# Usage: itch_apps [strategy] [itch_path]
-#   merge     (default) butler.db confirmed against on-disk receipts, plus any
-#             receipt the database has no row for
-#   db        butler.db only; the only source of play times, launch candidates
-#             and custom install folders
-#   receipts  scan the install locations instead of reading caves
+## \function itch_apps [strategy] [itch_path]
+## \function-brief List every installed game.
+## \function-description The strategy chooses which of itch's records to read.
+## merge reads butler.db and confirms each game against the receipt in its
+## install folder, then adds any receipt the database has no row for. db reads
+## butler.db only, and is the only source of play times, launch candidates and
+## custom install folders. receipts scans the install locations instead of
+## reading caves.
+## \function-argument strategy merge (default), db or receipts.
+## \function-argument itch_path The itch user-data directory. Defaults to itch_path.
+## \function-stdout Tab-separated: game_id, path, source, title, install_folder_name, version, channel.
+## \function-return 0 If the games were listed.
+## \function-return 1 If itch was not found, or the strategy is not one of the three.
 itch_apps() {
     local strategy itch locations check_exists cave game_id path title
     local folder version channel source seen library receipt
@@ -468,8 +576,14 @@ $path
     return 0
 }
 
-# The paths the database half of a strategy would report. Used to avoid
-# reporting a game twice when receipts are scanned afterwards.
+## \function itch_apps_paths_only <strategy> <itch_path>
+## \function-brief List the paths the database half of a strategy would report.
+## \function-description Used to avoid reporting a game twice when receipts are
+## scanned afterwards.
+## \function-argument strategy merge, db or receipts.
+## \function-argument itch_path The itch user-data directory.
+## \function-stdout One install path per line.
+## \function-return 0 Always.
 itch_apps_paths_only() {
     local strategy itch locations cave path
     strategy=$1
@@ -494,7 +608,14 @@ _itch_normalize() {
     printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]'
 }
 
-# Prints where a game is installed, by itch.io game id.
+## \function itch_app_by_id <game_id> [strategy]
+## \function-brief Print where a game is installed, by itch.io game id.
+## \function-argument game_id An itch.io game id.
+## \function-argument strategy Defaults to merge.
+## \function-stdout The install path of the first match.
+## \function-return 0 If the game is installed.
+## \function-return 1 If no id was given, or the game is not installed.
+## \function-seealso itch_apps_by_id
 itch_app_by_id() {
     local id match
     id=$1
@@ -504,16 +625,28 @@ itch_app_by_id() {
     printf '%s\n' "$match" | head -n 1
 }
 
-# Every install of a game, one path per line. Usually zero or one, but itch
-# will happily install the same game into more than one location.
+## \function itch_apps_by_id <game_id> [strategy]
+## \function-brief List every install of a game.
+## \function-description Usually zero or one, but itch will happily install the
+## same game into more than one location.
+## \function-argument game_id An itch.io game id.
+## \function-argument strategy Defaults to merge.
+## \function-stdout One install path per line.
+## \function-return 0 Always.
 itch_apps_by_id() {
     itch_apps "${2:-merge}" | awk -F'\t' -v id="$1" '$1 == id { print $2 }'
 }
 
-# Prints where a game is installed, by title, url slug or install folder name.
-#
-# Exact by default. Set ITCH_EXACT=false for a match that ignores case, spacing
-# and punctuation.
+## \function itch_app_by_name <name> [strategy]
+## \function-brief Print where a game is installed, by name.
+## \function-description Matches the title, url slug or install folder name.
+## Set ITCH_EXACT=false to ignore case, spacing and punctuation.
+## \function-argument name A title, url slug or install folder name.
+## \function-argument strategy Defaults to merge.
+## \function-stdout The install path of the first match.
+## \function-return 0 If a game matched.
+## \function-return 1 If no name was given, or nothing matched.
+## \function-seealso itch_apps_by_name
 itch_app_by_name() {
     local name match
     name=$1
@@ -523,11 +656,15 @@ itch_app_by_name() {
     printf '%s\n' "$match" | head -n 1
 }
 
-# Every installed game matching a name, one path per line.
-#
-# Parsed with awk rather than `read`, because IFS treats a tab as whitespace:
-# consecutive tabs would collapse into one, so a game with no title would shift
-# every later field left.
+## \function itch_apps_by_name <name> [strategy]
+## \function-brief List every installed game matching a name.
+## \function-description Parsed with awk rather than read, because IFS treats a
+## tab as whitespace: consecutive tabs would collapse into one, so a game with
+## no title would shift every later field left.
+## \function-argument name A title, url slug or install folder name.
+## \function-argument strategy Defaults to merge.
+## \function-stdout One install path per line.
+## \function-return 0 Always.
 itch_apps_by_name() {
     local name strategy exact
     name=$1
@@ -551,7 +688,11 @@ itch_apps_by_name() {
         }'
 }
 
-# Exits zero if a game is installed, by id or by name.
+## \function itch_has_app <game_id_or_name>
+## \function-brief Report whether a game is installed.
+## \function-argument game_id_or_name An itch.io game id, or a title, url slug or folder name.
+## \function-return 0 If the game is installed.
+## \function-return 1 If it is not.
 itch_has_app() {
     local query
     query=$1
@@ -561,7 +702,13 @@ itch_has_app() {
     esac
 }
 
-# The merged cave/receipt record for a game, as JSON.
+## \function itch_app_manifest <game_id>
+## \function-brief Print the merged cave/receipt record for a game.
+## \function-description The itch answer to Steam's appmanifest_*.acf.
+## \function-argument game_id An itch.io game id.
+## \function-stdout A JSON object with the game, its paths, the cave row, the receipt and butler's launch candidates.
+## \function-return 0 If the game is installed.
+## \function-return 1 If it is not.
 itch_app_manifest() {
     local id row path receipt cave
     id=$1
@@ -588,7 +735,13 @@ itch_app_manifest() {
         }'
 }
 
-# Absolute paths of the launch candidates butler found, best first.
+## \function itch_launch_candidates <game_id>
+## \function-brief Print the launch candidates butler found for a game.
+## \function-argument game_id An itch.io game id.
+## \function-stdout One absolute path per line, best first.
+## \function-return 0 If the game is installed.
+## \function-return 1 If it is not.
+## \function-seealso itch_app_manifest
 itch_launch_candidates() {
     local id manifest
     id=$1
@@ -604,19 +757,21 @@ itch_launch_candidates() {
 # rather than deriving it from $0, which is a file name and may be anything.
 ITCH_PROGRAM_NAME='find-itch-games'
 ITCH_VERSION='0.1.1'
-ITCH_BUG_ADDRESS='https://github.com/sparr/find-itch-games/issues'
-ITCH_HOME_PAGE='https://sparr.github.io/find-itch-games/'
 
 # Exit statuses. 2 for a usage error keeps it distinguishable from a lookup
 # that simply found nothing, which is an ordinary failure.
+#
 ITCH_EX_OK=0
+# shellcheck disable=SC2034  # names the contract; failures propagate naturally
 ITCH_EX_FAILURE=1
 ITCH_EX_USAGE=2
 
-# Name, version, origin and legal status on stdout, then exit successfully.
-#
-# The first line is meant to be machine-parsable: the version number proper
-# starts after the last space.
+## \function itch_version
+## \function-brief Print name, version, origin and legal status.
+## \function-description The first line is meant to be machine-parsable: the
+## version number proper starts after the last space.
+## \function-stdout Five lines, per the GNU coding standards.
+## \function-return 0 Always.
 itch_version() {
     cat <<VERSION
 $ITCH_PROGRAM_NAME $ITCH_VERSION
@@ -627,54 +782,101 @@ There is NO WARRANTY, to the extent permitted by law.
 VERSION
 }
 
-# Brief documentation for how to invoke the program, on stdout.
+## \function itch_usage
+## \function-brief Print brief documentation for how to invoke the program.
+## \function-stdout A usage line, the commands, the options, the exit statuses, and the bug address and home page.
+## \function-return 0 Always.
 itch_usage() {
-    cat <<USAGE
-Usage: $ITCH_PROGRAM_NAME [OPTION]... COMMAND [ARGUMENT]...
+    cat <<'USAGE'
+Usage: find-itch-games [OPTION]... COMMAND [ARGUMENT]...
+
+
 Find the itch.io app, its install locations, and the games installed in them.
 
-Commands:
-  path                     print the itch user-data directory
-  db-path                  print the path of the butler database
-  libraries                list install locations, tab-separated:
-                             id, path, is_default, exists, source
-  library-paths            list just the install location paths
-  apps                     list installed games, tab-separated:
-                             game_id, path, source, title,
-                             install_folder_name, version, channel
-  app ID-OR-NAME           print where one game is installed
-  manifest ID              print the merged cave/receipt record, as JSON
-  launch ID                print the launch candidates butler found
-  receipt DIRECTORY        print an install folder's receipt, as JSON
-  receipts LIBRARY         list install folders under LIBRARY that have one
-
 Options:
-  -s, --strategy=STRATEGY  which of itch's records to read: merge (default),
-                             db, or receipts
-  -p, --itch-path=DIR      use DIR as the itch user-data directory instead of
-                             searching for it
-  -H, --home=DIR           search as though the home directory were DIR
-  -P, --platform=NAME      follow the conventions of NAME: linux, darwin,
-                             or win32
-  -e, --exact              match names exactly (default)
-  -f, --fuzzy              match names ignoring case, spacing and punctuation
-  -k, --keep-missing       keep games whose install folder no longer exists
-  -h, --help               display this help and exit
-  -V, --version            output version information and exit
+  path                  Print the itch user-data directory. See itch_path.
+  db-path               Print the path of the butler database. See
+                        itch_database_path.
+  libraries             List install locations, tab-separated: id, path,
+                        is_default, exists, source. See
+                        itch_libraries.
+  library-paths         List just the install location paths. See
+                        itch_library_paths.
+  apps                  List installed games, tab-separated: game_id, path,
+                        source, title,
+                        install_folder_name, version,
+                        channel. See itch_apps.
+  app ID-OR-NAME        Print where one game is installed. See itch_app_by_id
+                        and itch_app_by_name.
+  manifest ID           Print the merged cave/receipt record, as JSON. See
+                        itch_app_manifest.
+  launch ID             Print the launch candidates butler found. See
+                        itch_launch_candidates.
+  receipt DIRECTORY     Print an install folder's receipt, as JSON. See
+                        itch_receipt.
+  receipts LIBRARY      List install folders under LIBRARY that have one. See
+                        itch_receipts.
 
-Options may appear before or after the command. A '--' argument ends option
-processing, so an operand beginning with '-' can still be passed.
+  -s, --strategy =STRATEGY 
+                        Which of itch's records to read: merge (default), db,
+                        or receipts.
+  -p, --itch-path =DIR  Use DIR as the itch user-data directory instead of
+                        searching for it.
+  -H, --home =DIR       Search as though the home directory were DIR.
+  -P, --platform =NAME  Follow the conventions of NAME: linux, darwin, or
+                        win32.
+  -e, --exact           Match names exactly. This is the default.
+  -f, --fuzzy           Match names ignoring case, spacing and punctuation.
+  -k, --keep-missing    Keep games whose install folder no longer exists.
+  -h, --help            Display this help and exit.
+  -V, --version         Output version information and exit.
 
-Exit status:
-  $ITCH_EX_OK  success
-  $ITCH_EX_FAILURE  itch or the requested game was not found
-  $ITCH_EX_USAGE  a command-line usage error
+                        Options may appear before or after the command. A '--'
+                        argument ends option processing, so an operand
+                        beginning with '-' can still be passed.
+
+
+Environment Variables:
+  ITCH_PATH
+    Use this itch user-data directory instead of searching.
+  ITCH_USER_DATA_DIR
+    Checked before the platform defaults. The itch app does not read this.
+  FIND_ITCH_HOME
+    Search as though this were the home directory.
+  FIND_ITCH_PLATFORM
+    linux, darwin or win32.
+  ITCH_EXACT
+    Set to false to match names loosely.
+  ITCH_CHECK_EXISTS
+    Set to false to keep games whose install folder is gone.
+
+
+Exit Status:
+  0
+    Success.
+  1
+    itch or the requested game was not found.
+  2
+    A command-line usage error.
+
+
+Examples:
+  find-itch-games apps
+    List every installed game.
+
+  find-itch-games --strategy db app 4225297
+    Print where one game is installed, reading butler.db only.
+
+  . ./find-itch-games.sh && itch_apps
+    Source the script and call the functions directly.
+
 
 Requires sqlite3, jq and gzip, because a shell cannot read SQLite or JSON on
 its own.
 
-Report bugs to: <$ITCH_BUG_ADDRESS>
-$ITCH_PROGRAM_NAME home page: <$ITCH_HOME_PAGE>
+
+Report bugs to: <https://github.com/sparr/find-itch-games/issues>
+find-itch-games home page: <https://sparr.github.io/find-itch-games/>
 USAGE
 }
 
@@ -686,12 +888,18 @@ itch_usage_error() {
     return "$ITCH_EX_USAGE"
 }
 
-# Parses options and dispatches a command.
-#
-# Options are permitted anywhere among the arguments, which is the GNU
-# extension to the POSIX guidelines: each argument is either consumed as an
-# option or pushed to the back of the positional parameters, so after one pass
-# only the operands remain, in their original order.
+## \function itch_main [option]... <command> [argument]...
+## \function-brief Parse options and dispatch a command.
+## \function-description Options are permitted anywhere among the arguments,
+## which is the GNU extension to the POSIX guidelines: each argument is either
+## consumed as an option or pushed to the back of the positional parameters, so
+## after one pass only the operands remain, in their original order.
+## \function-argument option Any option listed above.
+## \function-argument command One of the commands listed above.
+## \function-stdout Whatever the dispatched command prints.
+## \function-return 0 On success.
+## \function-return 1 If itch or the requested game was not found.
+## \function-return 2 On a command-line usage error.
 itch_main() {
     local argc arg value command strategy
     strategy='merge'

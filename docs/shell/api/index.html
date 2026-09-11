@@ -1,0 +1,396 @@
+<title>find-itch-games(1)</title>
+<style>
+  :root {
+    --ground: #faf8f8; --surface: #f2eeee; --ink: #1b1618; --muted: #6d6165;
+    --rule: #e4dcdd; --accent: #c9304a; --accent-soft: #f6e6e9;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #161213; --surface: #1e191b; --ink: #eee6e7; --muted: #9a8c90;
+      --rule: #2c2527; --accent: #ff8091; --accent-soft: #2a1c20;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #161213; --surface: #1e191b; --ink: #eee6e7; --muted: #9a8c90;
+    --rule: #2c2527; --accent: #ff8091; --accent-soft: #2a1c20;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground); color: var(--ink); font-family: var(--serif);
+    font-size: 17px; line-height: 1.6; margin: 0; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { display: grid; gap: 3rem; max-width: 78rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  @media (min-width: 64rem) { .wrap { grid-template-columns: 14rem minmax(0, 1fr); padding-top: 4.5rem; } }
+  header.top { grid-column: 1 / -1; border-bottom: 1px solid var(--rule); padding-bottom: 2rem; }
+  .eyebrow { font-family: var(--sans); font-size: .7rem; letter-spacing: .14em;
+             text-transform: uppercase; color: var(--muted); margin: 0 0 .75rem; }
+  h1 { font-family: var(--mono); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 600;
+       letter-spacing: -.02em; margin: 0 0 .6rem; text-wrap: balance; }
+  h1 .dim { color: var(--muted); font-weight: 400; }
+  .lede { margin: 0; color: var(--muted); }
+  nav.rail { font-family: var(--mono); font-size: .82rem; }
+  @media (min-width: 64rem) {
+    nav.rail { position: sticky; top: 2rem; align-self: start; max-height: calc(100vh - 4rem); overflow-y: auto; }
+  }
+  nav.rail p { font-family: var(--sans); font-size: .7rem; letter-spacing: .12em;
+               text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 .8rem; }
+  nav.rail p:first-child { margin-top: 0; }
+  nav.rail a { display: block; padding: .22rem 0 .22rem .7rem; margin-left: -.7rem;
+               color: var(--muted); text-decoration: none; border-left: 2px solid transparent; }
+  nav.rail a:hover, nav.rail a:focus-visible { color: var(--accent); border-left-color: var(--accent); }
+  main { min-width: 0; }
+  h2 { font-family: var(--mono); font-size: 1.35rem; font-weight: 600; letter-spacing: -.015em;
+       margin: 2.5rem 0 .8rem; scroll-margin-top: 2rem; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-family: var(--mono); font-size: 1.12rem; font-weight: 600; letter-spacing: -.01em;
+       margin: 1.4rem 0 .9rem; padding-top: 1.9rem; border-top: 1px solid var(--rule);
+       scroll-margin-top: 2rem; }
+  h3 .paren { color: var(--muted); font-weight: 400; }
+  p { max-width: 66ch; margin: 0 0 .85rem; }
+  .sub { font-family: var(--sans); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+         color: var(--muted); margin: 1.4rem 0 .5rem; }
+  .row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: .25rem .9rem;
+         padding: .32rem 0; border-top: 1px solid var(--rule); align-items: baseline; font-size: .95rem; }
+  .row:first-of-type { border-top: none; }
+  @media (max-width: 40rem) { .row { grid-template-columns: minmax(0, 1fr); } }
+  .key { font-family: var(--mono); font-size: .88rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+  code { font-family: var(--mono); font-size: .88em; background: var(--surface);
+         padding: .08em .32em; border-radius: 2px; }
+  .key code { background: none; padding: 0; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">POSIX shell &middot; generated from the source by shellman</p>
+    <h1>find-itch-games<span class="dim">(1)</span></h1>
+    <p class="lede">Find the itch.io app, its install locations, and the games installed in them.</p>
+  </header>
+
+  <nav class="rail">
+    <p>Command line</p>
+    <a href="#usage">Usage</a>
+    <a href="#options">Options</a>
+    <a href="#environment">Environment</a>
+    <a href="#exit-status">Exit status</a>
+    <a href="#examples">Examples</a>
+    <a href="#notes">Notes</a>
+    <p>Library</p>
+    <a href="#itch_path_candidates">itch_path_candidates</a>
+    <a href="#itch_path">itch_path</a>
+    <a href="#itch_database_path">itch_database_path</a>
+    <a href="#itch_db_locations">itch_db_locations</a>
+    <a href="#itch_receipt">itch_receipt</a>
+    <a href="#itch_receipts">itch_receipts</a>
+    <a href="#itch_libraries">itch_libraries</a>
+    <a href="#itch_library_paths">itch_library_paths</a>
+    <a href="#itch_apps">itch_apps</a>
+    <a href="#itch_apps_paths_only">itch_apps_paths_only</a>
+    <a href="#itch_app_by_id">itch_app_by_id</a>
+    <a href="#itch_apps_by_id">itch_apps_by_id</a>
+    <a href="#itch_app_by_name">itch_app_by_name</a>
+    <a href="#itch_apps_by_name">itch_apps_by_name</a>
+    <a href="#itch_has_app">itch_has_app</a>
+    <a href="#itch_app_manifest">itch_app_manifest</a>
+    <a href="#itch_launch_candidates">itch_launch_candidates</a>
+    <a href="#itch_version">itch_version</a>
+    <a href="#itch_usage">itch_usage</a>
+    <a href="#itch_main">itch_main</a>
+  </nav>
+
+  <main>
+    <h2 id="usage">Usage</h2>
+    <p><code>find-itch-games [OPTION]... COMMAND [ARGUMENT]...
+</code></p>
+
+    <h2 id="options">Options</h2>
+    <div class="row"><span class="key"><code>path</code></span><span>Print the itch user-data directory. See <a href="#itch_path"><code>itch_path</code></a>.</span></div>
+    <div class="row"><span class="key"><code>db-path</code></span><span>Print the path of the butler database. See <a href="#itch_database_path"><code>itch_database_path</code></a>.</span></div>
+    <div class="row"><span class="key"><code>libraries</code></span><span>List install locations, tab-separated: id, path, is_default, exists, source.
+See <a href="#itch_libraries"><code>itch_libraries</code></a>.</span></div>
+    <div class="row"><span class="key"><code>library-paths</code></span><span>List just the install location paths. See <a href="#itch_library_paths"><code>itch_library_paths</code></a>.</span></div>
+    <div class="row"><span class="key"><code>apps</code></span><span>List installed games, tab-separated: game_id, path, source, title,
+install_folder_name, version, channel. See <a href="#itch_apps"><code>itch_apps</code></a>.</span></div>
+    <div class="row"><span class="key"><code>app ID-OR-NAME</code></span><span>Print where one game is installed. See <a href="#itch_app_by_id"><code>itch_app_by_id</code></a> and <a href="#itch_app_by_name"><code>itch_app_by_name</code></a>.</span></div>
+    <div class="row"><span class="key"><code>manifest ID</code></span><span>Print the merged cave/receipt record, as JSON. See <a href="#itch_app_manifest"><code>itch_app_manifest</code></a>.</span></div>
+    <div class="row"><span class="key"><code>launch ID</code></span><span>Print the launch candidates butler found. See <a href="#itch_launch_candidates"><code>itch_launch_candidates</code></a>.</span></div>
+    <div class="row"><span class="key"><code>receipt DIRECTORY</code></span><span>Print an install folder&#39;s receipt, as JSON. See <a href="#itch_receipt"><code>itch_receipt</code></a>.</span></div>
+    <div class="row"><span class="key"><code>receipts LIBRARY</code></span><span>List install folders under LIBRARY that have one. See <a href="#itch_receipts"><code>itch_receipts</code></a>.
+</span></div>
+    <div class="row"><span class="key"><code>-s, --strategy =STRATEGY</code></span><span>Which of itch&#39;s records to read: merge (default), db, or receipts.</span></div>
+    <div class="row"><span class="key"><code>-p, --itch-path =DIR</code></span><span>Use DIR as the itch user-data directory instead of searching for it.</span></div>
+    <div class="row"><span class="key"><code>-H, --home =DIR</code></span><span>Search as though the home directory were DIR.</span></div>
+    <div class="row"><span class="key"><code>-P, --platform =NAME</code></span><span>Follow the conventions of NAME: linux, darwin, or win32.</span></div>
+    <div class="row"><span class="key"><code>-e, --exact </code></span><span>Match names exactly. This is the default.</span></div>
+    <div class="row"><span class="key"><code>-f, --fuzzy </code></span><span>Match names ignoring case, spacing and punctuation.</span></div>
+    <div class="row"><span class="key"><code>-k, --keep-missing </code></span><span>Keep games whose install folder no longer exists.</span></div>
+    <div class="row"><span class="key"><code>-h, --help </code></span><span>Display this help and exit.</span></div>
+    <div class="row"><span class="key"><code>-V, --version </code></span><span>Output version information and exit.
+
+Options may appear before or after the command. A &#39;--&#39; argument ends option
+processing, so an operand beginning with &#39;-&#39; can still be passed.
+</span></div>
+
+    <h2 id="environment">Environment</h2>
+    <div class="row"><span class="key"><code>ITCH_PATH</code></span><span>Use this itch user-data directory instead of searching.</span></div>
+    <div class="row"><span class="key"><code>ITCH_USER_DATA_DIR</code></span><span>Checked before the platform defaults. The itch app does not read this.</span></div>
+    <div class="row"><span class="key"><code>FIND_ITCH_HOME</code></span><span>Search as though this were the home directory.</span></div>
+    <div class="row"><span class="key"><code>FIND_ITCH_PLATFORM</code></span><span>linux, darwin or win32.</span></div>
+    <div class="row"><span class="key"><code>ITCH_EXACT</code></span><span>Set to false to match names loosely.</span></div>
+    <div class="row"><span class="key"><code>ITCH_CHECK_EXISTS</code></span><span>Set to false to keep games whose install folder is gone.
+</span></div>
+
+    <h2 id="exit-status">Exit status</h2>
+    <div class="row"><span class="key">0</span><span>Success.</span></div>
+    <div class="row"><span class="key">1</span><span>itch or the requested game was not found.</span></div>
+    <div class="row"><span class="key">2</span><span>A command-line usage error.
+</span></div>
+
+    <h2 id="examples">Examples</h2>
+    <div class="row"><span class="key"><code>find-itch-games apps
+List every installed game.</code></span><span></span></div>
+    <div class="row"><span class="key"><code>find-itch-games --strategy db app 4225297
+Print where one game is installed, reading butler.db only.</code></span><span></span></div>
+    <div class="row"><span class="key"><code>. ./find-itch-games.sh &amp;&amp; itch_apps
+Source the script and call the functions directly.
+</code></span><span></span></div>
+
+    <h2 id="notes">Notes</h2>
+    <p>The only shell extension relied on is `local`, which is not in POSIX.1
+but is implemented by dash, ash, ksh, bash and zsh.
+
+Lists are tab-separated, one record per line. Parse them with awk -F&#39;\t&#39;,
+not `read`: POSIX treats a tab as IFS whitespace, so `read` folds runs of
+tabs together and a game with no title would shift every later field left.
+</p>
+    <p>Requires sqlite3, jq and gzip, because a shell cannot read SQLite or
+JSON on its own.
+</p>
+
+    <h2 id="functions">Library</h2>
+    <h3 id="itch_path_candidates">itch_path_candidates<span class="paren"></span></h3>
+    <p>Directories itch may keep its user data in, most specific first.</p>
+    <p>Mirrors Electron&#39;s app.getPath(&#34;userData&#34;) for each app
+variant. ITCH_USER_DATA_DIR and ITCH_APP_DIR are this library&#39;s own escape
+hatch; the itch app itself does not read them.</p>
+    <h4 class="sub">Standard output</h4>
+    <p>One candidate directory per line, deduplicated.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_path"><code>itch_path</code></a></p>
+    <h3 id="itch_path">itch_path<span class="paren"></span></h3>
+    <p>Print the itch user-data directory.</p>
+    <h4 class="sub">Standard output</h4>
+    <p>The first candidate that looks like an itch installation.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If itch was found.</span></div>
+    <div class="row"><span class="key">1</span><span>If no candidate holds db/butler.db, preferences.json or apps/.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_path_candidates"><code>itch_path_candidates</code></a></p>
+    <h3 id="itch_database_path">itch_database_path<span class="paren"> [itch_path]</span></h3>
+    <p>Print the path of the butler database.</p>
+    <p>Allows for the butler-&lt;host&gt;.db name that builds
+configured against a non-standard itch.io host use, falling back to the
+default name when there is none on disk.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>itch_path</code></span><span>The itch user-data directory. Defaults to <a href="#itch_path"><code>itch_path</code></a>.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>The database path.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If an itch directory was found.</span></div>
+    <div class="row"><span class="key">1</span><span>If it was not.</span></div>
+    <h3 id="itch_db_locations">itch_db_locations<span class="paren"> [database]</span></h3>
+    <p>Print the install locations recorded in butler.db.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>database</code></span><span>The database path. Defaults to <a href="#itch_database_path"><code>itch_database_path</code></a>.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>Tab-separated: id, path.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the database was read.</span></div>
+    <div class="row"><span class="key">1</span><span>If no database was found.</span></div>
+    <h3 id="itch_receipt">itch_receipt<span class="paren"> &lt;directory&gt;</span></h3>
+    <p>Print an install folder&#39;s receipt as JSON.</p>
+    <p>Falls back to the pre-v23 uncompressed receipt.json,
+whose schema recorded a cave&#39;s ids rather than the game; that shape is
+normalized to the modern one with the ids kept under .legacy.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>directory</code></span><span>An install folder.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>The receipt, as compact JSON.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the folder has a readable receipt.</span></div>
+    <div class="row"><span class="key">1</span><span>If it does not.</span></div>
+    <h3 id="itch_receipts">itch_receipts<span class="paren"> &lt;library&gt;</span></h3>
+    <p>List install folders under a location that carry a receipt.</p>
+    <p>Follows butler&#39;s own scan rules: skip the downloads
+staging folder, require a .itch directory, then read the receipt.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>library</code></span><span>An install location.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One install folder path per line.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always, including when the location does not exist.</span></div>
+    <h3 id="itch_libraries">itch_libraries<span class="paren"> [itch_path]</span></h3>
+    <p>List itch&#39;s install locations.</p>
+    <p>butler.db is authoritative when readable;
+preferences.json covers itch versions that predate it, and the built-in
+appdata location is derived from the itch directory because itch never
+stores it as a path.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>itch_path</code></span><span>The itch user-data directory. Defaults to <a href="#itch_path"><code>itch_path</code></a>.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>Tab-separated: id, path, is_default, exists, source.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If an itch directory was found.</span></div>
+    <div class="row"><span class="key">1</span><span>If it was not.</span></div>
+    <h3 id="itch_library_paths">itch_library_paths<span class="paren"> [itch_path]</span></h3>
+    <p>List just the install location paths.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>itch_path</code></span><span>The itch user-data directory. Defaults to <a href="#itch_path"><code>itch_path</code></a>.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One path per line.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If an itch directory was found.</span></div>
+    <div class="row"><span class="key">1</span><span>If it was not.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_libraries"><code>itch_libraries</code></a></p>
+    <h3 id="itch_apps">itch_apps<span class="paren"> [strategy] [itch_path]</span></h3>
+    <p>List every installed game.</p>
+    <p>The strategy chooses which of itch&#39;s records to read.
+merge reads butler.db and confirms each game against the receipt in its
+install folder, then adds any receipt the database has no row for. db reads
+butler.db only, and is the only source of play times, launch candidates and
+custom install folders. receipts scans the install locations instead of
+reading caves.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>strategy</code></span><span>merge (default), db or receipts.</span></div>
+    <div class="row"><span class="key"><code>itch_path</code></span><span>The itch user-data directory. Defaults to <a href="#itch_path"><code>itch_path</code></a>.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>Tab-separated: game_id, path, source, title, install_folder_name, version, channel.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the games were listed.</span></div>
+    <div class="row"><span class="key">1</span><span>If itch was not found, or the strategy is not one of the three.</span></div>
+    <h3 id="itch_apps_paths_only">itch_apps_paths_only<span class="paren"> &lt;strategy&gt; &lt;itch_path&gt;</span></h3>
+    <p>List the paths the database half of a strategy would report.</p>
+    <p>Used to avoid reporting a game twice when receipts are
+scanned afterwards.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>strategy</code></span><span>merge, db or receipts.</span></div>
+    <div class="row"><span class="key"><code>itch_path</code></span><span>The itch user-data directory.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One install path per line.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h3 id="itch_app_by_id">itch_app_by_id<span class="paren"> &lt;game_id&gt; [strategy]</span></h3>
+    <p>Print where a game is installed, by itch.io game id.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>game_id</code></span><span>An itch.io game id.</span></div>
+    <div class="row"><span class="key"><code>strategy</code></span><span>Defaults to merge.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>The install path of the first match.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the game is installed.</span></div>
+    <div class="row"><span class="key">1</span><span>If no id was given, or the game is not installed.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_apps_by_id"><code>itch_apps_by_id</code></a></p>
+    <h3 id="itch_apps_by_id">itch_apps_by_id<span class="paren"> &lt;game_id&gt; [strategy]</span></h3>
+    <p>List every install of a game.</p>
+    <p>Usually zero or one, but itch will happily install the
+same game into more than one location.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>game_id</code></span><span>An itch.io game id.</span></div>
+    <div class="row"><span class="key"><code>strategy</code></span><span>Defaults to merge.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One install path per line.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h3 id="itch_app_by_name">itch_app_by_name<span class="paren"> &lt;name&gt; [strategy]</span></h3>
+    <p>Print where a game is installed, by name.</p>
+    <p>Matches the title, url slug or install folder name.
+Set ITCH_EXACT=false to ignore case, spacing and punctuation.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>name</code></span><span>A title, url slug or install folder name.</span></div>
+    <div class="row"><span class="key"><code>strategy</code></span><span>Defaults to merge.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>The install path of the first match.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If a game matched.</span></div>
+    <div class="row"><span class="key">1</span><span>If no name was given, or nothing matched.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_apps_by_name"><code>itch_apps_by_name</code></a></p>
+    <h3 id="itch_apps_by_name">itch_apps_by_name<span class="paren"> &lt;name&gt; [strategy]</span></h3>
+    <p>List every installed game matching a name.</p>
+    <p>Parsed with awk rather than read, because IFS treats a
+tab as whitespace: consecutive tabs would collapse into one, so a game with
+no title would shift every later field left.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>name</code></span><span>A title, url slug or install folder name.</span></div>
+    <div class="row"><span class="key"><code>strategy</code></span><span>Defaults to merge.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One install path per line.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h3 id="itch_has_app">itch_has_app<span class="paren"> &lt;game_id_or_name&gt;</span></h3>
+    <p>Report whether a game is installed.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>game_id_or_name</code></span><span>An itch.io game id, or a title, url slug or folder name.</span></div>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the game is installed.</span></div>
+    <div class="row"><span class="key">1</span><span>If it is not.</span></div>
+    <h3 id="itch_app_manifest">itch_app_manifest<span class="paren"> &lt;game_id&gt;</span></h3>
+    <p>Print the merged cave/receipt record for a game.</p>
+    <p>The itch answer to Steam&#39;s appmanifest_*.acf.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>game_id</code></span><span>An itch.io game id.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>A JSON object with the game, its paths, the cave row, the receipt and butler&#39;s launch candidates.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the game is installed.</span></div>
+    <div class="row"><span class="key">1</span><span>If it is not.</span></div>
+    <h3 id="itch_launch_candidates">itch_launch_candidates<span class="paren"> &lt;game_id&gt;</span></h3>
+    <p>Print the launch candidates butler found for a game.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>game_id</code></span><span>An itch.io game id.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>One absolute path per line, best first.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>If the game is installed.</span></div>
+    <div class="row"><span class="key">1</span><span>If it is not.</span></div>
+    <h4 class="sub">See also</h4>
+    <p><a href="#itch_app_manifest"><code>itch_app_manifest</code></a></p>
+    <h3 id="itch_version">itch_version<span class="paren"></span></h3>
+    <p>Print name, version, origin and legal status.</p>
+    <p>The first line is meant to be machine-parsable: the
+version number proper starts after the last space.</p>
+    <h4 class="sub">Standard output</h4>
+    <p>Five lines, per the GNU coding standards.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h3 id="itch_usage">itch_usage<span class="paren"></span></h3>
+    <p>Print brief documentation for how to invoke the program.</p>
+    <h4 class="sub">Standard output</h4>
+    <p>A usage line, the commands, the options, the exit statuses, and the bug address and home page.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>Always.</span></div>
+    <h3 id="itch_main">itch_main<span class="paren"> [option]... &lt;command&gt; [argument]...</span></h3>
+    <p>Parse options and dispatch a command.</p>
+    <p>Options are permitted anywhere among the arguments,
+which is the GNU extension to the POSIX guidelines: each argument is either
+consumed as an option or pushed to the back of the positional parameters, so
+after one pass only the operands remain, in their original order.</p>
+    <h4 class="sub">Arguments</h4>
+    <div class="row"><span class="key"><code>option</code></span><span>Any option listed above.</span></div>
+    <div class="row"><span class="key"><code>command</code></span><span>One of the commands listed above.</span></div>
+    <h4 class="sub">Standard output</h4>
+    <p>Whatever the dispatched command prints.</p>
+    <h4 class="sub">Exit status</h4>
+    <div class="row"><span class="key">0</span><span>On success.</span></div>
+    <div class="row"><span class="key">1</span><span>If itch or the requested game was not found.</span></div>
+    <div class="row"><span class="key">2</span><span>On a command-line usage error.</span></div>
+  </main>
+</div>

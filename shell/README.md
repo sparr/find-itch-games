@@ -219,5 +219,35 @@ vocabulary in [`shared/definitions.json`](../shared/definitions.json) — the
 same three files the Node and Python suites use. There is no test framework, so
 there is nothing to install beyond the tools the library already needs.
 
-There is no generated API reference for this implementation; `find-itch-games
-help` and the comments in the script are the documentation.
+## Documentation
+
+All of it comes from one set of `## \tag` comments in
+[`find-itch-games.sh`](find-itch-games.sh), rendered by
+[shellman](https://github.com/pawamoy/shellman):
+
+```bash
+./build-docs.sh
+```
+
+That writes three things, all committed, so shellman is only needed by someone
+changing the documentation:
+
+| Output | What it is |
+| --- | --- |
+| [`docs/shell/api/index.html`](https://sparr.github.io/find-itch-games/shell/api/) | The reference GitHub Pages serves. Each command links to the function that implements it. |
+| [`docs/shell/api/index.md`](../docs/shell/api/index.md) | The same reference as markdown, which GitHub renders in-repo. |
+| [`docs/shell/find-itch-games.1`](../docs/shell/find-itch-games.1) | A groff man page: `man ./docs/shell/find-itch-games.1`. |
+| `itch_usage()` in the script | The `--help` text, written back into the source, so the program itself has no runtime dependency on shellman. |
+
+Four of the templates in [`templates/`](templates) are copies of shellman's,
+carrying its ISC notice in a comment header that does not reach the generated
+output: `helptext`, `linked.md`, `linked_function.md` and `wikipage_toc.md`.
+The rest are ours: `html` exists because
+shellman ships no HTML template and Pages will not render markdown; `helptext`
+drops
+shellman's function reference, which belongs in the docs rather than in a
+terminal and would otherwise make `--help` 403 lines instead of 96; `linked.md`
+adds the command-to-function cross-links, which shellman does not do natively.
+
+A test regenerates the help text and compares it to the committed heredoc, so
+the two cannot drift. It skips itself where shellman is not installed.

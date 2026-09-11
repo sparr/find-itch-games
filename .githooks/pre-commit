@@ -18,13 +18,21 @@ set -e
 staged=$(git diff --cached --name-only --diff-filter=ACMR)
 echo "$staged" | grep -qE '^(node/src/|node/tsconfig[^/]*\.json$|node/typedoc[^/]*\.json$|node/package\.json$|shared/)' && build_node=yes || build_node=
 echo "$staged" | grep -qE '^(python/src/|python/build-docs\.py$)' && build_python=yes || build_python=
-if [ -z "$build_node$build_python" ]; then
+echo "$staged" | grep -qE '^shell/(find-itch-games\.sh|templates/|build-docs\.sh)' && build_shell=yes || build_shell=
+if [ -z "$build_node$build_python$build_shell" ]; then
   exit 0
 fi
 
 if [ -n "$build_node" ] && [ ! -x node/node_modules/.bin/typedoc ]; then
   echo "pre-commit: typedoc is not installed. Run \`npm install\` in node/, or" >&2
   echo "            commit with --no-verify to skip the docs rebuild." >&2
+  exit 1
+fi
+
+if [ -n "$build_shell" ] && ! command -v shellman >/dev/null 2>&1; then
+  echo "pre-commit: shellman is not installed. Run:" >&2
+  echo "              pipx install shellman" >&2
+  echo "            or commit with --no-verify to skip the docs rebuild." >&2
   exit 1
 fi
 
@@ -58,6 +66,13 @@ if [ -n "$build_node" ]; then
 fi
 if [ -n "$build_python" ]; then
   ( cd "$staged/python" && ./build-docs.py >/dev/null )
+fi
+if [ -n "$build_shell" ]; then
+  # Writes the help text back into the staged copy of the script as well as
+  # the docs, so both are committed together.
+  ( cd "$staged/shell" && ./build-docs.sh "$staged/docs/shell" >/dev/null )
+  cp "$staged/shell/find-itch-games.sh" "$repo/shell/find-itch-games.sh"
+  git add shell/find-itch-games.sh
 fi
 
 # Swap rather than regenerate in place, so a failure above leaves the committed

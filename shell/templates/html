@@ -1,0 +1,179 @@
+{# find-itch-games HTML reference.
+
+   shellman ships no HTML template, so this one renders its data model
+   directly. GitHub Pages serves .md as text/markdown, which browsers download
+   rather than render, so the markdown alone could not sit alongside the
+   TypeDoc and pdoc output. #}
+{% from 'link.html' import link with context %}
+{% macro anchor(prototype) %}{{ prototype.split(' ')[0] }}{% endmacro %}
+<title>{{ program }}(1)</title>
+<style>
+  :root {
+    --ground: #faf8f8; --surface: #f2eeee; --ink: #1b1618; --muted: #6d6165;
+    --rule: #e4dcdd; --accent: #c9304a; --accent-soft: #f6e6e9;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #161213; --surface: #1e191b; --ink: #eee6e7; --muted: #9a8c90;
+      --rule: #2c2527; --accent: #ff8091; --accent-soft: #2a1c20;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #161213; --surface: #1e191b; --ink: #eee6e7; --muted: #9a8c90;
+    --rule: #2c2527; --accent: #ff8091; --accent-soft: #2a1c20;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground); color: var(--ink); font-family: var(--serif);
+    font-size: 17px; line-height: 1.6; margin: 0; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { display: grid; gap: 3rem; max-width: 78rem; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+  @media (min-width: 64rem) { .wrap { grid-template-columns: 14rem minmax(0, 1fr); padding-top: 4.5rem; } }
+  header.top { grid-column: 1 / -1; border-bottom: 1px solid var(--rule); padding-bottom: 2rem; }
+  .eyebrow { font-family: var(--sans); font-size: .7rem; letter-spacing: .14em;
+             text-transform: uppercase; color: var(--muted); margin: 0 0 .75rem; }
+  h1 { font-family: var(--mono); font-size: clamp(1.6rem, 4vw, 2.3rem); font-weight: 600;
+       letter-spacing: -.02em; margin: 0 0 .6rem; text-wrap: balance; }
+  h1 .dim { color: var(--muted); font-weight: 400; }
+  .lede { margin: 0; color: var(--muted); }
+  nav.rail { font-family: var(--mono); font-size: .82rem; }
+  @media (min-width: 64rem) {
+    nav.rail { position: sticky; top: 2rem; align-self: start; max-height: calc(100vh - 4rem); overflow-y: auto; }
+  }
+  nav.rail p { font-family: var(--sans); font-size: .7rem; letter-spacing: .12em;
+               text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 .8rem; }
+  nav.rail p:first-child { margin-top: 0; }
+  nav.rail a { display: block; padding: .22rem 0 .22rem .7rem; margin-left: -.7rem;
+               color: var(--muted); text-decoration: none; border-left: 2px solid transparent; }
+  nav.rail a:hover, nav.rail a:focus-visible { color: var(--accent); border-left-color: var(--accent); }
+  main { min-width: 0; }
+  h2 { font-family: var(--mono); font-size: 1.35rem; font-weight: 600; letter-spacing: -.015em;
+       margin: 2.5rem 0 .8rem; scroll-margin-top: 2rem; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-family: var(--mono); font-size: 1.12rem; font-weight: 600; letter-spacing: -.01em;
+       margin: 1.4rem 0 .9rem; padding-top: 1.9rem; border-top: 1px solid var(--rule);
+       scroll-margin-top: 2rem; }
+  h3 .paren { color: var(--muted); font-weight: 400; }
+  p { max-width: 66ch; margin: 0 0 .85rem; }
+  .sub { font-family: var(--sans); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+         color: var(--muted); margin: 1.4rem 0 .5rem; }
+  .row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: .25rem .9rem;
+         padding: .32rem 0; border-top: 1px solid var(--rule); align-items: baseline; font-size: .95rem; }
+  .row:first-of-type { border-top: none; }
+  @media (max-width: 40rem) { .row { grid-template-columns: minmax(0, 1fr); } }
+  .key { font-family: var(--mono); font-size: .88rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+  code { font-family: var(--mono); font-size: .88em; background: var(--surface);
+         padding: .08em .32em; border-radius: 2px; }
+  .key code { background: none; padding: 0; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">POSIX shell &middot; generated from the source by shellman</p>
+    <h1>{{ program }}<span class="dim">(1)</span></h1>
+{% if shellman.doc.brief %}
+    <p class="lede">{{ shellman.doc.brief[0].text|e }}</p>
+{% endif %}
+  </header>
+
+  <nav class="rail">
+    <p>Command line</p>
+    <a href="#usage">Usage</a>
+    <a href="#options">Options</a>
+    <a href="#environment">Environment</a>
+    <a href="#exit-status">Exit status</a>
+    <a href="#examples">Examples</a>
+    <a href="#notes">Notes</a>
+    <p>Library</p>
+{% for function in shellman.doc.function %}
+    <a href="#{{ anchor(function.prototype) }}">{{ anchor(function.prototype) }}</a>
+{% endfor %}
+  </nav>
+
+  <main>
+{% if shellman.doc.usage %}
+    <h2 id="usage">Usage</h2>
+{% for usage in shellman.doc.usage %}
+    <p><code>{{ usage.program|e }} {{ usage.command|e }}</code></p>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.option %}
+    <h2 id="options">Options</h2>
+{% for option in shellman.doc.option %}
+    <div class="row"><span class="key"><code>{{ option.signature|e }}</code></span><span>{{ link(option.description|e) }}</span></div>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.env %}
+    <h2 id="environment">Environment</h2>
+{% for env in shellman.doc.env %}
+    <div class="row"><span class="key"><code>{{ env.name|e }}</code></span><span>{{ env.description|e }}</span></div>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.exit %}
+    <h2 id="exit-status">Exit status</h2>
+{% for exit in shellman.doc.exit %}
+    <div class="row"><span class="key">{{ exit.code|e }}</span><span>{{ exit.description|e }}</span></div>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.example %}
+    <h2 id="examples">Examples</h2>
+{% for example in shellman.doc.example %}
+    <div class="row"><span class="key"><code>{{ example.brief|e }}</code></span><span>{{ example.description|e }}</span></div>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.desc or shellman.doc.note %}
+    <h2 id="notes">Notes</h2>
+{% for desc in shellman.doc.desc %}
+    <p>{{ desc.text|e }}</p>
+{% endfor %}
+{% for note in shellman.doc.note %}
+    <p>{{ note.text|e }}</p>
+{% endfor %}
+{% endif %}
+
+{% if shellman.doc.function %}
+    <h2 id="functions">Library</h2>
+{% for function in shellman.doc.function %}
+    <h3 id="{{ anchor(function.prototype) }}">{{ anchor(function.prototype) }}<span class="paren">{{ function.prototype[anchor(function.prototype)|length:]|e }}</span></h3>
+    <p>{{ function.brief|e }}</p>
+{% if function.description %}
+    <p>{{ function.description|e }}</p>
+{% endif %}
+{% if function.arguments %}
+    <h4 class="sub">Arguments</h4>
+{% for argument in function.arguments %}
+    <div class="row"><span class="key"><code>{{ argument|firstword|e }}</code></span><span>{{ link(argument|body|e) }}</span></div>
+{% endfor %}
+{% endif %}
+{% if function.stdout %}
+    <h4 class="sub">Standard output</h4>
+{% for line in function.stdout %}
+    <p>{{ line|e }}</p>
+{% endfor %}
+{% endif %}
+{% if function.return_codes %}
+    <h4 class="sub">Exit status</h4>
+{% for code in function.return_codes %}
+    <div class="row"><span class="key">{{ code|firstword|e }}</span><span>{{ code|body|e }}</span></div>
+{% endfor %}
+{% endif %}
+{% if function.seealso %}
+    <h4 class="sub">See also</h4>
+{% for see in function.seealso %}
+    <p>{{ link(see|e) }}</p>
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+  </main>
+</div>

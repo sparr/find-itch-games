@@ -1,0 +1,47 @@
+{% macro link(text) -%}
+{#- Two passes. Names are first encoded to sentinels containing no "itch_",
+    longest first, so a later replacement cannot match inside an earlier
+    result; only then are the sentinels expanded into links. A single chain of
+    replaces would turn itch_path_candidates into a broken nested link. -#}
+{{ text
+        | replace("itch_launch_candidates", "\u27e60\u27e7")
+        | replace("itch_path_candidates", "\u27e61\u27e7")
+        | replace("itch_apps_paths_only", "\u27e62\u27e7")
+        | replace("itch_database_path", "\u27e63\u27e7")
+        | replace("itch_library_paths", "\u27e64\u27e7")
+        | replace("itch_app_manifest", "\u27e65\u27e7")
+        | replace("itch_db_locations", "\u27e66\u27e7")
+        | replace("itch_apps_by_name", "\u27e67\u27e7")
+        | replace("itch_app_by_name", "\u27e68\u27e7")
+        | replace("itch_apps_by_id", "\u27e69\u27e7")
+        | replace("itch_app_by_id", "\u27e610\u27e7")
+        | replace("itch_libraries", "\u27e611\u27e7")
+        | replace("itch_receipts", "\u27e612\u27e7")
+        | replace("itch_has_app", "\u27e613\u27e7")
+        | replace("itch_receipt", "\u27e614\u27e7")
+        | replace("itch_version", "\u27e615\u27e7")
+        | replace("itch_usage", "\u27e616\u27e7")
+        | replace("itch_main", "\u27e617\u27e7")
+        | replace("itch_apps", "\u27e618\u27e7")
+        | replace("itch_path", "\u27e619\u27e7")
+        | replace("\u27e60\u27e7", "[itch_launch_candidates](#itch_launch_candidates)")
+        | replace("\u27e61\u27e7", "[itch_path_candidates](#itch_path_candidates)")
+        | replace("\u27e62\u27e7", "[itch_apps_paths_only](#itch_apps_paths_only)")
+        | replace("\u27e63\u27e7", "[itch_database_path](#itch_database_path)")
+        | replace("\u27e64\u27e7", "[itch_library_paths](#itch_library_paths)")
+        | replace("\u27e65\u27e7", "[itch_app_manifest](#itch_app_manifest)")
+        | replace("\u27e66\u27e7", "[itch_db_locations](#itch_db_locations)")
+        | replace("\u27e67\u27e7", "[itch_apps_by_name](#itch_apps_by_name)")
+        | replace("\u27e68\u27e7", "[itch_app_by_name](#itch_app_by_name)")
+        | replace("\u27e69\u27e7", "[itch_apps_by_id](#itch_apps_by_id)")
+        | replace("\u27e610\u27e7", "[itch_app_by_id](#itch_app_by_id)")
+        | replace("\u27e611\u27e7", "[itch_libraries](#itch_libraries)")
+        | replace("\u27e612\u27e7", "[itch_receipts](#itch_receipts)")
+        | replace("\u27e613\u27e7", "[itch_has_app](#itch_has_app)")
+        | replace("\u27e614\u27e7", "[itch_receipt](#itch_receipt)")
+        | replace("\u27e615\u27e7", "[itch_version](#itch_version)")
+        | replace("\u27e616\u27e7", "[itch_usage](#itch_usage)")
+        | replace("\u27e617\u27e7", "[itch_main](#itch_main)")
+        | replace("\u27e618\u27e7", "[itch_apps](#itch_apps)")
+        | replace("\u27e619\u27e7", "[itch_path](#itch_path)") }}
+{%- endmacro %}
