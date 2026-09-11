@@ -8,9 +8,33 @@ against. This page covers the shell API.
 
 ## Install
 
-There is nothing to install — copy [`find-itch-games.sh`](find-itch-games.sh)
-into your project, or keep it on `$PATH`. It is a single POSIX `sh` file,
-verified under both `dash` and `bash`.
+With [bpkg](https://github.com/bpkg/bpkg), which this repository is marked up
+for via [`bpkg.json`](../bpkg.json):
+
+```bash
+bpkg install sparr/find-itch-games            # into ./deps/bin
+bpkg install -g sparr/find-itch-games         # into $PREFIX/bin
+bpkg install -g sparr/find-itch-games@v0.1.1  # a specific release
+```
+
+bpkg checks out the git ref you name, so releases are `@v0.1.1` rather than
+`@0.1.1` — the tags carry the `v`.
+
+With `make`, which is also what bpkg's global install runs:
+
+```bash
+make -C shell install                 # into /usr/local/bin
+make -C shell install PREFIX=~/.local # or wherever
+make -C shell uninstall
+```
+
+Either way the command lands on `$PATH` as `find-itch-games`, without the
+`.sh` — what you type is a command, and its implementation language is not
+your concern.
+
+Or simply copy [`find-itch-games.sh`](find-itch-games.sh) into your project and
+source it. It is a single POSIX `sh` file, verified under both `dash` and
+`bash`.
 
 Unlike the Node and Python packages, which have no runtime dependencies, a
 shell cannot read SQLite or JSON on its own, so three external tools are
@@ -180,9 +204,13 @@ being quietly treated as `merge`.
 ## Development
 
 ```bash
-./tests/run-tests.sh          # also passes under: dash tests/run-tests.sh
-shellcheck -x --shell=sh find-itch-games.sh tests/run-tests.sh
+make -C shell check           # or ./tests/run-tests.sh
+make -C shell lint            # shellcheck
+dash tests/run-tests.sh       # the suite also passes under dash
 ```
+
+bpkg exposes the same two as package commands, runnable from a checkout with
+`bpkg run test` and `bpkg run lint`.
 
 The tests build the installation described by
 [`shared/fixtures.json`](../shared/fixtures.json) from the schema in

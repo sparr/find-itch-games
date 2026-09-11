@@ -1,0 +1,25 @@
+{
+  "name": "find-itch-games",
+  "version": "0.1.1",
+  "description": "Find the itch.io app, its install locations, and the games installed in them",
+  "repo": "sparr/find-itch-games",
+  "homepage": "https://sparr.github.io/find-itch-games/",
+  "license": "MIT",
+  "global": true,
+  "install": "make -C shell install",
+  "scripts": [
+    "shell/find-itch-games.sh"
+  ],
+  "files": [
+    "shell/README.md",
+    "LICENSE"
+  ],
+  "commands": {
+    "test": "./shell/tests/run-tests.sh",
+    "lint": "shellcheck -x --shell=sh shell/find-itch-games.sh shell/tests/run-tests.sh"
+  },
+  "commands-description": {
+    "test": "Run the shell implementation's test suite",
+    "lint": "Run shellcheck over the shell sources"
+  }
+}

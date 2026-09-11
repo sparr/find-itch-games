@@ -28,6 +28,12 @@ const MANIFESTS = [
     path: "../shell/find-itch-games.sh",
     read: (text) => text.match(/^ITCH_VERSION='([^']+)'$/m)?.[1],
   },
+  {
+    // bpkg installs the shell script straight from the repository, so its
+    // manifest is a fifth place the version can drift.
+    path: "../bpkg.json",
+    read: (text) => JSON.parse(text).version,
+  },
 ];
 
 const found = MANIFESTS.map(({ path, read }) => {

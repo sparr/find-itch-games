@@ -10,7 +10,7 @@ tested against the same fixtures.
 | --- | --- | --- | --- |
 | JavaScript / TypeScript | `find-itch-games` (npm), `@sparr/find-itch-games` (JSR) | `npm i find-itch-games` | [node/README.md](node/README.md) · [API](https://sparr.github.io/find-itch-games/node/api/) |
 | Python | `find-itch-games` (PyPI) | `pip install find-itch-games` | [python/README.md](python/README.md) · [API](https://sparr.github.io/find-itch-games/python/api/) |
-| POSIX shell | not packaged — copy the script | `cp shell/find-itch-games.sh .` | [shell/README.md](shell/README.md) |
+| POSIX shell | `find-itch-games` ([bpkg](https://github.com/bpkg/bpkg)) | `bpkg install sparr/find-itch-games` | [shell/README.md](shell/README.md) |
 
 The Node and Python packages have no runtime dependencies. The shell script
 needs `sqlite3`, `jq` and `gzip`, because a shell cannot read SQLite or JSON on
@@ -20,8 +20,8 @@ the per-language READMEs cover their APIs.
 The two published packages share a name, a definition set and a version: they
 are released in lockstep, so `find-itch-games 0.1.1` means the same behaviour in
 either language. A release that only changes one of them simply is not
-republished for the other, so version numbers may skip. The shell script is not
-published to a registry; it is copied from this repository.
+republished for the other, so version numbers may skip. The shell script is
+installed straight from this repository by bpkg, and reports the same version.
 
 Data structures and lookup rules follow the upstream sources: the
 [itch client](https://github.com/itchio/itch), [butler](https://github.com/itchio/butler)
@@ -36,6 +36,7 @@ node/       the JavaScript/TypeScript package
 python/     the Python package
 shell/      the POSIX shell script
 docs/       generated API reference, published by GitHub Pages
+bpkg.json   marks the repository up as a bpkg package, installing the shell script
 ```
 
 [`shared/`](shared) is what keeps the implementations honest:

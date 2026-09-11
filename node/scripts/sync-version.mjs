@@ -24,4 +24,8 @@ if (shellUpdated === shell && !shell.includes(`ITCH_VERSION='${version}'`)) {
 }
 writeFileSync(shellPath, shellUpdated);
 
-console.log(`jsr.json, the Python package and the shell script set to ${version}`);
+const bpkgPath = "../bpkg.json";
+const bpkg = JSON.parse(readFileSync(bpkgPath, "utf8"));
+writeFileSync(bpkgPath, JSON.stringify({ ...bpkg, version }, null, 2) + "\n");
+
+console.log(`jsr.json, the Python package, the shell script and bpkg.json set to ${version}`);
