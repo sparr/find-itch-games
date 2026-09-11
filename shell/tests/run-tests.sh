@@ -308,5 +308,69 @@ TEMPLATES
 done
 rmdir "$EMPTY" 2>/dev/null || true
 
+# ---------------------------------------------------------------------------
+# the command-line interface, against the GNU coding standards
+# ---------------------------------------------------------------------------
+
+CLI="$HERE/../find-itch-games.sh"
+
+assert_equal '--version names the program and version, parsable after the last space' \
+    "$ITCH_VERSION" "$("$CLI" --version | head -n 1 | awk '{print $NF}')"
+assert_equal '--version first line uses the canonical program name' \
+    "$ITCH_PROGRAM_NAME" "$("$CLI" --version | head -n 1 | awk '{print $1}')"
+assert_equal '--version states the licence and the absence of warranty' 'yes' \
+    "$("$CLI" --version | grep -q '^License ' && "$CLI" --version | grep -q 'NO WARRANTY' && echo yes)"
+assert_equal '--version carries a copyright notice' 'yes' \
+    "$("$CLI" --version | grep -q '^Copyright ' && echo yes)"
+
+assert_equal '--help opens with a usage line' 'yes' \
+    "$("$CLI" --help | head -n 1 | grep -q "^Usage: $ITCH_PROGRAM_NAME " && echo yes)"
+assert_equal '--help ends with the bug address and home page' 'yes' \
+    "$("$CLI" --help | tail -n 2 | grep -q '^Report bugs to: <' && \
+       "$CLI" --help | tail -n 1 | grep -q "^$ITCH_PROGRAM_NAME home page: <" && echo yes)"
+
+assert_equal '--help exits successfully' '0' \
+    "$("$CLI" --help >/dev/null 2>&1; echo $?)"
+assert_equal '--version exits successfully' '0' \
+    "$("$CLI" --version >/dev/null 2>&1; echo $?)"
+
+# "Other options and arguments should be ignored once this is seen, and the
+# program should not perform its normal function."
+assert_equal '--help overrides a later command' 'yes' \
+    "$("$CLI" --help apps | head -n 1 | grep -q '^Usage:' && echo yes)"
+assert_equal '--version overrides a later command' 'yes' \
+    "$("$CLI" --version apps | head -n 1 | grep -q "^$ITCH_PROGRAM_NAME " && echo yes)"
+
+assert_equal 'a usage error exits 2' '2' \
+    "$("$CLI" --no-such-option >/dev/null 2>&1; echo $?)"
+assert_equal 'an unknown command exits 2' '2' \
+    "$("$CLI" no-such-command >/dev/null 2>&1; echo $?)"
+assert_equal 'a missing option argument exits 2' '2' \
+    "$("$CLI" --strategy >/dev/null 2>&1; echo $?)"
+assert_equal 'a failed lookup exits 1' '1' \
+    "$("$CLI" app 999999999 >/dev/null 2>&1; echo $?)"
+
+assert_equal 'diagnostics name the program and go to stderr' \
+    "$ITCH_PROGRAM_NAME: unrecognized option '--no-such-option'" \
+    "$("$CLI" --no-such-option 2>&1 >/dev/null | head -n 1)"
+assert_equal 'diagnostics point at --help' \
+    "Try '$ITCH_PROGRAM_NAME --help' for more information." \
+    "$("$CLI" --no-such-option 2>&1 >/dev/null | tail -n 1)"
+
+# The GNU extension to the POSIX guidelines: options anywhere among arguments.
+assert_equal 'an option may follow the command' 'db' \
+    "$("$CLI" apps --strategy db | cut -f3 | sort -u)"
+assert_equal 'an option may precede the command' 'db' \
+    "$("$CLI" --strategy db apps | cut -f3 | sort -u)"
+assert_equal 'long options accept =VALUE' 'receipt' \
+    "$("$CLI" apps --strategy=receipts | cut -f3 | sort -u)"
+assert_equal 'short options accept a separate argument' 'db' \
+    "$("$CLI" -s db apps | cut -f3 | sort -u)"
+assert_equal 'short options may be bundled' \
+    "$ROOT/Games/itch/godot-pck-explorer" \
+    "$("$CLI" -fk app 'godot pck explorer')"
+assert_equal 'a -- argument ends option processing' '1' \
+    "$("$CLI" app -- --version >/dev/null 2>&1; echo $?)"
+
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

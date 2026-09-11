@@ -591,57 +591,204 @@ itch_launch_candidates() {
 # command line
 # ---------------------------------------------------------------------------
 
+# The canonical program name, as a constant. The GNU standards ask for this
+# rather than deriving it from $0, which is a file name and may be anything.
+ITCH_PROGRAM_NAME='find-itch-games'
+ITCH_VERSION='0.1.1'
+ITCH_BUG_ADDRESS='https://github.com/sparr/find-itch-games/issues'
+ITCH_HOME_PAGE='https://sparr.github.io/find-itch-games/'
+
+# Exit statuses. 2 for a usage error keeps it distinguishable from a lookup
+# that simply found nothing, which is an ordinary failure.
+ITCH_EX_OK=0
+ITCH_EX_FAILURE=1
+ITCH_EX_USAGE=2
+
+# Name, version, origin and legal status on stdout, then exit successfully.
+#
+# The first line is meant to be machine-parsable: the version number proper
+# starts after the last space.
+itch_version() {
+    cat <<VERSION
+$ITCH_PROGRAM_NAME $ITCH_VERSION
+Copyright (C) 2026 Clarence "Sparr" Risher
+License MIT: <https://opensource.org/license/mit>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+VERSION
+}
+
+# Brief documentation for how to invoke the program, on stdout.
 itch_usage() {
-    cat <<'USAGE'
-find-itch-games -- find the itch.io app, its install locations and games
+    cat <<USAGE
+Usage: $ITCH_PROGRAM_NAME [OPTION]... COMMAND [ARGUMENT]...
+Find the itch.io app, its install locations, and the games installed in them.
 
-usage: find-itch-games <command> [arguments]
+Commands:
+  path                     print the itch user-data directory
+  db-path                  print the path of the butler database
+  libraries                list install locations, tab-separated:
+                             id, path, is_default, exists, source
+  library-paths            list just the install location paths
+  apps                     list installed games, tab-separated:
+                             game_id, path, source, title,
+                             install_folder_name, version, channel
+  app ID-OR-NAME           print where one game is installed
+  manifest ID              print the merged cave/receipt record, as JSON
+  launch ID                print the launch candidates butler found
+  receipt DIRECTORY        print an install folder's receipt, as JSON
+  receipts LIBRARY         list install folders under LIBRARY that have one
 
-  path                     the itch user-data directory
-  db-path                  the butler database
-  libraries                install locations: id, path, default, exists, source
-  library-paths            just the install location paths
-  apps [strategy]          installed games: id, path, source, title, folder,
-                           version, channel   (merge | db | receipts)
-  app <id|name>            where one game is installed
-  manifest <id>            the merged cave/receipt record, as JSON
-  launch <id>              launch candidates butler found, absolute paths
-  receipt <dir>            an install folder's receipt, as JSON
-  receipts <library>       install folders under a location that have one
-  help                     this message
+Options:
+  -s, --strategy=STRATEGY  which of itch's records to read: merge (default),
+                             db, or receipts
+  -p, --itch-path=DIR      use DIR as the itch user-data directory instead of
+                             searching for it
+  -H, --home=DIR           search as though the home directory were DIR
+  -P, --platform=NAME      follow the conventions of NAME: linux, darwin,
+                             or win32
+  -e, --exact              match names exactly (default)
+  -f, --fuzzy              match names ignoring case, spacing and punctuation
+  -k, --keep-missing       keep games whose install folder no longer exists
+  -h, --help               display this help and exit
+  -V, --version            output version information and exit
 
-environment:
-  ITCH_PATH                use this itch directory instead of searching
-  FIND_ITCH_HOME           search as though HOME were this
-  FIND_ITCH_PLATFORM       linux | darwin | win32
-  ITCH_USER_DATA_DIR       checked before the platform defaults
-  ITCH_EXACT=false         name lookups ignore case, spacing and punctuation
-  ITCH_CHECK_EXISTS=false  keep games whose install folder is gone
+Options may appear before or after the command. A '--' argument ends option
+processing, so an operand beginning with '-' can still be passed.
 
-requires: sqlite3, jq, gzip
+Exit status:
+  $ITCH_EX_OK  success
+  $ITCH_EX_FAILURE  itch or the requested game was not found
+  $ITCH_EX_USAGE  a command-line usage error
+
+Requires sqlite3, jq and gzip, because a shell cannot read SQLite or JSON on
+its own.
+
+Report bugs to: <$ITCH_BUG_ADDRESS>
+$ITCH_PROGRAM_NAME home page: <$ITCH_HOME_PAGE>
 USAGE
 }
 
+# Reports a usage error the way GNU programs do: a diagnostic naming the
+# program, on stderr, and a pointer to --help.
+itch_usage_error() {
+    printf '%s: %s\n' "$ITCH_PROGRAM_NAME" "$1" >&2
+    printf "Try '%s --help' for more information.\n" "$ITCH_PROGRAM_NAME" >&2
+    return "$ITCH_EX_USAGE"
+}
+
+# Parses options and dispatches a command.
+#
+# Options are permitted anywhere among the arguments, which is the GNU
+# extension to the POSIX guidelines: each argument is either consumed as an
+# option or pushed to the back of the positional parameters, so after one pass
+# only the operands remain, in their original order.
 itch_main() {
-    local command
-    command=${1:-help}
+    local argc arg value command strategy
+    strategy='merge'
+
+    argc=$#
+    while [ "$argc" -gt 0 ]; do
+        arg=$1
+        shift
+        argc=$((argc - 1))
+
+        case "$arg" in
+            --)
+                # Everything after this is an operand, even if it looks like
+                # an option.
+                while [ "$argc" -gt 0 ]; do
+                    set -- "$@" "$1"
+                    shift
+                    argc=$((argc - 1))
+                done
+                ;;
+            --*=*)
+                value=${arg#*=}
+                case "${arg%%=*}" in
+                    --strategy)  strategy=$value ;;
+                    --itch-path) ITCH_PATH=$value; export ITCH_PATH ;;
+                    --home)      FIND_ITCH_HOME=$value; export FIND_ITCH_HOME ;;
+                    --platform)  FIND_ITCH_PLATFORM=$value; export FIND_ITCH_PLATFORM ;;
+                    *) itch_usage_error "unrecognized option '${arg%%=*}'"; return $? ;;
+                esac
+                ;;
+            --strategy|--itch-path|--home|--platform|-s|-p|-H|-P)
+                if [ "$argc" -eq 0 ]; then
+                    itch_usage_error "option '$arg' requires an argument"
+                    return $?
+                fi
+                value=$1
+                shift
+                argc=$((argc - 1))
+                case "$arg" in
+                    --strategy|-s)  strategy=$value ;;
+                    --itch-path|-p) ITCH_PATH=$value; export ITCH_PATH ;;
+                    --home|-H)      FIND_ITCH_HOME=$value; export FIND_ITCH_HOME ;;
+                    --platform|-P)  FIND_ITCH_PLATFORM=$value; export FIND_ITCH_PLATFORM ;;
+                esac
+                ;;
+            --exact|-e)        ITCH_EXACT=true; export ITCH_EXACT ;;
+            --fuzzy|-f)        ITCH_EXACT=false; export ITCH_EXACT ;;
+            --keep-missing|-k) ITCH_CHECK_EXISTS=false; export ITCH_CHECK_EXISTS ;;
+            # --help and --version win over everything else, and the program
+            # does not perform its normal function once either is seen.
+            --help|-h)         itch_usage; return "$ITCH_EX_OK" ;;
+            --version|-V)      itch_version; return "$ITCH_EX_OK" ;;
+            -[!-]?*)
+                # A bundle such as -fk. Split it and re-queue the pieces.
+                value=${arg#-}
+                while [ -n "$value" ]; do
+                    set -- "-$(printf '%s' "$value" | cut -c1)" "$@"
+                    value=$(printf '%s' "$value" | cut -c2-)
+                    argc=$((argc + 1))
+                done
+                ;;
+            -|--*|-*)
+                itch_usage_error "unrecognized option '$arg'"
+                return $?
+                ;;
+            *)
+                set -- "$@" "$arg"
+                ;;
+        esac
+    done
+
+    command=${1:-}
     [ $# -gt 0 ] && shift
+
     case "$command" in
+        '')             itch_usage_error 'missing command'; return $? ;;
         path)           itch_path ;;
         db-path)        itch_database_path ;;
         libraries)      itch_libraries ;;
-        library-paths)  itch_library_paths "$@" ;;
-        apps)           itch_apps "${1:-merge}" ;;
-        app)            case "${1:-}" in
-                            ''|*[!0-9]*) itch_app_by_name "${1:-}" ;;
-                            *)           itch_app_by_id "$1" ;;
-                        esac ;;
-        manifest)       itch_app_manifest "${1:-}" ;;
-        launch)         itch_launch_candidates "${1:-}" ;;
-        receipt)        itch_receipt "${1:-}" ;;
-        receipts)       itch_receipts "${1:-}" ;;
-        help|-h|--help) itch_usage ;;
-        *)              itch_usage >&2; return 2 ;;
+        library-paths)  itch_library_paths ;;
+        apps)           itch_apps "$strategy" ;;
+        app)
+            if [ $# -eq 0 ]; then
+                itch_usage_error "the 'app' command requires a game id or name"
+                return $?
+            fi
+            case "$1" in
+                ''|*[!0-9]*) itch_app_by_name "$1" "$strategy" ;;
+                *)           itch_app_by_id "$1" "$strategy" ;;
+            esac
+            ;;
+        manifest|launch|receipt|receipts)
+            if [ $# -eq 0 ]; then
+                itch_usage_error "the '$command' command requires an argument"
+                return $?
+            fi
+            case "$command" in
+                manifest) itch_app_manifest "$1" ;;
+                launch)   itch_launch_candidates "$1" ;;
+                receipt)  itch_receipt "$1" ;;
+                receipts) itch_receipts "$1" ;;
+            esac
+            ;;
+        help)           itch_usage ;;
+        version)        itch_version ;;
+        *)              itch_usage_error "unrecognized command '$command'"; return $? ;;
     esac
 }
 
@@ -651,5 +798,6 @@ case "${0##*/}" in
     find-itch-games.sh|find-itch-games)
         _itch_require sqlite3 jq gzip || exit 1
         itch_main "$@"
+        exit $?
         ;;
 esac

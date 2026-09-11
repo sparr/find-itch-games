@@ -27,24 +27,94 @@ implemented by dash, ash, ksh, bash and zsh.
 
 ## Usage
 
-As a command:
+The command-line interface follows the
+[GNU coding standards](https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html):
+long options with single-letter equivalents, options permitted anywhere among
+the arguments, a `--` terminator, and the two standard options.
 
 ```console
 $ find-itch-games path
 /home/you/.config/itch
 
 $ find-itch-games apps
-4225297	/home/you/Games/distributrains	db+receipt	Distributrains	distributrains		
-1323129	/home/you/Games/godot-pck-explorer	db+receipt	Godot PCK Explorer	godot-pck-explorer	1.6.0	native-console-linux-64
+4225297	/home/you/Games/distributrains	db+receipt	Distributrains	distributrains
 
-$ find-itch-games app 4225297
+$ find-itch-games --strategy db app 4225297
 /home/you/Games/distributrains
 
 $ find-itch-games launch 4225297
 /home/you/Games/distributrains/Distributrains/Distributrains64
 ```
 
-Or sourced as a library:
+`--version` prints name, version, origin and legal status, with the version
+number after the last space of the first line so it can be parsed:
+
+```console
+$ find-itch-games --version
+find-itch-games 0.1.1
+Copyright (C) 2026 Clarence "Sparr" Risher
+License MIT: <https://opensource.org/license/mit>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+```
+
+`--help` documents the invocation and ends with the bug address and home page:
+
+```
+Usage: find-itch-games [OPTION]... COMMAND [ARGUMENT]...
+Find the itch.io app, its install locations, and the games installed in them.
+
+Commands:
+  path                     print the itch user-data directory
+  db-path                  print the path of the butler database
+  libraries                list install locations, tab-separated:
+                             id, path, is_default, exists, source
+  library-paths            list just the install location paths
+  apps                     list installed games, tab-separated:
+                             game_id, path, source, title,
+                             install_folder_name, version, channel
+  app ID-OR-NAME           print where one game is installed
+  manifest ID              print the merged cave/receipt record, as JSON
+  launch ID                print the launch candidates butler found
+  receipt DIRECTORY        print an install folder's receipt, as JSON
+  receipts LIBRARY         list install folders under LIBRARY that have one
+
+Options:
+  -s, --strategy=STRATEGY  which of itch's records to read: merge (default),
+                             db, or receipts
+  -p, --itch-path=DIR      use DIR as the itch user-data directory instead of
+                             searching for it
+  -H, --home=DIR           search as though the home directory were DIR
+  -P, --platform=NAME      follow the conventions of NAME: linux, darwin,
+                             or win32
+  -e, --exact              match names exactly (default)
+  -f, --fuzzy              match names ignoring case, spacing and punctuation
+  -k, --keep-missing       keep games whose install folder no longer exists
+  -h, --help               display this help and exit
+  -V, --version            output version information and exit
+
+Options may appear before or after the command. A '--' argument ends option
+processing, so an operand beginning with '-' can still be passed.
+
+Exit status:
+  0  success
+  1  itch or the requested game was not found
+  2  a command-line usage error
+
+Requires sqlite3, jq and gzip, because a shell cannot read SQLite or JSON on
+its own.
+
+Report bugs to: <https://github.com/sparr/find-itch-games/issues>
+find-itch-games home page: <https://sparr.github.io/find-itch-games/>
+```
+
+Exit status is `0` on success, `1` when itch or the requested game was not
+found, and `2` for a command-line usage error. Diagnostics are written to
+stderr, prefixed with the program name.
+
+### As a library
+
+Source the file to use the functions directly:
 
 ```sh
 . ./find-itch-games.sh
@@ -79,18 +149,21 @@ whitespace, so `read` folds runs of tabs together and a game with no title
 would shift every later field left. The library parses its own output this way
 for the same reason.
 
-## Options
+## Options and environment
 
-Configuration is by environment variable, which is the natural seam in a shell:
+Every option has an environment variable equivalent, which is what the sourced
+functions read. The options set these before dispatching, so the two are
+interchangeable.
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `ITCH_PATH` | auto-detected | Use this itch user-data directory instead of searching. |
-| `ITCH_USER_DATA_DIR` | — | Checked before the platform defaults. As in the other implementations, itch itself does not read this. |
-| `FIND_ITCH_HOME` | `$HOME` | Search as though this were the home directory. |
-| `FIND_ITCH_PLATFORM` | from `uname -s` | `linux`, `darwin` or `win32`. |
-| `ITCH_EXACT` | `true` | `false` matches names ignoring case, spacing and punctuation. |
-| `ITCH_CHECK_EXISTS` | `true` | `false` keeps games whose install folder is gone. |
+| Option | Variable | Default | Meaning |
+| --- | --- | --- | --- |
+| `-p`, `--itch-path=DIR` | `ITCH_PATH` | auto-detected | Use this itch user-data directory instead of searching. |
+| — | `ITCH_USER_DATA_DIR` | — | Checked before the platform defaults. As in the other implementations, itch itself does not read this. |
+| `-H`, `--home=DIR` | `FIND_ITCH_HOME` | `$HOME` | Search as though this were the home directory. |
+| `-P`, `--platform=NAME` | `FIND_ITCH_PLATFORM` | from `uname -s` | `linux`, `darwin` or `win32`. |
+| `-f`, `--fuzzy` | `ITCH_EXACT=false` | exact | Match names ignoring case, spacing and punctuation. |
+| `-k`, `--keep-missing` | `ITCH_CHECK_EXISTS=false` | drop them | Keep games whose install folder is gone. |
+| `-s`, `--strategy=NAME` | — | `merge` | Which of itch's records to read. |
 
 `FIND_ITCH_HOME` and `FIND_ITCH_PLATFORM` are this implementation's version of
 the Node and Python packages' lookup seam. They exist mostly so the

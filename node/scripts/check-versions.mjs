@@ -22,6 +22,12 @@ const MANIFESTS = [
     // from here, so there is no separate manifest to keep in step.
     read: (text) => text.match(/^__version__ = "([^"]+)"$/m)?.[1],
   },
+  {
+    // The shell script is not published to a registry, but it reports a
+    // version from --version, which must not contradict the packages.
+    path: "../shell/find-itch-games.sh",
+    read: (text) => text.match(/^ITCH_VERSION='([^']+)'$/m)?.[1],
+  },
 ];
 
 const found = MANIFESTS.map(({ path, read }) => {

@@ -15,4 +15,13 @@ if (updated === init && !init.includes(`__version__ = "${version}"`)) {
 }
 writeFileSync(initPath, updated);
 
-console.log(`jsr.json and the Python package set to ${version}`);
+const shellPath = "../shell/find-itch-games.sh";
+const shell = readFileSync(shellPath, "utf8");
+const shellUpdated = shell.replace(/^ITCH_VERSION='[^']+'$/m, `ITCH_VERSION='${version}'`);
+if (shellUpdated === shell && !shell.includes(`ITCH_VERSION='${version}'`)) {
+  console.error(`sync: could not find an ITCH_VERSION line in ${shellPath}`);
+  process.exit(1);
+}
+writeFileSync(shellPath, shellUpdated);
+
+console.log(`jsr.json, the Python package and the shell script set to ${version}`);
