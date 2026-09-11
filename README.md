@@ -3,21 +3,25 @@
 Find the itch.io app, its install locations, and the games installed in them.
 
 An itch.io counterpart to [`@ciberus/find-steam-app`](https://github.com/ciberusps/find-steam-app),
-available for two languages. Both read the same records itch keeps, and are
+available for three languages. All read the same records itch keeps, and are
 tested against the same fixtures.
 
 | Language | Package | Install | Docs |
 | --- | --- | --- | --- |
 | JavaScript / TypeScript | `find-itch-games` (npm), `@sparr/find-itch-games` (JSR) | `npm i find-itch-games` | [node/README.md](node/README.md) · [API](https://sparr.github.io/find-itch-games/node/api/) |
 | Python | `find-itch-games` (PyPI) | `pip install find-itch-games` | [python/README.md](python/README.md) · [API](https://sparr.github.io/find-itch-games/python/api/) |
+| POSIX shell | not packaged — copy the script | `cp shell/find-itch-games.sh .` | [shell/README.md](shell/README.md) |
 
-Neither has runtime dependencies. This page describes what itch does and how
-the libraries find things; the per-language READMEs cover their APIs.
+The Node and Python packages have no runtime dependencies. The shell script
+needs `sqlite3`, `jq` and `gzip`, because a shell cannot read SQLite or JSON on
+its own. This page describes what itch does and how the libraries find things;
+the per-language READMEs cover their APIs.
 
-The two packages share a name, a definition set and a version: they are
-released in lockstep, so `find-itch-games 0.1.1` means the same behaviour in
+The two published packages share a name, a definition set and a version: they
+are released in lockstep, so `find-itch-games 0.1.1` means the same behaviour in
 either language. A release that only changes one of them simply is not
-republished for the other, so version numbers may skip.
+republished for the other, so version numbers may skip. The shell script is not
+published to a registry; it is copied from this repository.
 
 Data structures and lookup rules follow the upstream sources: the
 [itch client](https://github.com/itchio/itch), [butler](https://github.com/itchio/butler)
@@ -27,30 +31,31 @@ and its [`dash`](https://github.com/itchio/dash), [`hush`](https://github.com/it
 ## Repository layout
 
 ```
-shared/     language-neutral definitions both implementations are built and tested against
+shared/     language-neutral definitions every implementation is built and tested against
 node/       the JavaScript/TypeScript package
 python/     the Python package
+shell/      the POSIX shell script
 docs/       generated API reference, published by GitHub Pages
 ```
 
-[`shared/`](shared) is what keeps the two implementations honest:
+[`shared/`](shared) is what keeps the implementations honest:
 
 - [`butler-schema.sql`](shared/butler-schema.sql) — the subset of butler's
   schema this library reads. butler has no checked-in DDL, since hades
   generates it at runtime from Go structs, so this was taken from a real
-  `butler.db`. Both test suites build their fixture databases from it.
+  `butler.db`. Every test suite builds its fixture database from it.
 - [`definitions.json`](shared/definitions.json) — the vocabulary every
   implementation must agree on: strategy names, app variants, receipt paths,
   flavors, classifications, per-platform path templates. Each value cites the
-  upstream source it came from. Both suites assert their own constants against
+  upstream source it came from. Every suite asserts its own constants against
   it, so an implementation cannot quietly disagree.
 - [`fixtures.json`](shared/fixtures.json) — the canonical test installation,
-  and the results a correct implementation must produce for it. Both suites
-  build it and check the same expectations.
+  and the results a correct implementation must produce for it.
 
-The Python suite additionally runs a parity test that compares its output
-against the JavaScript build on a real itch installation, skipping itself when
-itch is absent.
+All three suites build that installation and assert their own constants against
+the shared vocabulary. The Python suite additionally runs a parity test that
+compares its output against the JavaScript build on a real itch installation,
+skipping itself when itch is absent.
 
 ## How it works
 
